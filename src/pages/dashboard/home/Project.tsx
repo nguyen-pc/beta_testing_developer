@@ -7,41 +7,39 @@ import { alpha } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
-import AppNavbar from "../../components/dashboard/AppNavbar";
-import Header from "../../components/dashboard/Header";
-import SideMenu from "../../components/dashboard/campaign/SideMenu";
-import AppTheme from "../../theme/AppTheme";
+import AppNavbar from "../../../components/dashboard/AppNavbar";
+import Header from "../../../components/dashboard/Header";
+// import SideMenu from "../../components/dashboard/SideMenu";
+import AppTheme from "../../../theme/AppTheme";
 import {
   chartsCustomizations,
   dataGridCustomizations,
   datePickersCustomizations,
   treeViewCustomizations,
-  sidebarCustomizations,
-  formInputCustomizations,
-} from "../../theme/customizations";
-import NotificationsProvider from "../../hooks/useNotifications/NotificationsProvider";
-import DialogsProvider from "../../hooks/useDialogs/DialogsProvider";
-import { Routes, Route } from "react-router-dom";
-import EmployeeList from "../../components/user/EmployeeList";
-import EmployeeShow from "../../components/user/EmployeeShow";
-import EmployeeCreate from "../../components/user/EmployeeCreate";
-import EmployeeEdit from "../../components/user/EmployeeEdit";
+} from "../../../theme/customizations";
+import MainProject from "../../../components/dashboard/project/MainProject";
+import SideMenu from "../../../components/dashboard/campaign/SideMenu";
+import SideMenuHome from "../../../components/dashboard/home/SideMenuHome";
+import NotificationsProvider from "../../../hooks/useNotifications/NotificationsProvider";
+import DialogsProvider from "../../../hooks/useDialogs/DialogsProvider";
+import { Route, Routes } from "react-router-dom";
+import ProjectCreate from "../../../components/dashboard/project/ProjectCreate";
+import ProjectShow from "../../../components/dashboard/project/ProjectShow";
+import ProjectEdit from "../../../components/dashboard/project/ProjectEdit";
 
 const xThemeComponents = {
   ...chartsCustomizations,
   ...dataGridCustomizations,
   ...datePickersCustomizations,
   ...treeViewCustomizations,
-  ...sidebarCustomizations,
-  ...formInputCustomizations,
 };
 
-export default function User(props: { disableCustomTheme?: boolean }) {
+export default function Project(props: { disableCustomTheme?: boolean }) {
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
-        <SideMenu />
+        <SideMenuHome />
         <AppNavbar />
         {/* Main content */}
         <Box
@@ -66,22 +64,20 @@ export default function User(props: { disableCustomTheme?: boolean }) {
             <Header />
             <NotificationsProvider>
               <DialogsProvider>
-                {/* Định nghĩa các route con theo dạng relative */}
                 <Routes>
-                  {/* Khi vào /dashboard/user/, hiển thị EmployeeList */}
-                  <Route index element={<EmployeeList />} />
-                  <Route path="employees" element={<EmployeeList />} />
+                  <Route index element={<MainProject />} />
+                  <Route path="" element={<MainProject />} />
                   <Route
-                    path="employees/:employeeId"
-                    element={<EmployeeShow />}
+                    path="show/:projectId"
+                    element={<ProjectShow />}
                   />
-                  <Route path="employees/new" element={<EmployeeCreate />} />
+                  <Route path="new" element={<ProjectCreate />} />
                   <Route
-                    path="employees/:employeeId/edit"
-                    element={<EmployeeEdit />}
+                    path=":projectId/edit"
+                    element={<ProjectEdit />}
                   />
                   {/* Fallback route nếu không khớp */}
-                  <Route path="*" element={<EmployeeList />} />
+                  <Route path="*" element={<MainProject />} />
                 </Routes>
               </DialogsProvider>
             </NotificationsProvider>

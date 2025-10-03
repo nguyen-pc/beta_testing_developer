@@ -79,3 +79,35 @@ export interface IUser {
   createdAt?: string;
   updatedAt?: string;
 }
+
+
+export interface IProject {
+  id?: string;
+  name: string;
+  description?: string;
+  status?: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+  startDate?: string;
+  endDate?: string;
+  createdBy?: string;
+  isDeleted?: boolean;
+  deletedAt?: boolean | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ICampaign {
+  id?: string;
+  title: string;
+  description?: string;
+  instructions?: string;
+  rewardValue?: string;
+  rewardType?: string;
+  status?: "NOT_STARTED" | "IN_PROGRESS" | "COMPLETED";
+  startDate?: string;
+  endDate?: string;
+  campaignType?: string;
+  createdBy?: string;
+  updatedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}

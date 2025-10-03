@@ -5,6 +5,7 @@ import {
   type IPermission,
   type IRole,
   type IModelPaginate,
+  type IProject,
 } from "./../types/backend.d";
 
 import axios from "../config/axios-customize";
@@ -86,5 +87,42 @@ export const callResetPassword = (token: string, newPassword: string) => {
   return axios.post<IBackendRes<string>>(
     `/api/v1/auth/reset_password?token=${token}`,
     { newPassword }
+  );
+};
+
+// Module Project
+export const callCreateProject = (data: IProject) => {
+  return axios.post<IBackendRes<IProject>>("/api/v1/projects/create", data);
+};
+
+export const callUpdateProject = (id: number, data: IProject) => {
+  console.log("callUpdateProject", { id, data });
+  return axios.put<IBackendRes<IProject>>(
+    `/api/v1/projects/update/${id}`,
+    data
+  );
+};
+
+export const callGetProject = (id: number) => {
+  return axios.get<IBackendRes<IProject>>(`/api/v1/projects/${id}`);
+};
+export const callFetchProjectByCompany = (id: string, query: string) => {
+  console.log("callFetchProjectByCompany", { id, query });
+  return axios.get<IBackendRes<IModelPaginate<IProject>>>(
+    `/api/v1/projects/all/${id}?${query}`
+  );
+};
+
+export const callDeleteProject = (id: string) => {
+  console.log("callDeleteProject", { id });
+  return axios.delete<IBackendRes<null>>(`/api/v1/projects/${id}`);
+};
+
+//Module Campaign
+
+export const callFetchCampaignByProject = (id: string, query: string) => {
+  console.log("callFetchCampaignByProject", { id, query });
+  return axios.get<IBackendRes<IModelPaginate<ICampaign>>>(
+    `/api/v1/project/${id}/campaigns?${query}`
   );
 };
