@@ -9,7 +9,6 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import AppNavbar from "../../components/dashboard/AppNavbar";
 import Header from "../../components/dashboard/Header";
-import SideMenu from "../../components/dashboard/campaign/SideMenu";
 import AppTheme from "../../theme/AppTheme";
 import {
   chartsCustomizations,
@@ -26,6 +25,7 @@ import EmployeeList from "../../components/user/EmployeeList";
 import EmployeeShow from "../../components/user/EmployeeShow";
 import EmployeeCreate from "../../components/user/EmployeeCreate";
 import EmployeeEdit from "../../components/user/EmployeeEdit";
+import SideMenuHome from "../../components/dashboard/home/SideMenuHome";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -41,7 +41,7 @@ export default function User(props: { disableCustomTheme?: boolean }) {
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
-        <SideMenu />
+        <SideMenuHome />
         <AppNavbar />
         {/* Main content */}
         <Box

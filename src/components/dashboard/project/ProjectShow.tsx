@@ -206,9 +206,13 @@ export default function ProjectShow() {
     navigate("/dashboard/projects/new");
   }, [navigate]);
 
-  const handleDetailClick = (id) => {
-    console.log("Project ID:", id);
-    navigate(`/dashboard/projects/show/${id}`);
+  const handleDetailClick = (projectId, campaignId) => {
+    console.log("Project ID:", projectId);
+    navigate(`/dashboard/projects/${projectId}/campaigns/${campaignId}`);
+  };
+
+  const handleCreateCampaign = () => {
+    navigate(`/dashboard/projects/${projectId}/campaigns/new/create`);
   };
 
   const handleClick = () => {
@@ -287,7 +291,7 @@ export default function ProjectShow() {
           </Typography>
 
           <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
-            <Button variant="contained" size="large">
+            <Button onClick={handleCreateCampaign} variant="contained" size="large">
               Create Campaign
             </Button>
             <Button variant="outlined" size="large">
@@ -328,7 +332,7 @@ export default function ProjectShow() {
             campaigns.map((campaign, index) => (
               <Grid size={{ xs: 12, md: 4 }} key={campaign.id}>
                 <StyledCard
-                  onClick={() => handleDetailClick(campaign.id)}
+                  onClick={() => handleDetailClick(projectId, campaign.id)}
                   variant="outlined"
                   onFocus={() => handleFocus(index)}
                   onBlur={handleBlur}

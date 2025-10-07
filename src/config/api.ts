@@ -6,6 +6,9 @@ import {
   type IRole,
   type IModelPaginate,
   type IProject,
+  type IUseCase,
+  type IScenario,
+  type ITestcase,
 } from "./../types/backend.d";
 
 import axios from "../config/axios-customize";
@@ -126,3 +129,77 @@ export const callFetchCampaignByProject = (id: string, query: string) => {
     `/api/v1/project/${id}/campaigns?${query}`
   );
 };
+
+export const callGetCampaign = (id: number) => {
+  return axios.get<IBackendRes<ICampaign>>(`/api/v1/campaigns/${id}`);
+}
+export const callCreateCampaign = (data: ICampaign) => {
+  return axios.post<IBackendRes<ICampaign>>("/api/v1/campaigns/create", data);
+}
+
+// Module Campaign
+export const callGetUseCasesByCampaign = (campaignId: string, query: string) => {
+   return axios.get<IBackendRes<IModelPaginate<IUseCase>>>(
+    `/api/v1/usecase/campaign/${campaignId}?${query}`
+  );
+}
+
+export const callCreateUseCase = (data: Partial<IUseCase>) => {
+  return axios.post<IBackendRes<IUseCase>>("/api/v1/usecase/create", data);
+}
+
+export const callUpdateUseCase = (id: number, data: Partial<IUseCase>) => {
+  return axios.put<IBackendRes<IUseCase>>(`/api/v1/usecase/update/${id}`, data);
+}
+
+export const callDeleteUseCase = (id: number) => {
+  return axios.delete<IBackendRes<null>>(`/api/v1/usecase/delete/${id}`);
+}
+
+// Module Scenario
+export const callGetScenariosByUseCase = (useCaseId: number, query: string) => {
+  return axios.get<IBackendRes<IModelPaginate<IScenario>>>(
+    `/api/v1/usecase/${useCaseId}/test_scenario?${query}`
+  );
+};
+
+export const callCreateScenario = (data: IScenario) => {
+  console.log("callCreateScenario", data);
+  return axios.post<IBackendRes<IScenario>>("/api/v1/usecase/test_scenario/create", data);
+};
+
+export const callUpdateScenario = (id: number, data: Partial<IScenario>) => {
+  console.log(data, id)
+  return axios.put<IBackendRes<IScenario>>(`/api/v1/usecase/test_scenario/update/${id}`, data);
+};
+
+export const callDeleteScenario = (id: number) => {
+  return axios.delete<IBackendRes<null>>(`/api/v1/usecase/test_scenario/delete/${id}`);
+}
+
+// Module Testcase
+export const callGetTestcasesByScenario = (scenarioId: string, query: string) => {
+  return axios.get<IBackendRes<IModelPaginate<ITestcase>>>(
+    `/api/v1/usecase/test_scenario/${scenarioId}/testcase?${query}`
+  );
+};
+
+export const callCreateTestcase = (data: Partial<ITestcase>) => {
+  console.log("callCreateTestcase", data);
+  return axios.post<IBackendRes<ITestcase>>("/api/v1/usecase/test_scenario/testcase/create", data);
+};
+
+export const callUpdateTestcase = (id: number, data: Partial<ITestcase>) => {
+  console.log("callUpdateTestcase", { id, data });
+  return axios.put<IBackendRes<ITestcase>>(`/api/v1/usecase/test_scenario/testcase/update/${id}`, data);
+};
+
+export const callDeleteTestcase = (id: number) => {
+  return axios.delete<IBackendRes<null>>(`/api/v1/usecase/test_scenario/testcase/delete/${id}`);
+}
+
+export async function callSaveSurvey(payload: any) {
+  console.log("Saving survey payload to server:", payload);
+  // Replace below with your API client, e.g. axios.post("/surveys", payload)
+  return new Promise((res) => setTimeout(() => res({ ok: true }), 600));
+}

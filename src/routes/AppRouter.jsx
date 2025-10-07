@@ -5,11 +5,15 @@ import SignUpSide from "../pages/auth/SignUpSign";
 import Home from "../pages/home/Home";
 import DetailCampaign from "../pages/home/DetailCampaign";
 import Dashboard from "../pages/dashboard/campaign/Dashboard";
+import Campaign from "../pages/dashboard/campaign/Campaign";
 import DashboardHome from "../pages/dashboard/home/DashboardHome";
 import Project from "../pages/dashboard/home/Project";
 import Analytics from "../pages/dashboard/Analytics";
 import User from "../pages/dashboard/User";
 import Profile from "../pages/profile/Profile";
+import ScenarioPage from "../components/dashboard/campaign/testcase/ScenarioPage";
+import NotificationsProvider from "../hooks/useNotifications/NotificationsProvider";
+import DialogsProvider from "../hooks/useDialogs/DialogsProvider";
 
 export default function AppRouter() {
   return (
@@ -27,9 +31,20 @@ export default function AppRouter() {
         <Route path="/dashboard/projects/*" element={<Project />} />
         <Route path="/dashboard/user/*" element={<User />} />
 
-        <Route path="/dashboard/project/:id/campaign" element={<Dashboard />} />
-
         {/*Dashboard ở trang campaign */}
+        <Route
+          path="/dashboard/projects/:projectId/campaigns/:campaignId"
+          element={<Dashboard />}
+        />
+        <Route
+          path="/dashboard/projects/:projectId/campaigns/new/*"
+          element={<Campaign />}
+        />
+
+        {/* <Route
+          path="/dashboard/test_scenario/:useCaseId"
+          element={<ScenarioPage />}
+        /> */}
       </Routes>
     </BrowserRouter>
   );

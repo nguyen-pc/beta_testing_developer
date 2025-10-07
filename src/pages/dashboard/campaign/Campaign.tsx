@@ -9,7 +9,6 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import AppNavbar from "../../../components/dashboard/AppNavbar";
 import Header from "../../../components/dashboard/Header";
-// import SideMenu from "../../components/dashboard/SideMenu";
 import AppTheme from "../../../theme/AppTheme";
 import {
   chartsCustomizations,
@@ -17,16 +16,17 @@ import {
   datePickersCustomizations,
   treeViewCustomizations,
 } from "../../../theme/customizations";
-import MainProject from "../../../components/dashboard/project/MainProject";
-import SideMenu from "../../../components/dashboard/campaign/SideMenu";
-import SideMenuHome from "../../../components/dashboard/home/SideMenuHome";
+import SideMenuCreateCampaign from "../../../components/dashboard/campaign/SideMenuCreateCampaign";
+import Dashboard from "./Dashboard";
+import DetailCampaignCreate from "../../../components/dashboard/campaign/CampaignCreate";
 import NotificationsProvider from "../../../hooks/useNotifications/NotificationsProvider";
 import DialogsProvider from "../../../hooks/useDialogs/DialogsProvider";
 import { Route, Routes } from "react-router-dom";
-import ProjectCreate from "../../../components/dashboard/project/ProjectCreate";
-import ProjectShow from "../../../components/dashboard/project/ProjectShow";
-import ProjectEdit from "../../../components/dashboard/project/ProjectEdit";
-import Dashboard from "../campaign/Dashboard";
+import RecruitingCampaignCreate from "../../../components/dashboard/campaign/recruiting/RecruitingCampaign";
+import UseCasePage from "../../../components/dashboard/campaign/testcase/UseCasePage.tsx";
+import ScenarioPage from "../../../components/dashboard/campaign/testcase/ScenarioPage.tsx";
+import TestcasePage from "../../../components/dashboard/campaign/testcase/TestCasePage.tsx";
+import SurveyBuilderAdvanced from "../../../components/dashboard/campaign/survey/SurveyBuilderAdvanced.tsx";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -35,12 +35,12 @@ const xThemeComponents = {
   ...treeViewCustomizations,
 };
 
-export default function Project(props: { disableCustomTheme?: boolean }) {
+export default function Campaign(props: { disableCustomTheme?: boolean }) {
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
-        <SideMenuHome />
+        <SideMenuCreateCampaign />
         <AppNavbar />
         {/* Main content */}
         <Box
@@ -63,16 +63,27 @@ export default function Project(props: { disableCustomTheme?: boolean }) {
             }}
           >
             <Header />
+
             <NotificationsProvider>
               <DialogsProvider>
                 <Routes>
-                  <Route index element={<MainProject />} />
-                  <Route path="" element={<MainProject />} />
-                  <Route path="show/:projectId" element={<ProjectShow />} />
-                  <Route path="new" element={<ProjectCreate />} />
-                  <Route path=":projectId/edit" element={<ProjectEdit />} />
+                  <Route index element={<Dashboard />} />
+                  <Route path="create" element={<DetailCampaignCreate />} />
+                  <Route
+                    path="createRecruiting"
+                    element={<RecruitingCampaignCreate />}
+                  />
+                  <Route path="surveys" element={<SurveyBuilderAdvanced />} />
+                  <Route
+                    path="test-case"
+                    element={<UseCasePage campaignId={3} />}
+                  />
+                  <Route path="test_scenario/:useCaseId" element={<ScenarioPage />} />
+
+                  <Route path="testcase/:testScenarioId" element={<TestcasePage />}/>
+                  
                   {/* Fallback route nếu không khớp */}
-                  <Route path="*" element={<MainProject />} />
+                  <Route path="*" element={<Dashboard />} />
                 </Routes>
               </DialogsProvider>
             </NotificationsProvider>

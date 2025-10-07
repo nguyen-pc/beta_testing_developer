@@ -80,7 +80,6 @@ export interface IUser {
   updatedAt?: string;
 }
 
-
 export interface IProject {
   id?: string;
   name: string;
@@ -108,6 +107,43 @@ export interface ICampaign {
   campaignType?: string;
   createdBy?: string;
   updatedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+export interface IUseCase {
+  id?: string;
+  usecaseName: string;
+  description?: string;
+  objective?: string;
+  actor?: string;
+  createdBy?: string;
+  status?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface IScenario {
+  id?: string;
+  title: string;
+  description?: string;
+  precondition?: string;
+  updatedBy?: string;
+  createdBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface ITestcase {
+  id?: string;
+  title: string;
+  description?: string;
+  precondition?: string;
+  dataTest?: string;
+  steps?: string;
+  expectedResult?: string;
+  priority?: string;
+  updatedBy?: string;
+  createdBy?: string;
   createdAt?: string;
   updatedAt?: string;
 }
