@@ -91,7 +91,7 @@ function ProjectEditForm({
 
     try {
       await onSubmit(formValues);
-      notifications.show("Employee edited successfully.", {
+      notifications.show("Project edited successfully.", {
         severity: "success",
         autoHideDuration: 3000,
       });

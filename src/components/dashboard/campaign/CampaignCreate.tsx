@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import useNotifications from "../../../hooks/useNotifications/useNotifications";
 import {
   validate as ValidateCampaign,
@@ -8,10 +8,11 @@ import {
 import DetailCampaignForm, {
   type FormFieldValue,
   type DetailCampaignFormState,
-} from "./CampaignForm"; // 👈 form component tương tự ProjectForm
+} from "./CampaignForm";
 import PageContainer from "../../dashboard/project/PageContainer";
-import { callCreateCampaign } from "../../../config/api"; // 👈 API riêng cho campaign
+import { callCreateCampaign } from "../../../config/api";
 import dayjs from "dayjs";
+import { useCampaignContext } from "../../../context/CampaignContext";
 
 const INITIAL_FORM_VALUES: Partial<DetailCampaignFormState["values"]> = {
   title: "",
@@ -27,12 +28,16 @@ const INITIAL_FORM_VALUES: Partial<DetailCampaignFormState["values"]> = {
 
 export default function DetailCampaignCreate() {
   const navigate = useNavigate();
+  const { projectId } = useParams();
   const notifications = useNotifications();
+  const { setCampaignId } = useCampaignContext();
 
-  const [formState, setFormState] = React.useState<DetailCampaignFormState>(() => ({
-    values: INITIAL_FORM_VALUES,
-    errors: {},
-  }));
+  const [formState, setFormState] = React.useState<DetailCampaignFormState>(
+    () => ({
+      values: INITIAL_FORM_VALUES,
+      errors: {},
+    })
+  );
 
   const formValues = formState.values;
   const formErrors = formState.errors;
@@ -91,21 +96,35 @@ export default function DetailCampaignCreate() {
     setFormErrors({});
 
     try {
-      // Convert date strings → Date objects
       const payload = {
         ...formValues,
-        startDate: dayjs(formValues.startDate, "YYYY-MM-DD").toDate(),
-        endDate: dayjs(formValues.endDate, "YYYY-MM-DD").toDate(),
+        campaignType: {
+          id: Number(formValues.campaignType),
+        },
+        project: {
+          id: Number(projectId),
+        },
+        startDate: formValues.startDate
+          ? dayjs(formValues.startDate, "YYYY-MM-DD").toDate()
+          : null,
+        endDate: formValues.endDate
+          ? dayjs(formValues.endDate, "YYYY-MM-DD").toDate()
+          : null,
       };
+      console.log(payload);
 
-      await callCreateCampaign(payload);
+      const res = await callCreateCampaign(payload);
+      const campaignId = res.data.id;
 
       notifications.show("Campaign created successfully.", {
         severity: "success",
         autoHideDuration: 3000,
       });
+      setCampaignId(campaignId);
 
-      navigate("/dashboard/campaigns");
+      navigate(
+        `/dashboard/projects/${projectId}/campaigns/new/${campaignId}/createRecruiting`
+      );
     } catch (error) {
       notifications.show(
         `Failed to create campaign. Reason: ${(error as Error).message}`,

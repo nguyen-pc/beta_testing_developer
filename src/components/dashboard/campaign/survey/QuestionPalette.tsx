@@ -5,6 +5,8 @@ const questionTypes = [
   { id: "palette-short", type: "short-text", label: "Short Text Response" },
   { id: "palette-long", type: "long-text", label: "Long Text Response" },
   { id: "palette-multi", type: "multiple-choice", label: "Multiple Choice" },
+  { id: "palette-checkbox", type: "multiple-checkbox", label: "Checkboxes" },
+  { id: "palette-file", type: "file-upload", label: "File Upload" },
 ];
 
 export default function QuestionPalette() {
@@ -29,7 +31,7 @@ function DraggablePaletteItem({ item }: any) {
       ref={setNodeRef}
       {...listeners}
       {...attributes}
-      className="border rounded p-2 mb-2 bg-gray-100 hover:bg-gray-200 cursor-move"
+      className="border rounded p-3 mb-2  hover:bg-gray-500 cursor-move"
     >
       {item.label}
     </div>

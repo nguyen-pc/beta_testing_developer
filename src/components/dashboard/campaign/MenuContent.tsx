@@ -77,9 +77,9 @@ export default function MenuContent() {
       path: "/dashboard/secure-files",
     },
     {
-      text: "Tasks",
+      text: "Test Detail",
       icon: <AssignmentRoundedIcon />,
-      path: "/dashboard/tasks",
+      path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/edit_detail`,
     },
   ];
 

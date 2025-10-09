@@ -147,3 +147,55 @@ export interface ITestcase {
   createdAt?: string;
   updatedAt?: string;
 }
+
+export interface ISurvey {
+  id?: string;
+  surveyName: string;
+  subTitle?: string;
+  description?: string;
+  startDate?: string;
+  endDate?: string;
+  createdBy?: string;
+  updatedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface IQuestion {
+  id?: string;
+  questionName?: string;
+  questionType: string;
+  isRequired: boolean;
+  options?: string[];
+  choices?: number;
+  createdBy?: string;
+  updatedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+} 
+
+
+export interface IUserRecruitProfile {
+  id?: number;
+  recruitMethod: string;
+  testerCount: number;
+  devices: string;
+  whitelist: string;
+  gender: string;
+  country: string;
+  zipcode: string;
+  householdIncome: string;
+  isChildren: boolean;
+  employment: string;
+  gamingGenres: string;
+  browsers: string;
+  socialNetworks: string;
+  webExpertise: string;
+  languages: string;
+  ownedDevices: string;
+  createdBy?: string;
+  updatedBy?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+

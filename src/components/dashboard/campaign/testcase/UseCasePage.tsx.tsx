@@ -7,6 +7,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
   callGetUseCasesByCampaign,
   callCreateUseCase,
@@ -21,10 +22,10 @@ import queryString from "query-string";
 import { sfLike } from "spring-filter-query-builder";
 import { useNavigate, useParams } from "react-router-dom";
 
-export default function UseCasePage({ campaignId }: { campaignId: number }) {
+export default function UseCasePage() {
   const notifications = useNotifications();
   const [open, setOpen] = React.useState(false);
-  const { projectId } = useParams();
+  const { projectId, campaignId } = useParams();
   const navigate = useNavigate();
   const [useCases, setUseCases] = React.useState<UseCase[]>([]);
   const [selectedUseCase, setSelectedUseCase] = React.useState<UseCase | null>(
@@ -120,6 +121,14 @@ export default function UseCasePage({ campaignId }: { campaignId: number }) {
   const handleViewScenarios = (useCaseId: number) => {
     navigate(
       `/dashboard/projects/${projectId}/campaigns/new/test_scenario/${useCaseId}`
+    );
+  };
+  const handleBack = () => {
+    navigate(`/dashboard/projects/${projectId}/campaigns/new/create`);
+  };
+  const handleContinue = () => {
+    navigate(
+      `/dashboard/projects/${projectId}/campaigns/new/${campaignId}/survey`
     );
   };
 
@@ -243,6 +252,19 @@ export default function UseCasePage({ campaignId }: { campaignId: number }) {
           )}
         </tbody>
       </table>
+      <div className="flex justify-between mb-4 mt-7">
+        <Button
+          variant="contained"
+          color="inherit"
+          startIcon={<ArrowBackIcon />}
+          onClick={handleBack}
+        >
+          Back
+        </Button>
+        <Button variant="contained" color="primary" onClick={handleContinue}>
+          Continue
+        </Button>
+      </div>
 
       <Dialog
         open={openDialog}

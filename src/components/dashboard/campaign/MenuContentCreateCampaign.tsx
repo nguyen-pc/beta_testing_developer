@@ -11,9 +11,15 @@ import LooksTwoIcon from "@mui/icons-material/LooksTwo";
 import Looks3Icon from "@mui/icons-material/Looks3";
 import Looks4Icon from "@mui/icons-material/Looks4";
 import Looks5Icon from "@mui/icons-material/Looks5";
+import { useCampaignContext } from "../../../context/CampaignContext"; // 👈 import context
+
 export default function MenuContentCreateCampaign() {
   const location = useLocation();
-  const { projectId, campaignId } = useParams();
+  const { projectId, campaignId: paramCampaignId } = useParams();
+  const { campaignId } = useCampaignContext();
+
+  const activeCampaignId = campaignId || paramCampaignId; // ưu tiên context
+
   const mainListItems = [
     {
       text: "Test Details",
@@ -23,22 +29,30 @@ export default function MenuContentCreateCampaign() {
     {
       text: "Test Recruiting",
       icon: <LooksTwoIcon />,
-      path: `/dashboard/projects/${projectId}/campaigns/new/createRecruiting`,
+      path: activeCampaignId
+        ? `/dashboard/projects/${projectId}/campaigns/new/${activeCampaignId}/createRecruiting`
+        : undefined,
     },
     {
       text: "TestCase",
       icon: <Looks3Icon />,
-      path: `/dashboard/projects/${projectId}/campaigns/new/test-case`,
+      path: activeCampaignId
+        ? `/dashboard/projects/${projectId}/campaigns/new/${activeCampaignId}/test-case`
+        : undefined,
     },
     {
       text: "Surveys",
       icon: <Looks4Icon />,
-      path: `/dashboard/projects/${projectId}/campaigns/new/surveys`,
+      path: activeCampaignId
+        ? `/dashboard/projects/${projectId}/campaigns/new/${activeCampaignId}/survey`
+        : undefined,
     },
     {
       text: "Launch",
       icon: <Looks5Icon />,
-      path: `/dashboard/projects/${projectId}/campaigns/new/launch`,
+      path: activeCampaignId
+        ? `/dashboard/projects/${projectId}/campaigns/new/${activeCampaignId}/launch`
+        : undefined,
     },
   ];
 
@@ -49,7 +63,8 @@ export default function MenuContentCreateCampaign() {
           <ListItem key={index} disablePadding sx={{ display: "block" }}>
             <ListItemButton
               component={item.path ? Link : "div"}
-              to={item.path ? item.path : undefined}
+              to={item.path || ""}
+              disabled={!item.path}
               selected={location.pathname === item.path}
             >
               <ListItemIcon>{item.icon}</ListItemIcon>

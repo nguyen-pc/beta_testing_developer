@@ -33,14 +33,13 @@ export default function AppRouter() {
 
         {/*Dashboard ở trang campaign */}
         <Route
-          path="/dashboard/projects/:projectId/campaigns/:campaignId"
+          path="/dashboard/projects/:projectId/campaigns/:campaignId/*"
           element={<Dashboard />}
         />
         <Route
           path="/dashboard/projects/:projectId/campaigns/new/*"
           element={<Campaign />}
         />
-
         {/* <Route
           path="/dashboard/test_scenario/:useCaseId"
           element={<ScenarioPage />}

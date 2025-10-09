@@ -20,13 +20,13 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router";
 import dayjs, { Dayjs } from "dayjs";
-import type { Campaign } from "../../../data/campaign";
+import type { Survey } from "../../../../data/survey";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
-export interface CampaignFormState {
-  values: Partial<Omit<Campaign, "id">>;
-  errors: Partial<Record<keyof CampaignFormState["values"], string>>;
+export interface SurveyFormState {
+  values: Partial<Omit<Survey, "id">>;
+  errors: Partial<Record<keyof SurveyFormState["values"], string>>;
 }
 
 const Section = ({
@@ -53,7 +53,7 @@ const Section = ({
   </Paper>
 );
 
-export default function CampaignForm(props: CampaignFormProps) {
+export default function SurveyForm(props: SurveyFormProps) {
   const {
     formState,
     onFieldChange,
@@ -81,14 +81,14 @@ export default function CampaignForm(props: CampaignFormProps) {
 
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFieldChange(
-      e.target.name as keyof CampaignFormState["values"],
+      e.target.name as keyof SurveyFormState["values"],
       e.target.value
     );
   };
 
   const handleNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFieldChange(
-      e.target.name as keyof CampaignFormState["values"],
+      e.target.name as keyof SurveyFormState["values"],
       Number(e.target.value)
     );
   };
@@ -97,22 +97,22 @@ export default function CampaignForm(props: CampaignFormProps) {
     e: React.ChangeEvent<HTMLInputElement>,
     checked: boolean
   ) => {
-    onFieldChange(e.target.name as keyof CampaignFormState["values"], checked);
+    onFieldChange(e.target.name as keyof SurveyFormState["values"], checked);
   };
 
   const handleDateChange =
-    (fieldName: keyof CampaignFormState["values"]) => (value: Dayjs | null) => {
+    (fieldName: keyof SurveyFormState["values"]) => (value: Dayjs | null) => {
       onFieldChange(fieldName, value?.isValid() ? value.toISOString() : null);
     };
 
   const handleSelectChange = (e: any) => {
     onFieldChange(
-      e.target.name as keyof CampaignFormState["values"],
+      e.target.name as keyof SurveyFormState["values"],
       e.target.value
     );
   };
   const handleQuillChange =
-    (fieldName: keyof CampaignFormState["values"]) => (value: string) => {
+    (fieldName: keyof SurveyFormState["values"]) => (value: string) => {
       onFieldChange(fieldName, value);
     };
 
@@ -123,7 +123,7 @@ export default function CampaignForm(props: CampaignFormProps) {
     <Box component="form" onSubmit={handleSubmit} onReset={handleReset}>
       {/* HEADER */}
       <Typography variant="h5" fontWeight={600} mb={3}>
-        {formValues.title || "New Beta Test Form"}{" "}
+        {formValues.surveyName || "New Beta Test Survey"}{" "}
         <Typography
           component="span"
           variant="body2"
@@ -143,40 +143,33 @@ export default function CampaignForm(props: CampaignFormProps) {
         <Grid container spacing={2} sx={{ mb: 2, width: "100%" }}>
           <Grid item size={{ xs: 12, sm: 6 }}>
             <Typography variant="body2" fontWeight={500} mb={1}>
-              Title
+              Survey Name
             </Typography>
             <TextField
-              label="Test title"
-              name="title"
-              value={formValues.title ?? ""}
+              label="Survey title"
+              name="surveyName"
+              value={formValues.surveyName ?? ""}
               onChange={handleTextChange}
-              error={!!formErrors.title}
-              helperText={formErrors.title ?? " "}
+              error={!!formErrors.surveyName}
+              helperText={formErrors.surveyName ?? " "}
               fullWidth
               placeholder="New app to create a daily health plan"
             />
           </Grid>
           <Grid item size={{ xs: 12, sm: 6 }}>
-            <FormControl fullWidth>
-              <Typography variant="body2" mb={1}>
-                Campaign Type
-              </Typography>
-              <Select
-                name="campaignType"
-                value={(formValues as any).campaignType ?? ""}
-                onChange={handleSelectChange}
-                displayEmpty
-              >
-                <MenuItem value="1">IOS</MenuItem>
-                <MenuItem value="2">Android</MenuItem>
-                <MenuItem value="3">Web</MenuItem>
-                <MenuItem value="4">Game</MenuItem>
-                <MenuItem value="5">Other</MenuItem>
-              </Select>
-              <FormHelperText>
-                {formErrors.campaignType ?? "Choose campaign type"}
-              </FormHelperText>
-            </FormControl>
+            <Typography variant="body2" fontWeight={500} mb={1}>
+              Sub title
+            </Typography>
+            <TextField
+              label="Survey sub title"
+              name="subTitle"
+              value={formValues.subTitle ?? ""}
+              onChange={handleTextChange}
+              error={!!formErrors.subTitle}
+              helperText={formErrors.subTitle ?? " "}
+              fullWidth
+              placeholder="New app to create a daily health plan"
+            />
           </Grid>
           <Grid item size={{ xs: 12, sm: 12 }} className="pb-5">
             <Typography variant="body2" fontWeight={500} mb={1}>
@@ -198,69 +191,6 @@ export default function CampaignForm(props: CampaignFormProps) {
           </Grid>
         </Grid>
       </Section>
-
-      {/* === Instructions === */}
-      <Section title="Instructions">
-        <Grid item size={{ xs: 12, sm: 12 }} className="pb-5">
-          <ReactQuill
-            theme="snow"
-            value={formValues.Instructions ?? ""}
-            onChange={(value) => onFieldChange("Instructions", value)}
-            style={{
-              width: "100%",
-              height: "150px",
-              marginBottom: "10px",
-              borderRadius: "8px",
-            }}
-          />
-          {formErrors.Instructions && (
-            <FormHelperText error>{formErrors.Instructions}</FormHelperText>
-          )}
-        </Grid>
-      </Section>
-
-      {/* === Timing & Incentives === */}
-      <Section title="Timing & Incentives">
-        <Grid container spacing={3} sx={{ mb: 2, width: "100%" }}>
-          <Grid item size={{ xs: 12, sm: 6 }}>
-            <FormControl fullWidth>
-              <Typography variant="body2" mb={1}>
-                How long will it take to complete your test?
-              </Typography>
-              <Select
-                name="estimatedTime"
-                value={(formValues as any).estimatedTime ?? ""}
-                onChange={handleSelectChange}
-                displayEmpty
-              >
-                <MenuItem value="30">30 minutes</MenuItem>
-                <MenuItem value="45">45 minutes</MenuItem>
-                <MenuItem value="60">60 minutes</MenuItem>
-                <MenuItem value="90">90 minutes</MenuItem>
-              </Select>
-              <FormHelperText>
-                {formErrors.estimatedTime ?? "Choose estimated time"}
-              </FormHelperText>
-            </FormControl>
-          </Grid>
-
-          <Grid item size={{ xs: 12, sm: 6 }}>
-            <Typography variant="body2" mb={1}>
-              How much will it take to complete your test?
-            </Typography>
-            <TextField
-              label="Incentive ($)"
-              name="RewardValue"
-              type="number"
-              value={(formValues as any).RewardValue ?? ""}
-              onChange={handleNumberChange}
-              fullWidth
-              helperText="Average reward for this test type: $22"
-            />
-          </Grid>
-        </Grid>
-      </Section>
-
       {/* === Status & Dates (optional reuse) === */}
       <Section title="Additional Info">
         <Grid container spacing={2}>
@@ -290,22 +220,8 @@ export default function CampaignForm(props: CampaignFormProps) {
               />
             </LocalizationProvider>
           </Grid>
-
-          <Grid item xs={12}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={!!formValues.isPublic}
-                  onChange={handleCheckboxChange}
-                  name="isPublic"
-                />
-              }
-              label="Active test (visible to participants)"
-            />
-          </Grid>
         </Grid>
       </Section>
-
       {/* === Buttons === */}
       <Stack direction="row" spacing={2} justifyContent="space-between" mt={3}>
         <Button

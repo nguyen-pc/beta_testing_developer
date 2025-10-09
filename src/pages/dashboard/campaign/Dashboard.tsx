@@ -18,6 +18,11 @@ import {
   datePickersCustomizations,
   treeViewCustomizations,
 } from "../../../theme/customizations";
+import NotificationsProvider from "../../../hooks/useNotifications/NotificationsProvider";
+import DialogsProvider from "../../../hooks/useDialogs/DialogsProvider";
+import { Route, Routes } from "react-router-dom";
+import CampaignEdit from "../../../components/dashboard/campaign/CampaignEdit";
+import Campaign from "./Campaign";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -54,7 +59,16 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
             }}
           >
             <Header />
-            <MainGrid />
+            <NotificationsProvider>
+              <DialogsProvider>
+                <Routes>
+                  <Route index element={<MainGrid />} />
+                  <Route path="edit_detail" element={<CampaignEdit />} />
+                  {/* Fallback route nếu không khớp */}
+                  <Route path="*" element={<MainGrid />} />
+                </Routes>
+              </DialogsProvider>
+            </NotificationsProvider>
           </Stack>
         </Box>
       </Box>
