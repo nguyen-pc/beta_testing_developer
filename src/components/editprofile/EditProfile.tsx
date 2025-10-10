@@ -117,12 +117,10 @@ export default function EditProfileForm({
       onSubmit={handleSubmit}
       sx={{ maxWidth: 800, mx: "auto", p: 3 }}
     >
-      {" "}
       <Typography variant="h5" gutterBottom>
-        {" "}
-        Demographics{" "}
-      </Typography>{" "}
-      {/* Birth year */}{" "}
+        Demographics
+      </Typography>
+      {/* Birth year */}
       <TextField
         label="Birth year"
         type="number"
@@ -130,107 +128,88 @@ export default function EditProfileForm({
         onChange={(e) => handleChange("birthYear", e.target.value)}
         fullWidth
         margin="normal"
-      />{" "}
-      {/* Gender */}{" "}
+      />
+      {/* Gender */}
       <FormControl component="fieldset" margin="normal">
-        {" "}
-        <FormLabel>Gender</FormLabel>{" "}
+        <FormLabel>Gender</FormLabel>
         <RadioGroup
           row
           value={form.gender}
           onChange={(e) => handleChange("gender", e.target.value)}
         >
-          {" "}
-          <FormControlLabel
-            value="Male"
-            control={<Radio />}
-            label="Male"
-          />{" "}
-          <FormControlLabel value="Female" control={<Radio />} label="Female" />{" "}
+          <FormControlLabel value="Male" control={<Radio />} label="Male" />
+          <FormControlLabel value="Female" control={<Radio />} label="Female" />
           <FormControlLabel
             value="Non-binary"
             control={<Radio />}
             label="Non-binary"
-          />{" "}
-        </RadioGroup>{" "}
-      </FormControl>{" "}
-      {/* Country + Zip */}{" "}
+          />
+        </RadioGroup>
+      </FormControl>
+      {/* Country + Zip */}
       <Grid container spacing={2}>
-        {" "}
         <Grid item xs={6}>
-          {" "}
           <TextField
             label="Country"
             value={form.country}
             onChange={(e) => handleChange("country", e.target.value)}
             fullWidth
             margin="normal"
-          />{" "}
-        </Grid>{" "}
+          />
+        </Grid>
         <Grid item xs={6}>
-          {" "}
           <TextField
             label="ZIP / Postal code"
             value={form.zip}
             onChange={(e) => handleChange("zip", e.target.value)}
             fullWidth
             margin="normal"
-          />{" "}
-        </Grid>{" "}
-      </Grid>{" "}
-      {/* Income */}{" "}
+          />
+        </Grid>
+      </Grid>
+      {/* Income */}
       <FormControl fullWidth margin="normal">
-        {" "}
-        <FormLabel>Household income</FormLabel>{" "}
+        <FormLabel>Household income</FormLabel>
         <Select
           value={form.income}
           onChange={(e) => handleChange("income", e.target.value)}
         >
-          {" "}
-          <MenuItem value="Less than $19,999">Less than $19,999</MenuItem>{" "}
-          <MenuItem value="$20,000 - $49,999">$20,000 - $49,999</MenuItem>{" "}
-          <MenuItem value="$50,000 - $99,999">$50,000 - $99,999</MenuItem>{" "}
-          <MenuItem value="$100,000+">$100,000+</MenuItem>{" "}
-        </Select>{" "}
-      </FormControl>{" "}
-      {/* Children */}{" "}
+          <MenuItem value="Less than $19,999">Less than $19,999</MenuItem>
+          <MenuItem value="$20,000 - $49,999">$20,000 - $49,999</MenuItem>
+          <MenuItem value="$50,000 - $99,999">$50,000 - $99,999</MenuItem>
+          <MenuItem value="$100,000+">$100,000+</MenuItem>
+        </Select>
+      </FormControl>
+      {/* Children */}
       <FormControl component="fieldset" margin="normal">
-        {" "}
-        <FormLabel>
-          Are you a parent or guardian of a child under 18?
-        </FormLabel>{" "}
+        <FormLabel>Are you a parent or guardian of a child under 18?</FormLabel>
         <RadioGroup
           row
           value={form.hasChildren}
           onChange={(e) => handleChange("hasChildren", e.target.value)}
         >
-          {" "}
-          <FormControlLabel value="Yes" control={<Radio />} label="Yes" />{" "}
-          <FormControlLabel value="No" control={<Radio />} label="No" />{" "}
-        </RadioGroup>{" "}
-      </FormControl>{" "}
+          <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
+          <FormControlLabel value="No" control={<Radio />} label="No" />
+        </RadioGroup>
+      </FormControl>
       <Typography variant="h5" gutterBottom sx={{ mt: 4 }}>
-        {" "}
-        Occupation{" "}
-      </Typography>{" "}
+        Occupation
+      </Typography>
       <FormControl fullWidth margin="normal">
-        {" "}
-        <FormLabel>Employment status</FormLabel>{" "}
+        <FormLabel>Employment status</FormLabel>
         <Select
           value={form.employment}
           onChange={(e) => handleChange("employment", e.target.value)}
         >
-          {" "}
-          <MenuItem value="Full time student">Full time student</MenuItem>{" "}
-          <MenuItem value="Employed">Employed</MenuItem>{" "}
-          <MenuItem value="Self-employed">Self-employed</MenuItem>{" "}
-          <MenuItem value="Unemployed">Unemployed</MenuItem>{" "}
-        </Select>{" "}
-      </FormControl>{" "}
-      {/* Gaming genres */}{" "}
+          <MenuItem value="Full time student">Full time student</MenuItem>
+          <MenuItem value="Employed">Employed</MenuItem>
+          <MenuItem value="Self-employed">Self-employed</MenuItem>
+          <MenuItem value="Unemployed">Unemployed</MenuItem>
+        </Select>
+      </FormControl>
+      {/* Gaming genres */}
       <FormGroup row>
-        {" "}
-        <FormLabel sx={{ mr: 2 }}>Gaming genres</FormLabel>{" "}
+        <FormLabel sx={{ mr: 2 }}>Gaming genres</FormLabel>
         {gamingGenresOptions.map((genre) => (
           <FormControlLabel
             key={genre}
@@ -242,12 +221,11 @@ export default function EditProfileForm({
             }
             label={genre}
           />
-        ))}{" "}
-      </FormGroup>{" "}
-      {/* Browsers */}{" "}
+        ))}
+      </FormGroup>
+      {/* Browsers */}
       <FormGroup row>
-        {" "}
-        <FormLabel sx={{ mr: 2 }}>Web browsers</FormLabel>{" "}
+        <FormLabel sx={{ mr: 2 }}>Web browsers</FormLabel>
         {browsersOptions.map((browser) => (
           <FormControlLabel
             key={browser}
@@ -259,7 +237,7 @@ export default function EditProfileForm({
             }
             label={browser}
           />
-        ))}{" "}
+        ))}
       </FormGroup>{" "}
       {/* Social Networks */}{" "}
       <FormGroup row>
@@ -403,7 +381,7 @@ export default function EditProfileForm({
           {" "}
           Save profile{" "}
         </Button>{" "}
-      </Box>{" "}
+      </Box>
     </Box>
   );
 }

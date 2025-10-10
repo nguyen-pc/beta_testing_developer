@@ -14,34 +14,35 @@ import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
 
-
-const mainListItems = [
-  { text: "Home", icon: <HomeRoundedIcon />, path: "/dashboard" },
-  { text: "User", icon: <HomeRoundedIcon />, path: "/dashboard/user" },
-  {
-    text: "Project",
-    icon: <AnalyticsRoundedIcon />,
-    path: "/dashboard/projects",
-  },
-];
-
-const secondaryListItems = [
-  {
-    text: "Settings",
-    icon: <SettingsRoundedIcon />,
-    path: "/dashboard/settings",
-  },
-  {
-    text: "Company Profile",
-    icon: <InfoRoundedIcon />,
-    path: "/dashboard/about",
-  },
-  { text: "Feedback", icon: <HelpRoundedIcon />, path: "/dashboard/feedback" },
-];
-
 export default function MenuContentHome() {
-
   const location = useLocation();
+  const mainListItems = [
+    { text: "Home", icon: <HomeRoundedIcon />, path: "/dashboard" },
+    { text: "User", icon: <HomeRoundedIcon />, path: "/dashboard/user" },
+    {
+      text: "Project",
+      icon: <AnalyticsRoundedIcon />,
+      path: "/dashboard/projects",
+    },
+  ];
+
+  const secondaryListItems = [
+    {
+      text: "Settings",
+      icon: <SettingsRoundedIcon />,
+      path: "/dashboard/settings",
+    },
+    {
+      text: "Company Profile",
+      icon: <InfoRoundedIcon />,
+      path: "/dashboard/about",
+    },
+    {
+      text: "Feedback",
+      icon: <HelpRoundedIcon />,
+      path: "/dashboard/feedback",
+    },
+  ];
 
   return (
     <Stack sx={{ flexGrow: 1, p: 1, justifyContent: "space-between" }}>

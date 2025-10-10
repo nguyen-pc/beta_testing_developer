@@ -22,7 +22,7 @@ import NotificationsProvider from "../../../hooks/useNotifications/Notifications
 import DialogsProvider from "../../../hooks/useDialogs/DialogsProvider";
 import { Route, Routes } from "react-router-dom";
 import CampaignEdit from "../../../components/dashboard/campaign/CampaignEdit";
-import Campaign from "./Campaign";
+import TabTesterHome from "../../../components/dashboard/home/tester/TabTesterHome";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -63,6 +63,7 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
               <DialogsProvider>
                 <Routes>
                   <Route index element={<MainGrid />} />
+                  <Route path="tester" element={<TabTesterHome />} />
                   <Route path="edit_detail" element={<CampaignEdit />} />
                   {/* Fallback route nếu không khớp */}
                   <Route path="*" element={<MainGrid />} />
