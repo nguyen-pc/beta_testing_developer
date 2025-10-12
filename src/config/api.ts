@@ -263,3 +263,33 @@ export async function callCreateRecruitingCampaign(data: ICampaign) {
   console.log("callCreateRecruitingCampaign", data);
   return axios.post<IBackendRes<ICampaign>>("/api/v1/recruit-profile/create", data);
 }
+
+//tester status
+
+export async function callGetAllTesterRegister(campaignId: string, query: string) {
+  console.log("Fetching all tester registrations for campaign:", campaignId);
+  return axios.get<IBackendRes<IModelPaginate<any>>>(
+    `/api/v1/campaign/${campaignId}/testers?${query}`
+  );
+}
+
+export async function callGetStatistics(campaignId: string) {
+  console.log("Fetching statistics for campaign:", campaignId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/campaign/${campaignId}/tester-campaign/stats`
+  );
+}
+
+export async function callApproveTester(testerCampaignId: string) {
+  console.log("Approving tester:", testerCampaignId);
+  return axios.put<IBackendRes<null>>(
+    `/api/v1/campaign/tester-campaign/${testerCampaignId}/approve`
+  );
+}
+
+export async function callRejectTester(testerCampaignId: string) {
+  console.log("Rejecting tester:", testerCampaignId);
+  return axios.put<IBackendRes<null>>(
+    `/api/v1/campaign/tester-campaign/${testerCampaignId}/reject`
+  );
+}

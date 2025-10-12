@@ -199,3 +199,34 @@ export interface IUserRecruitProfile {
   updatedAt?: string;
 }
 
+export interface IUserProfile {
+  age: number;
+  zipcode: string;
+  country: string;
+  householdIncome: string;
+  children: boolean;
+  employment: string;
+  education: string;
+  gamingGenres: string;     
+  browsers: string;       
+  webExpertise: string;
+  language: string;        
+  computer: string;
+  smartPhone: string;
+  tablet: string;
+  otherDevice: string;
+  gender: "MALE" | "FEMALE" | "OTHER"; 
+}
+
+export interface ITesterCampaign {
+  userId: string;
+  campaignId: string;
+  note: string;
+}
+
+export interface ITesterCampaignStatus {
+  exists: boolean;
+  status?: string;
+  note?: string;
+  // approved?: boolean;
+}
