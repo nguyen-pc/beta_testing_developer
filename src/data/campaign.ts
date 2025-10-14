@@ -3,11 +3,11 @@ export interface Campaign {
   title: string;
   campaignType?: string;
   description: string;
-  Instructions: string;
+  instructions: string;
   startDate: string;
   endDate: string;
   estimatedTime: string;
-  RewardValue: number;
+  rewardValue: number;
   isPublic: boolean;
 }
 
@@ -30,7 +30,7 @@ export function validate(campaign: Partial<Campaign>): ValidationResult {
     issues.push({ message: "Campaign Type is required", path: ["campaignType"] });
   }
 
-  if (!campaign.Instructions) {
+  if (!campaign.instructions) {
     issues.push({ message: "Instructions are required", path: ["instructions"] });
   }
 
@@ -46,10 +46,10 @@ export function validate(campaign: Partial<Campaign>): ValidationResult {
     issues.push({ message: "Estimated Time is required", path: ["estimatedTime"] });
   }
 
-  if (campaign.RewardValue === undefined || campaign.RewardValue === null) {
-    issues.push({ message: "Reward Value is required", path: ["RewardValue"] });
-  } else if (campaign.RewardValue < 0) {
-    issues.push({ message: "Reward Value cannot be negative", path: ["RewardValue"] });
+  if (campaign.rewardValue === undefined || campaign.rewardValue === null) {
+    issues.push({ message: "Reward Value is required", path: ["rewardValue"] });
+  } else if (campaign.rewardValue < 0) {
+    issues.push({ message: "Reward Value cannot be negative", path: ["rewardValue"] });
   }
 
   if (campaign.isPublic === undefined) {

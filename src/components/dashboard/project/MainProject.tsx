@@ -236,7 +236,7 @@ export default function MainProject() {
   // Gọi fetchUser ban đầu
   React.useEffect(() => {
     const initialQuery = buildQuery({ current: 1, pageSize: 15 }, {}, {});
-    dispatch(fetchProjectByCompany({ id: 2, query: initialQuery }));
+    dispatch(fetchProjectByCompany({ id: 1, query: initialQuery }));
   }, []);
 
   console.log("Projects in MainProject:", projects);

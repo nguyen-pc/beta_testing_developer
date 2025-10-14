@@ -18,11 +18,11 @@ const INITIAL_FORM_VALUES: Partial<DetailCampaignFormState["values"]> = {
   title: "",
   description: "",
   campaignType: "",
-  Instructions: "",
+  instructions: "",
   startDate: "",
   endDate: "",
   estimatedTime: "",
-  RewardValue: 0,
+  rewardValue: 0,
   isPublic: false,
 };
 
@@ -98,6 +98,7 @@ export default function DetailCampaignCreate() {
     try {
       const payload = {
         ...formValues,
+        // campaignStatus: "PENDING",
         campaignType: {
           id: Number(formValues.campaignType),
         },
@@ -111,7 +112,7 @@ export default function DetailCampaignCreate() {
           ? dayjs(formValues.endDate, "YYYY-MM-DD").toDate()
           : null,
       };
-      console.log(payload);
+      console.log("payload", payload);
 
       const res = await callCreateCampaign(payload);
       const campaignId = res.data.id;

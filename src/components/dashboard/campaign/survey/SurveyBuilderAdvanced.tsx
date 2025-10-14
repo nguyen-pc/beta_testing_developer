@@ -13,9 +13,13 @@ import {
   verticalListSortingStrategy,
   useSortable,
 } from "@dnd-kit/sortable";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { CSS } from "@dnd-kit/utilities";
 import QuestionPalette from "./QuestionPalette";
 import QuestionEditor from "./QuestionEditor";
+import { Button } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import PageContainer from "../../project/PageContainer";
 
 interface Question {
   id: string;
@@ -29,6 +33,19 @@ export default function SurveyBuilderAdvanced() {
   const [activeId, setActiveId] = useState<string | null>(null);
 
   const sensors = useSensors(useSensor(PointerSensor));
+  const navigate = useNavigate();
+  const { projectId, campaignId } = useParams();
+  const handleBack = () => {
+    navigate(
+      `/dashboard/projects/${projectId}/campaigns/new/${campaignId}/survey`
+    );
+  };
+
+  const handleContinue = () => {
+    navigate(
+      `/dashboard/projects/${projectId}/campaigns/new/${campaignId}/survey`
+    );
+  };
 
   const handleDragStart = (event: any) => {
     setActiveId(event.active.id);
@@ -72,24 +89,39 @@ export default function SurveyBuilderAdvanced() {
   };
 
   return (
-    <DndContext
-      sensors={sensors}
-      onDragStart={handleDragStart}
-      onDragEnd={handleDragEnd}
-    >
-      <div className="w-full h-full flex gap-4 p-4">
-        {/* Bảng câu hỏi gốc */}
-        <QuestionPalette />
+    <PageContainer>
+      <DndContext
+        sensors={sensors}
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd}
+      >
+        <div className="w-full h-full flex gap-4 p-4">
+          {/* Bảng câu hỏi gốc */}
+          <QuestionPalette />
 
-        {/* Khu vực builder */}
-        <BuilderArea
-          questions={questions}
-          activeId={activeId}
-          onChange={handleChangeQuestion}
-          onDelete={handleDelete}
-        />
-      </div>
-    </DndContext>
+          {/* Khu vực builder */}
+          <BuilderArea
+            questions={questions}
+            activeId={activeId}
+            onChange={handleChangeQuestion}
+            onDelete={handleDelete}
+          />
+        </div>
+        <div className="flex justify-between mb-4 mt-7">
+          <Button
+            variant="contained"
+            color="inherit"
+            startIcon={<ArrowBackIcon />}
+            onClick={handleBack}
+          >
+            Back
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleContinue}>
+            Continue
+          </Button>
+        </div>
+      </DndContext>
+    </PageContainer>
   );
 }
 

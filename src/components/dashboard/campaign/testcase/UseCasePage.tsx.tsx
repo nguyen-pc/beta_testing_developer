@@ -120,7 +120,7 @@ export default function UseCasePage() {
 
   const handleViewScenarios = (useCaseId: number) => {
     navigate(
-      `/dashboard/projects/${projectId}/campaigns/new/test_scenario/${useCaseId}`
+      `/dashboard/projects/${projectId}/campaigns/new/${campaignId}/test_scenario/${useCaseId}`
     );
   };
   const handleBack = () => {

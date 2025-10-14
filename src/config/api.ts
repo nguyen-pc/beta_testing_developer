@@ -140,6 +140,14 @@ export const callCreateCampaign = (data: ICampaign) => {
   return axios.post<IBackendRes<ICampaign>>("/api/v1/campaign/create", data);
 };
 
+export const callUpdateCampaign = (id: number, data: ICampaign) => {
+  console.log("callUpdateCampaign", { id, data });
+  return axios.put<IBackendRes<ICampaign>>(
+    `/api/v1/campaign/update/${id}`,
+    data
+  );
+};
+
 // Module Campaign
 export const callGetUseCasesByCampaign = (
   campaignId: string,

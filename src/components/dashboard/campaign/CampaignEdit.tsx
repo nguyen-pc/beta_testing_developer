@@ -10,7 +10,7 @@ import CampaignForm, {
   type CampaignFormState,
 } from "./CampaignForm";
 import PageContainer from "../../dashboard/project/PageContainer";
-import { callGetCampaign } from "../../../config/api";
+import { callGetCampaign, callUpdateCampaign } from "../../../config/api";
 import dayjs from "dayjs";
 import { Alert, Box, CircularProgress } from "@mui/material";
 
@@ -22,7 +22,7 @@ function DetailCampaignEditForm({
   onSubmit: (formValues: Partial<CampaignFormState["values"]>) => Promise<void>;
 }) {
   const { projectId, campaignId } = useParams();
-  
+
   const navigate = useNavigate();
 
   const notifications = useNotifications();
@@ -91,7 +91,22 @@ function DetailCampaignEditForm({
     setFormErrors({});
 
     try {
-      await onSubmit(formValues);
+      const payload = {
+        ...formValues,
+        campaignType: {
+          id: Number(formValues.campaignType),
+        },
+        project: {
+          id: Number(projectId),
+        },
+        startDate: formValues.startDate
+          ? dayjs(formValues.startDate, "YYYY-MM-DD").toDate()
+          : null,
+        endDate: formValues.endDate
+          ? dayjs(formValues.endDate, "YYYY-MM-DD").toDate()
+          : null,
+      };
+      await onSubmit(payload);
       notifications.show("Campaign edited successfully.", {
         severity: "success",
         autoHideDuration: 3000,
@@ -124,7 +139,7 @@ function DetailCampaignEditForm({
 
 export default function CampaignEdit() {
   const navigate = useNavigate();
-  const { projectId, campaignId  } = useParams();
+  const { projectId, campaignId } = useParams();
   const [campaign, setCampaign] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [error, setError] = React.useState<Error | null>(null);
@@ -151,6 +166,22 @@ export default function CampaignEdit() {
 
   const handleSubmit = React.useCallback(
     async (formValues: Partial<CampaignFormState["values"]>) => {
+      const payload = {
+        ...formValues,
+        campaignType: {
+          id: Number(formValues.campaignType),
+        },
+        project: {
+          id: Number(projectId),
+        },
+        startDate: formValues.startDate
+          ? dayjs(formValues.startDate, "YYYY-MM-DD").toDate()
+          : null,
+        endDate: formValues.endDate
+          ? dayjs(formValues.endDate, "YYYY-MM-DD").toDate()
+          : null,
+      };
+      console.log("payload", payload);
       const updatedData = await callUpdateCampaign(campaignId, formValues);
       setCampaign(updatedData);
     },
@@ -184,7 +215,10 @@ export default function CampaignEdit() {
     }
 
     return campaign ? (
-      <DetailCampaignEditForm initialValues={campaign} onSubmit={handleSubmit} />
+      <DetailCampaignEditForm
+        initialValues={campaign}
+        onSubmit={handleSubmit}
+      />
     ) : null;
   }, [isLoading, error, campaign, handleSubmit]);
 

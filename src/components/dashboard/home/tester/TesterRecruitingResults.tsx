@@ -321,9 +321,7 @@ const TesterRecruitingResults: React.FC = () => {
           getRowId={(r) => r.id}
           loading={loading}
           checkboxSelection
-          // rowSelectionModel={selectionModel}
           onRowSelectionModelChange={(model: any) => {
-            // ⚙️ DataGrid v6 có thể trả object {type, ids} hoặc mảng ID
             let selectedIds: number[] = [];
 
             if (Array.isArray(model)) {
@@ -334,7 +332,7 @@ const TesterRecruitingResults: React.FC = () => {
               selectedIds = Array.from(model.ids || []);
             }
 
-            // ✅ Giữ logic chọn toàn bộ chỉ trong trang hiện tại
+            //Giữ logic chọn toàn bộ chỉ trong trang hiện tại
             if (
               selectedIds.length === 0 &&
               selected.length !== filteredRows.length
@@ -349,7 +347,7 @@ const TesterRecruitingResults: React.FC = () => {
               selectedIds = [];
             }
 
-            console.log("🧩 Selected IDs:", selectedIds);
+            console.log("Selected IDs:", selectedIds);
             setSelected(selectedIds);
           }}
         />

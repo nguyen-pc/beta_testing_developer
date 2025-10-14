@@ -85,11 +85,11 @@ export default function Campaign(props: { disableCustomTheme?: boolean }) {
                       element={<UseCasePage />}
                     />
                     <Route
-                      path="test_scenario/:useCaseId"
+                      path=":campaignId/test_scenario/:useCaseId"
                       element={<ScenarioPage />}
                     />
                     <Route
-                      path="testcase/:testScenarioId"
+                      path=":campaignId/testcase/:testScenarioId"
                       element={<TestcasePage />}
                     />
                     <Route path="*" element={<Dashboard />} />

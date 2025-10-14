@@ -69,7 +69,7 @@ export default function TesterRecruitForm() {
       country,
       zipcode: zip,
       householdIncome: income, // đổi tên biến
-      isChildren: isParent, // đổi từ isParent sang isChildren
+      isChildren: isParent === "true" ? true : false, // đổi từ isParent sang isChildren
       employment: employment,
       gamingGenres: gamingGenres,
       browsers: browsers,
@@ -290,8 +290,8 @@ export default function TesterRecruitForm() {
           onChange={(e) => setIsParent(e.target.value)}
           sx={{ mb: 3 }}
         >
-          <FormControlLabel value="Yes" control={<Radio />} label="Yes" />
-          <FormControlLabel value="No" control={<Radio />} label="No" />
+          <FormControlLabel value="true" control={<Radio />} label="Yes" />
+          <FormControlLabel value="false" control={<Radio />} label="No" />
         </RadioGroup>
 
         {/* Employment */}

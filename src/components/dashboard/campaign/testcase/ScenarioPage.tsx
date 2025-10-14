@@ -17,7 +17,7 @@ import { useNavigate, useParams } from "react-router-dom";
 export default function ScenarioPage() {
   const notifications = useNotifications();
   const [open, setOpen] = React.useState(false);
-  const { useCaseId, projectId } = useParams();
+  const { useCaseId, projectId, campaignId } = useParams();
   const navigate = useNavigate();
   const [scenarios, setScenarios] = React.useState<Scenario[]>([]);
   const [selectedScenario, setSelectedScenario] =
@@ -104,7 +104,7 @@ export default function ScenarioPage() {
 
   const handleViewTestCase = (testScenarioId: number) => {
     navigate(
-      `/dashboard/projects/${projectId}/campaigns/new/testcase/${testScenarioId}`
+      `/dashboard/projects/${projectId}/campaigns/new/${campaignId}/testcase/${testScenarioId}`
     );
   };
 

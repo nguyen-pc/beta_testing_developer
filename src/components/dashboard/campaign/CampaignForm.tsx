@@ -77,7 +77,7 @@ export default function CampaignForm(props: CampaignFormProps) {
       setIsSubmitting(false);
     }
   };
-  console.log(formValues);
+  // console.log(formValues);
 
   const handleTextChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     onFieldChange(
@@ -204,8 +204,8 @@ export default function CampaignForm(props: CampaignFormProps) {
         <Grid item size={{ xs: 12, sm: 12 }} className="pb-5">
           <ReactQuill
             theme="snow"
-            value={formValues.Instructions ?? ""}
-            onChange={(value) => onFieldChange("Instructions", value)}
+            value={formValues.instructions ?? ""}
+            onChange={(value) => onFieldChange("instructions", value)}
             style={{
               width: "100%",
               height: "150px",
@@ -213,8 +213,8 @@ export default function CampaignForm(props: CampaignFormProps) {
               borderRadius: "8px",
             }}
           />
-          {formErrors.Instructions && (
-            <FormHelperText error>{formErrors.Instructions}</FormHelperText>
+          {formErrors.instructions && (
+            <FormHelperText error>{formErrors.instructions}</FormHelperText>
           )}
         </Grid>
       </Section>
@@ -250,9 +250,9 @@ export default function CampaignForm(props: CampaignFormProps) {
             </Typography>
             <TextField
               label="Incentive ($)"
-              name="RewardValue"
+              name="rewardValue"
               type="number"
-              value={(formValues as any).RewardValue ?? ""}
+              value={(formValues as any).rewardValue ?? ""}
               onChange={handleNumberChange}
               fullWidth
               helperText="Average reward for this test type: $22"

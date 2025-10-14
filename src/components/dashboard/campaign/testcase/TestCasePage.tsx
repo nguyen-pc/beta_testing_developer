@@ -1,9 +1,17 @@
 import * as React from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 import PageContainer from "../../../dashboard/project/PageContainer";
 import useNotifications from "../../../../hooks/useNotifications/useNotifications";
 import queryString from "query-string";
-import { useParams } from "react-router-dom";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   callGetTestcasesByScenario,
   callCreateTestcase,
@@ -21,6 +29,14 @@ export default function TestcasePage() {
   const [selectedTestcase, setSelectedTestcase] =
     React.useState<Testcase | null>(null);
   const [openDialog, setOpenDialog] = React.useState(false);
+  const { projectId, campaignId } = useParams();
+  const navigate = useNavigate();
+
+  const handleBack = () => {
+    navigate(
+      `/dashboard/projects/${projectId}/campaigns/new/${campaignId}/test-case`
+    );
+  };
 
   const buildQuery = (params) => {
     const q = {
@@ -164,7 +180,7 @@ export default function TestcasePage() {
                   >
                     Edit
                   </Button>
-                   <Button
+                  <Button
                     variant="outlined"
                     size="small"
                     onClick={() => handleClickOpen()}
@@ -226,6 +242,19 @@ export default function TestcasePage() {
           />
         </DialogContent>
       </Dialog>
+      <div className="flex justify-between mb-4 mt-7">
+        <Button
+          variant="contained"
+          color="inherit"
+          startIcon={<ArrowBackIcon />}
+          onClick={handleBack}
+        >
+          Back
+        </Button>
+        {/* <Button variant="contained" color="primary" onClick={handleContinue}>
+          Continue
+        </Button> */}
+      </div>
     </PageContainer>
   );
 }
