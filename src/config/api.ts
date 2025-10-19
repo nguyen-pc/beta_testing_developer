@@ -301,3 +301,68 @@ export async function callRejectTester(testerCampaignId: string) {
     `/api/v1/campaign/tester-campaign/${testerCampaignId}/reject`
   );
 }
+
+
+// form
+
+export async function callGetSurvey(campaignId: string, surveyId: string) {
+  console.log("Fetching survey details for survey:", surveyId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/campaign/${campaignId}/survey/${surveyId}`
+  );
+}
+
+export async function callGetForm(campaignId: string, surveyId: string) {
+  console.log("Fetching survey form for survey:", surveyId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/campaign/${campaignId}/survey/${surveyId}/question/all`
+  );
+}
+
+export async function callSubmitForm(campaignId: string, surveyId: string, data: any) {
+  console.log("Submitting survey form for survey:", surveyId, data);
+  return axios.post<IBackendRes<any>>(
+    `/api/v1/campaign/${campaignId}/survey/${surveyId}/response`,
+    data
+  );
+}
+
+export async function callCreateTesterSurvey(data: any) {
+  console.log("callCreateTesterSurvey", data);
+  return axios.post<IBackendRes<any>>(
+    `/api/v1/campaign/tester-survey/create`,
+    data
+  );
+}
+
+
+// bug report
+export async function callGetBugReports(query: string) {
+  console.log("Fetching bug reports:", query);
+  return axios.get<IBackendRes<IModelPaginate<any>>>(
+    `/api/v1/bugs/filter?${query}`
+  );
+}
+export async function callGetDetailBugReport(bugId: string) {
+  console.log("Fetching bug report detail:", bugId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/bugs/${bugId}`
+  );
+}
+
+//chat
+
+export async function callGetBugChatMessages(bugId: string) {
+  console.log("Fetching bug chat messages for bug:", bugId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/bugs/${bugId}/chat`
+  );
+}
+
+export async function callPostBugChatMessage(bugId: string, data: any) {
+  console.log("Posting bug chat message for bug:", bugId, data);
+  return axios.post<IBackendRes<any>>(
+    `/api/v1/bugs/${bugId}/chat`,
+    data
+  );
+}

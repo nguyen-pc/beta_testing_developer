@@ -11,6 +11,7 @@ import Project from "../pages/dashboard/home/Project";
 import Analytics from "../pages/dashboard/Analytics";
 import User from "../pages/dashboard/User";
 import Profile from "../pages/profile/Profile";
+import ViewQuestion from "../components/dashboard/campaign/survey/ViewQuestion";
 import ScenarioPage from "../components/dashboard/campaign/testcase/ScenarioPage";
 import NotificationsProvider from "../hooks/useNotifications/NotificationsProvider";
 import DialogsProvider from "../hooks/useDialogs/DialogsProvider";
@@ -39,6 +40,10 @@ export default function AppRouter() {
         <Route
           path="/dashboard/projects/:projectId/campaigns/new/*"
           element={<Campaign />}
+        />
+        <Route
+          path="/campaigns/:campaignId/surveys/:surveyId/view-question"
+          element={<ViewQuestion />}
         />
         {/* <Route
           path="/dashboard/test_scenario/:useCaseId"

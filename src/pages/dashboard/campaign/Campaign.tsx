@@ -24,6 +24,7 @@ import ScenarioPage from "../../../components/dashboard/campaign/testcase/Scenar
 import TestcasePage from "../../../components/dashboard/campaign/testcase/TestCasePage.tsx";
 import SurveyBuilderAdvanced from "../../../components/dashboard/campaign/survey/SurveyBuilderAdvanced.tsx";
 import DetailSurveyCreate from "../../../components/dashboard/campaign/survey/SurveyCreate.tsx";
+import ViewQuestion from "../../../components/dashboard/campaign/survey/ViewQuestion.tsx";
 import { CampaignProvider } from "../../../context/CampaignContext"; // 👈 import context provider
 
 const xThemeComponents = {
@@ -36,7 +37,9 @@ const xThemeComponents = {
 export default function Campaign(props: { disableCustomTheme?: boolean }) {
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
-      <CampaignProvider> {/* ✅ Bọc toàn bộ layout trong provider */}
+      <CampaignProvider>
+        {" "}
+        {/* ✅ Bọc toàn bộ layout trong provider */}
         <CssBaseline enableColorScheme />
         <Box sx={{ display: "flex" }}>
           <SideMenuCreateCampaign />
@@ -76,6 +79,10 @@ export default function Campaign(props: { disableCustomTheme?: boolean }) {
                       path=":campaignId/survey"
                       element={<DetailSurveyCreate />}
                     />
+                    {/* <Route
+                      path=":campaignId/surveys/:surveyId/view-question"
+                      element={<ViewQuestion />}
+                    /> */}
                     <Route
                       path=":campaignId/surveys/:surveyId/question"
                       element={<SurveyBuilderAdvanced />}
@@ -92,6 +99,7 @@ export default function Campaign(props: { disableCustomTheme?: boolean }) {
                       path=":campaignId/testcase/:testScenarioId"
                       element={<TestcasePage />}
                     />
+
                     <Route path="*" element={<Dashboard />} />
                   </Routes>
                 </DialogsProvider>

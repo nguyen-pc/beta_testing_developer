@@ -17,7 +17,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { CSS } from "@dnd-kit/utilities";
 import QuestionPalette from "./QuestionPalette";
 import QuestionEditor from "./QuestionEditor";
-import { Button } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import PageContainer from "../../project/PageContainer";
 
@@ -34,7 +34,7 @@ export default function SurveyBuilderAdvanced() {
 
   const sensors = useSensors(useSensor(PointerSensor));
   const navigate = useNavigate();
-  const { projectId, campaignId } = useParams();
+  const { projectId, campaignId, surveyId } = useParams();
   const handleBack = () => {
     navigate(
       `/dashboard/projects/${projectId}/campaigns/new/${campaignId}/survey`
@@ -90,6 +90,18 @@ export default function SurveyBuilderAdvanced() {
 
   return (
     <PageContainer>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 2 }}>
+        <Button
+          component="a"
+          href={`/campaigns/${campaignId}/surveys/${surveyId}/view-question`}
+          target="_blank"
+          rel="noopener noreferrer"
+          sx={{ marginRight: 3 }}
+          variant="outlined"
+        >
+          Survey Preview
+        </Button>
+      </Box>
       <DndContext
         sensors={sensors}
         onDragStart={handleDragStart}
@@ -129,42 +141,44 @@ function BuilderArea({ questions, activeId, onChange, onDelete }: any) {
   const { setNodeRef, isOver } = useDroppable({ id: "builder-zone" });
 
   return (
-    <div
-      ref={setNodeRef}
-      className={`flex-1 p-4 pb-32 rounded-lg border-2 border-dashed transition 
+    <>
+      <div
+        ref={setNodeRef}
+        className={`flex-1 p-4 pb-32 rounded-lg border-2 border-dashed transition 
     min-h-[600px] h-[calc(100vh-120px)] overflow-y-auto 
     ${isOver ? "bg-green-50" : ""}`}
-    >
-      <h2 className="font-semibold mb-3">
-        Drag and drop questions to build your survey:
-      </h2>
-
-      <SortableContext
-        items={questions.map((q: any) => q.id)}
-        strategy={verticalListSortingStrategy}
       >
-        {questions.length === 0 && (
-          <p className="text-gray-400 text-center py-10">
-            Kéo thả câu hỏi từ danh sách bên trái vào đây
-          </p>
-        )}
-        {questions.map((q: any) => (
-          <SortableQuestionItem
-            key={q.id}
-            id={q.id}
-            question={q}
-            onChange={onChange}
-            onDelete={onDelete}
-          />
-        ))}
-      </SortableContext>
+        <h2 className="font-semibold mb-3">
+          Drag and drop questions to build your survey:
+        </h2>
 
-      <DragOverlay>
-        {activeId && (
-          <div className="p-3 bg-white shadow rounded">Dragging...</div>
-        )}
-      </DragOverlay>
-    </div>
+        <SortableContext
+          items={questions.map((q: any) => q.id)}
+          strategy={verticalListSortingStrategy}
+        >
+          {questions.length === 0 && (
+            <p className="text-gray-400 text-center py-10">
+              Kéo thả câu hỏi từ danh sách bên trái vào đây
+            </p>
+          )}
+          {questions.map((q: any) => (
+            <SortableQuestionItem
+              key={q.id}
+              id={q.id}
+              question={q}
+              onChange={onChange}
+              onDelete={onDelete}
+            />
+          ))}
+        </SortableContext>
+
+        <DragOverlay>
+          {activeId && (
+            <div className="p-3 bg-white shadow rounded">Dragging...</div>
+          )}
+        </DragOverlay>
+      </div>
+    </>
   );
 }
 

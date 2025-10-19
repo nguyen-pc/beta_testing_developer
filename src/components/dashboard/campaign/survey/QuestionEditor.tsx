@@ -67,7 +67,7 @@ export default function QuestionEditor({
         questionType === "short-text"
           ? "TEXT"
           : questionType === "long-text"
-          ? "TEXT"
+          ? "LONG_TEXT"
           : questionType === "multiple-choice"
           ? "MULTIPLE_CHOICE"
           : questionType === "multiple-checkbox"

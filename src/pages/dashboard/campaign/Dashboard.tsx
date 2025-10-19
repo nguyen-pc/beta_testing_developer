@@ -23,6 +23,9 @@ import DialogsProvider from "../../../hooks/useDialogs/DialogsProvider";
 import { Route, Routes } from "react-router-dom";
 import CampaignEdit from "../../../components/dashboard/campaign/CampaignEdit";
 import TabTesterHome from "../../../components/dashboard/home/tester/TabTesterHome";
+// import IssuesPage from "./IssuesPage";
+import IssueDetailView from "../../../components/dashboard/issue/IssueDetailView";
+import IssueGridView from "../../../components/dashboard/issue/IssueGridView";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -65,6 +68,8 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
                   <Route index element={<MainGrid />} />
                   <Route path="tester" element={<TabTesterHome />} />
                   <Route path="edit_detail" element={<CampaignEdit />} />
+                  <Route path="issues" element={<IssueGridView />} />
+                  <Route path="issues/:bugId/" element={<IssueDetailView />} />
                   {/* Fallback route nếu không khớp */}
                   <Route path="*" element={<MainGrid />} />
                 </Routes>
