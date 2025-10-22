@@ -265,16 +265,21 @@ export async function callDeleteQuestion(
   );
 }
 
-  
 //recruiting campaign
 export async function callCreateRecruitingCampaign(data: ICampaign) {
   console.log("callCreateRecruitingCampaign", data);
-  return axios.post<IBackendRes<ICampaign>>("/api/v1/recruit-profile/create", data);
+  return axios.post<IBackendRes<ICampaign>>(
+    "/api/v1/recruit-profile/create",
+    data
+  );
 }
 
 //tester status
 
-export async function callGetAllTesterRegister(campaignId: string, query: string) {
+export async function callGetAllTesterRegister(
+  campaignId: string,
+  query: string
+) {
   console.log("Fetching all tester registrations for campaign:", campaignId);
   return axios.get<IBackendRes<IModelPaginate<any>>>(
     `/api/v1/campaign/${campaignId}/testers?${query}`
@@ -302,7 +307,6 @@ export async function callRejectTester(testerCampaignId: string) {
   );
 }
 
-
 // form
 
 export async function callGetSurvey(campaignId: string, surveyId: string) {
@@ -312,6 +316,12 @@ export async function callGetSurvey(campaignId: string, surveyId: string) {
   );
 }
 
+export async function callGetSurveysByCampaign(campaignId: string) {
+  console.log("Fetching all surveys for campaign:", campaignId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/campaign/${campaignId}/survey`
+  );
+}
 export async function callGetForm(campaignId: string, surveyId: string) {
   console.log("Fetching survey form for survey:", surveyId);
   return axios.get<IBackendRes<any>>(
@@ -319,7 +329,11 @@ export async function callGetForm(campaignId: string, surveyId: string) {
   );
 }
 
-export async function callSubmitForm(campaignId: string, surveyId: string, data: any) {
+export async function callSubmitForm(
+  campaignId: string,
+  surveyId: string,
+  data: any
+) {
   console.log("Submitting survey form for survey:", surveyId, data);
   return axios.post<IBackendRes<any>>(
     `/api/v1/campaign/${campaignId}/survey/${surveyId}/response`,
@@ -335,7 +349,6 @@ export async function callCreateTesterSurvey(data: any) {
   );
 }
 
-
 // bug report
 export async function callGetBugReports(query: string) {
   console.log("Fetching bug reports:", query);
@@ -345,24 +358,39 @@ export async function callGetBugReports(query: string) {
 }
 export async function callGetDetailBugReport(bugId: string) {
   console.log("Fetching bug report detail:", bugId);
-  return axios.get<IBackendRes<any>>(
-    `/api/v1/bugs/${bugId}`
-  );
+  return axios.get<IBackendRes<any>>(`/api/v1/bugs/${bugId}`);
 }
 
 //chat
 
 export async function callGetBugChatMessages(bugId: string) {
   console.log("Fetching bug chat messages for bug:", bugId);
-  return axios.get<IBackendRes<any>>(
-    `/api/v1/bugs/${bugId}/chat`
-  );
+  return axios.get<IBackendRes<any>>(`/api/v1/bugs/${bugId}/chat`);
 }
 
 export async function callPostBugChatMessage(bugId: string, data: any) {
   console.log("Posting bug chat message for bug:", bugId, data);
-  return axios.post<IBackendRes<any>>(
-    `/api/v1/bugs/${bugId}/chat`,
-    data
+  return axios.post<IBackendRes<any>>(`/api/v1/bugs/${bugId}/chat`, data);
+}
+
+// survey result
+export async function callGetSurveyResults(surveyId: string) {
+  console.log("Fetching survey results for survey:", surveyId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/campaign/tester-survey/survey/${surveyId}`
+  );
+}
+
+export async function callGetQuestionResponses(questionId: string) {
+  console.log("Fetching question responses for question:", questionId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/campaign/question/${questionId}/responses`
+  );
+}
+
+export async function callGetQuestionSurvey(campaignId: string, surveyId: string) {
+  console.log("Fetching question survey for campaign:", campaignId, "and survey:", surveyId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/campaign/${campaignId}/survey/${surveyId}/question/all`
   );
 }

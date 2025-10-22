@@ -63,7 +63,7 @@ export default function MenuContent() {
     {
       text: "Surveys",
       icon: <AnalyticsRoundedIcon />,
-      path: "/dashboard/surveys",
+      path:  `/dashboard/projects/${projectId}/campaigns/${campaignId}/survey`
     },
     { text: "Bugs", icon: <PeopleRoundedIcon />, path:  `/dashboard/projects/${projectId}/campaigns/${campaignId}/issues`  },
     {

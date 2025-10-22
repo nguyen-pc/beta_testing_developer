@@ -26,6 +26,9 @@ import TabTesterHome from "../../../components/dashboard/home/tester/TabTesterHo
 // import IssuesPage from "./IssuesPage";
 import IssueDetailView from "../../../components/dashboard/issue/IssueDetailView";
 import IssueGridView from "../../../components/dashboard/issue/IssueGridView";
+import SurveyListByCampaign from "../../../components/dashboard/Response/SurveyListByCampaign";
+import ResponsePage from "../../../components/dashboard/Response/ResponsePage";
+import ResponseDetail from "../../../components/dashboard/Response/ResponseDetail";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -55,7 +58,7 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
           <Stack
             spacing={2}
             sx={{
-              alignItems: "center",
+              // alignItems: "center",
               mx: 3,
               pb: 5,
               mt: { xs: 8, md: 0 },
@@ -70,8 +73,14 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
                   <Route path="edit_detail" element={<CampaignEdit />} />
                   <Route path="issues" element={<IssueGridView />} />
                   <Route path="issues/:bugId/" element={<IssueDetailView />} />
+                  <Route path="survey" element={<SurveyListByCampaign />} />
+                  <Route path="survey/:surveyId/results" element={<ResponsePage />} />
+                  <Route path="survey/:surveyId/analysis" element={<ResponseDetail />} />
+
+                  
                   {/* Fallback route nếu không khớp */}
                   <Route path="*" element={<MainGrid />} />
+
                 </Routes>
               </DialogsProvider>
             </NotificationsProvider>
