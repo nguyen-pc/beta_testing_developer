@@ -22,6 +22,7 @@ import { callCreateRecruitingCampaign } from "../../../../config/api";
 export default function TesterRecruitForm() {
   const { campaignId, projectId } = useParams();
   const navigate = useNavigate();
+
   // --- Recruit section ---
   const [recruitMethod, setRecruitMethod] = useState("panel");
   const [testerCount, setTesterCount] = useState(25);
@@ -35,7 +36,7 @@ export default function TesterRecruitForm() {
   const [income, setIncome] = useState("");
   const [isParent, setIsParent] = useState("");
 
-  // --- Profile / Audience info (chuỗi cách nhau bằng dấu phẩy) ---
+  // --- Profile / Audience info ---
   const [employment, setEmployment] = useState<string>("");
   const [gamingGenres, setGamingGenres] = useState<string>("");
   const [browsers, setBrowsers] = useState<string>("");
@@ -44,21 +45,40 @@ export default function TesterRecruitForm() {
   const [languages, setLanguages] = useState<string>("");
   const [ownedDevices, setOwnedDevices] = useState<string>("");
 
-  // Helper để bật/tắt giá trị chuỗi
+  // --- Email upload ---
+  const [emailFile, setEmailFile] = useState<File | null>(null);
+  const [emailList, setEmailList] = useState<string[]>([]);
+
+  // Helper toggle string
   const toggleStringValue = (
     value: string,
     current: string,
     setter: (val: string) => void
   ) => {
     const arr = current ? current.split(", ").filter((v) => v.trim()) : [];
-    if (arr.includes(value)) {
-      setter(arr.filter((v) => v !== value).join(", "));
-    } else {
-      setter([...arr, value].join(", "));
-    }
+    if (arr.includes(value)) setter(arr.filter((v) => v !== value).join(", "));
+    else setter([...arr, value].join(", "));
   };
 
-  // Lưu dữ liệu
+  // Handle file upload
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setEmailFile(file);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      const emails = text
+        .split(/[\n,;]/)
+        .map((e) => e.trim())
+        .filter((e) => e.includes("@"));
+      setEmailList(emails);
+    };
+    reader.readAsText(file);
+  };
+
+  // Save data
   const handleSaveProfile = async () => {
     const profileData = {
       recruitMethod,
@@ -68,25 +88,23 @@ export default function TesterRecruitForm() {
       gender,
       country,
       zipcode: zip,
-      householdIncome: income, // đổi tên biến
-      isChildren: isParent === "true" ? true : false, // đổi từ isParent sang isChildren
-      employment: employment,
-      gamingGenres: gamingGenres,
-      browsers: browsers,
-      socialNetworks: socialNetworks,
+      householdIncome: income,
+      isChildren: isParent === "true",
+      employment,
+      gamingGenres,
+      browsers,
+      socialNetworks,
       webExpertise,
-      languages: languages,
-      ownedDevices: ownedDevices,
-      campaign: {
-        id: campaignId,
-      },
+      languages,
+      ownedDevices,
+      campaign: { id: campaignId },
+      // emailList: recruitMethod === "email" ? emailList : [],
     };
 
     console.log("🧾 Tester Profile Data:", profileData);
-
-    // 👉 gọi API POST nếu muốn lưu backend
     const res = await callCreateRecruitingCampaign(profileData);
     console.log("Created recruiting profile:", res.data);
+
     navigate(
       `/dashboard/projects/${projectId}/campaigns/new/${campaignId}/test-case`
     );
@@ -153,358 +171,405 @@ export default function TesterRecruitForm() {
             sx={{ width: 120 }}
           />
         </Box>
+
+        {/* ---------- Email upload visible only when recruitMethod=email ---------- */}
+        {recruitMethod === "email" && (
+          <Box mt={4}>
+            <Typography fontWeight={600} mb={1}>
+              Upload list of tester emails
+            </Typography>
+            <Button variant="outlined" component="label">
+              Upload Email List
+              <input
+                type="file"
+                accept=".csv,.txt"
+                hidden
+                onChange={handleFileUpload}
+              />
+            </Button>
+
+            {emailFile && (
+              <Typography variant="body2" mt={1}>
+                📄 Uploaded: {emailFile.name} ({emailList.length} emails)
+              </Typography>
+            )}
+
+            {emailList.length > 0 && (
+              <Box mt={2}>
+                <Typography variant="subtitle2" fontWeight={600}>
+                  Preview first 5 emails:
+                </Typography>
+                <ul>
+                  {emailList.slice(0, 5).map((email, index) => (
+                    <li key={index}>{email}</li>
+                  ))}
+                </ul>
+              </Box>
+            )}
+          </Box>
+        )}
       </Card>
 
-      {/* ---------- SECTION 2: Devices ---------- */}
-      <Card variant="outlined" sx={{ p: 3, mb: 4 }}>
-        <Typography fontWeight={600} mb={2}>
-          Which devices can testers use for your test?
-        </Typography>
-        <FormGroup>
-          {[
-            "iPhone",
-            "Android",
-            "iPad",
-            "Android Tablet",
-            "Windows",
-            "Mac",
-            "Linux",
-          ].map((device) => (
-            <FormControlLabel
-              key={device}
-              control={
-                <Checkbox
-                  checked={devices.includes(device)}
-                  onChange={() =>
-                    toggleStringValue(device, devices, setDevices)
+      {recruitMethod !== "email" && (
+        <>
+          {/* ---------- SECTION 2: Devices ---------- */}
+          <Card variant="outlined" sx={{ p: 3, mb: 4 }}>
+            <Typography fontWeight={600} mb={2}>
+              Which devices can testers use for your test?
+            </Typography>
+            <FormGroup>
+              {[
+                "iPhone",
+                "Android",
+                "iPad",
+                "Android Tablet",
+                "Windows",
+                "Mac",
+                "Linux",
+              ].map((device) => (
+                <FormControlLabel
+                  key={device}
+                  control={
+                    <Checkbox
+                      checked={devices.includes(device)}
+                      onChange={() =>
+                        toggleStringValue(device, devices, setDevices)
+                      }
+                    />
                   }
+                  label={device}
                 />
-              }
-              label={device}
-            />
-          ))}
-        </FormGroup>
+              ))}
+            </FormGroup>
 
-        <Typography variant="body2" color="text.secondary" mt={2}>
-          Need an exact # of participants for each platform?{" "}
-          <a href="#" style={{ color: "#1976d2", textDecoration: "none" }}>
-            Show device quotas
-          </a>
-        </Typography>
+            <Typography variant="body2" color="text.secondary" mt={2}>
+              Need an exact # of participants for each platform?{" "}
+              <a href="#" style={{ color: "#1976d2", textDecoration: "none" }}>
+                Show device quotas
+              </a>
+            </Typography>
 
-        <Box mt={4}>
-          <Typography fontWeight={600} mb={1}>
-            Do you need to whitelist testers' emails?
-          </Typography>
-          <RadioGroup
-            value={whitelist}
-            onChange={(e) => setWhitelist(e.target.value)}
-          >
-            <FormControlLabel
-              value="no"
-              control={<Radio />}
-              label="No, testers can get started immediately"
-            />
-            <FormControlLabel
-              value="yes"
-              control={<Radio />}
-              label="Yes, we need to collect each tester’s email and manually provide access"
-            />
-          </RadioGroup>
-        </Box>
-      </Card>
-
-      {/* ---------- SECTION 3: Audience Profile ---------- */}
-      <Card variant="outlined" sx={{ p: 3 }}>
-        <Typography variant="h6" fontWeight={600} mb={2}>
-          Audience Profile
-        </Typography>
-
-        {/* Gender */}
-        <Typography fontWeight={600}>Gender</Typography>
-        <RadioGroup
-          row
-          value={gender}
-          onChange={(e) => setGender(e.target.value)}
-          sx={{ mb: 2 }}
-        >
-          <FormControlLabel value="MALE" control={<Radio />} label="Male" />
-          <FormControlLabel value="FEMALE" control={<Radio />} label="Female" />
-          <FormControlLabel
-            value="OTHER"
-            control={<Radio />}
-            label="Non-binary"
-          />
-        </RadioGroup>
-
-        {/* Country & ZIP */}
-        <Grid container spacing={2} mb={2}>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="Country"
-              fullWidth
-              size="small"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <TextField
-              label="ZIP / Postal code"
-              fullWidth
-              size="small"
-              value={zip}
-              onChange={(e) => setZip(e.target.value)}
-            />
-          </Grid>
-        </Grid>
-
-        {/* Income */}
-        <FormControl fullWidth size="small" sx={{ mb: 3 }}>
-          <InputLabel>Household income</InputLabel>
-          <Select
-            value={income}
-            onChange={(e) => setIncome(e.target.value)}
-            label="Household income"
-          >
-            {[
-              "Under $25,000",
-              "$25,000 - $50,000",
-              "$50,000 - $100,000",
-              "Above $100,000",
-            ].map((range) => (
-              <MenuItem key={range} value={range}>
-                {range}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        {/* Parent */}
-        <Typography fontWeight={600}>
-          Are you a parent or guardian of a child under 18?
-        </Typography>
-        <RadioGroup
-          row
-          value={isParent}
-          onChange={(e) => setIsParent(e.target.value)}
-          sx={{ mb: 3 }}
-        >
-          <FormControlLabel value="true" control={<Radio />} label="Yes" />
-          <FormControlLabel value="false" control={<Radio />} label="No" />
-        </RadioGroup>
-
-        {/* Employment */}
-        <Typography fontWeight={600}>Employment / Industry</Typography>
-        <FormGroup row sx={{ mb: 3 }}>
-          {[
-            "Software Developer",
-            "QA Tester",
-            "Project Manager",
-            "Designer",
-            "Researcher",
-            "Student",
-            "Freelancer",
-            "Other",
-          ].map((job) => (
-            <FormControlLabel
-              key={job}
-              control={
-                <Checkbox
-                  checked={employment.includes(job)}
-                  onChange={() =>
-                    toggleStringValue(job, employment, setEmployment)
-                  }
+            <Box mt={4}>
+              <Typography fontWeight={600} mb={1}>
+                Do you need to whitelist testers' emails?
+              </Typography>
+              <RadioGroup
+                value={whitelist}
+                onChange={(e) => setWhitelist(e.target.value)}
+              >
+                <FormControlLabel
+                  value="no"
+                  control={<Radio />}
+                  label="No, testers can get started immediately"
                 />
-              }
-              label={job}
-            />
-          ))}
-        </FormGroup>
-
-        {/* Gaming genres */}
-        <Typography fontWeight={600}>Gaming genres</Typography>
-        <FormGroup row sx={{ mb: 3 }}>
-          {["Arcade", "Casino", "Puzzles", "Simulation", "Ville"].map((g) => (
-            <FormControlLabel
-              key={g}
-              control={
-                <Checkbox
-                  checked={gamingGenres.includes(g)}
-                  onChange={() =>
-                    toggleStringValue(g, gamingGenres, setGamingGenres)
-                  }
+                <FormControlLabel
+                  value="yes"
+                  control={<Radio />}
+                  label="Yes, we need to collect each tester’s email and manually provide access"
                 />
-              }
-              label={g}
-            />
-          ))}
-        </FormGroup>
+              </RadioGroup>
+            </Box>
+          </Card>
 
-        {/* Browsers */}
-        <Typography fontWeight={600}>Web browsers</Typography>
-        <FormGroup row sx={{ mb: 3 }}>
-          {["Chrome", "Firefox", "Safari", "Opera", "Edge"].map((b) => (
-            <FormControlLabel
-              key={b}
-              control={
-                <Checkbox
-                  checked={browsers.includes(b)}
-                  onChange={() => toggleStringValue(b, browsers, setBrowsers)}
-                />
-              }
-              label={b}
-            />
-          ))}
-        </FormGroup>
+          {/* ---------- SECTION 3: Audience Profile ---------- */}
+          <Card variant="outlined" sx={{ p: 3 }}>
+            <Typography variant="h6" fontWeight={600} mb={2}>
+              Audience Profile
+            </Typography>
 
-        {/* Social Networks */}
-        <Typography fontWeight={600}>Social networks</Typography>
-        <FormGroup row sx={{ mb: 3 }}>
-          {["Facebook", "Twitter", "LinkedIn", "Pinterest"].map((s) => (
-            <FormControlLabel
-              key={s}
-              control={
-                <Checkbox
-                  checked={socialNetworks.includes(s)}
-                  onChange={() =>
-                    toggleStringValue(s, socialNetworks, setSocialNetworks)
-                  }
-                />
-              }
-              label={s}
-            />
-          ))}
-        </FormGroup>
-
-        {/* Web Expertise */}
-        <Typography fontWeight={600}>Web expertise</Typography>
-        <RadioGroup
-          row
-          value={webExpertise}
-          onChange={(e) => setWebExpertise(e.target.value)}
-          sx={{ mb: 3 }}
-        >
-          <FormControlLabel
-            value="Beginner"
-            control={<Radio />}
-            label="Beginner"
-          />
-          <FormControlLabel
-            value="Average"
-            control={<Radio />}
-            label="Average"
-          />
-          <FormControlLabel
-            value="Advanced"
-            control={<Radio />}
-            label="Advanced"
-          />
-        </RadioGroup>
-
-        {/* Languages */}
-        <Typography fontWeight={600}>Languages</Typography>
-        <FormGroup row sx={{ mb: 3 }}>
-          {["English", "Spanish", "French", "German"].map((lang) => (
-            <FormControlLabel
-              key={lang}
-              control={
-                <Checkbox
-                  checked={languages.includes(lang)}
-                  onChange={() =>
-                    toggleStringValue(lang, languages, setLanguages)
-                  }
-                />
-              }
-              label={lang}
-            />
-          ))}
-        </FormGroup>
-
-        {/* Owned Devices */}
-        <Typography variant="h6" fontWeight={600} mt={3}>
-          Devices you own
-        </Typography>
-        <FormGroup sx={{ mb: 3 }}>
-          <Typography>Computer</Typography>
-          <FormGroup row>
-            {["Mac", "Windows"].map((d) => (
+            {/* Gender */}
+            <Typography fontWeight={600}>Gender</Typography>
+            <RadioGroup
+              row
+              value={gender}
+              onChange={(e) => setGender(e.target.value)}
+              sx={{ mb: 2 }}
+            >
+              <FormControlLabel value="MALE" control={<Radio />} label="Male" />
               <FormControlLabel
-                key={d}
-                control={
-                  <Checkbox
-                    checked={ownedDevices.includes(d)}
-                    onChange={() =>
-                      toggleStringValue(d, ownedDevices, setOwnedDevices)
-                    }
-                  />
-                }
-                label={d}
+                value="FEMALE"
+                control={<Radio />}
+                label="Female"
               />
-            ))}
-          </FormGroup>
-
-          <Typography>Smartphone</Typography>
-          <FormGroup row>
-            {["Android phone", "iPhone", "Windows phone"].map((d) => (
               <FormControlLabel
-                key={d}
-                control={
-                  <Checkbox
-                    checked={ownedDevices.includes(d)}
-                    onChange={() =>
-                      toggleStringValue(d, ownedDevices, setOwnedDevices)
-                    }
-                  />
-                }
-                label={d}
+                value="OTHER"
+                control={<Radio />}
+                label="Non-binary"
               />
-            ))}
-          </FormGroup>
+            </RadioGroup>
 
-          <Typography>Tablet</Typography>
-          <FormGroup row>
-            {["Android tablet", "iPad", "Windows tablet"].map((d) => (
+            {/* Country & ZIP */}
+            <Grid container spacing={2} mb={2}>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="Country"
+                  fullWidth
+                  size="small"
+                  value={country}
+                  onChange={(e) => setCountry(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  label="ZIP / Postal code"
+                  fullWidth
+                  size="small"
+                  value={zip}
+                  onChange={(e) => setZip(e.target.value)}
+                />
+              </Grid>
+            </Grid>
+
+            {/* Income */}
+            <FormControl fullWidth size="small" sx={{ mb: 3 }}>
+              <InputLabel>Household income</InputLabel>
+              <Select
+                value={income}
+                onChange={(e) => setIncome(e.target.value)}
+                label="Household income"
+              >
+                {[
+                  "Under $25,000",
+                  "$25,000 - $50,000",
+                  "$50,000 - $100,000",
+                  "Above $100,000",
+                ].map((range) => (
+                  <MenuItem key={range} value={range}>
+                    {range}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+
+            {/* Parent */}
+            <Typography fontWeight={600}>
+              Are you a parent or guardian of a child under 18?
+            </Typography>
+            <RadioGroup
+              row
+              value={isParent}
+              onChange={(e) => setIsParent(e.target.value)}
+              sx={{ mb: 3 }}
+            >
+              <FormControlLabel value="true" control={<Radio />} label="Yes" />
+              <FormControlLabel value="false" control={<Radio />} label="No" />
+            </RadioGroup>
+
+            {/* Employment */}
+            <Typography fontWeight={600}>Employment / Industry</Typography>
+            <FormGroup row sx={{ mb: 3 }}>
+              {[
+                "Software Developer",
+                "QA Tester",
+                "Project Manager",
+                "Designer",
+                "Researcher",
+                "Student",
+                "Freelancer",
+                "Other",
+              ].map((job) => (
+                <FormControlLabel
+                  key={job}
+                  control={
+                    <Checkbox
+                      checked={employment.includes(job)}
+                      onChange={() =>
+                        toggleStringValue(job, employment, setEmployment)
+                      }
+                    />
+                  }
+                  label={job}
+                />
+              ))}
+            </FormGroup>
+
+            {/* Gaming genres */}
+            <Typography fontWeight={600}>Gaming genres</Typography>
+            <FormGroup row sx={{ mb: 3 }}>
+              {["Arcade", "Casino", "Puzzles", "Simulation", "Ville"].map(
+                (g) => (
+                  <FormControlLabel
+                    key={g}
+                    control={
+                      <Checkbox
+                        checked={gamingGenres.includes(g)}
+                        onChange={() =>
+                          toggleStringValue(g, gamingGenres, setGamingGenres)
+                        }
+                      />
+                    }
+                    label={g}
+                  />
+                )
+              )}
+            </FormGroup>
+
+            {/* Browsers */}
+            <Typography fontWeight={600}>Web browsers</Typography>
+            <FormGroup row sx={{ mb: 3 }}>
+              {["Chrome", "Firefox", "Safari", "Opera", "Edge"].map((b) => (
+                <FormControlLabel
+                  key={b}
+                  control={
+                    <Checkbox
+                      checked={browsers.includes(b)}
+                      onChange={() =>
+                        toggleStringValue(b, browsers, setBrowsers)
+                      }
+                    />
+                  }
+                  label={b}
+                />
+              ))}
+            </FormGroup>
+
+            {/* Social Networks */}
+            <Typography fontWeight={600}>Social networks</Typography>
+            <FormGroup row sx={{ mb: 3 }}>
+              {["Facebook", "Twitter", "LinkedIn", "Pinterest"].map((s) => (
+                <FormControlLabel
+                  key={s}
+                  control={
+                    <Checkbox
+                      checked={socialNetworks.includes(s)}
+                      onChange={() =>
+                        toggleStringValue(s, socialNetworks, setSocialNetworks)
+                      }
+                    />
+                  }
+                  label={s}
+                />
+              ))}
+            </FormGroup>
+
+            {/* Web Expertise */}
+            <Typography fontWeight={600}>Web expertise</Typography>
+            <RadioGroup
+              row
+              value={webExpertise}
+              onChange={(e) => setWebExpertise(e.target.value)}
+              sx={{ mb: 3 }}
+            >
               <FormControlLabel
-                key={d}
-                control={
-                  <Checkbox
-                    checked={ownedDevices.includes(d)}
-                    onChange={() =>
-                      toggleStringValue(d, ownedDevices, setOwnedDevices)
-                    }
-                  />
-                }
-                label={d}
+                value="Beginner"
+                control={<Radio />}
+                label="Beginner"
               />
-            ))}
-          </FormGroup>
-
-          <Typography>Other</Typography>
-          <FormGroup row>
-            {[
-              "Handheld game console",
-              "Home game console",
-              "Smart TV",
-              "Streaming TV box",
-            ].map((d) => (
               <FormControlLabel
-                key={d}
-                control={
-                  <Checkbox
-                    checked={ownedDevices.includes(d)}
-                    onChange={() =>
-                      toggleStringValue(d, ownedDevices, setOwnedDevices)
-                    }
-                  />
-                }
-                label={d}
+                value="Average"
+                control={<Radio />}
+                label="Average"
               />
-            ))}
-          </FormGroup>
-        </FormGroup>
+              <FormControlLabel
+                value="Advanced"
+                control={<Radio />}
+                label="Advanced"
+              />
+            </RadioGroup>
 
-        {/* Buttons */}
+            {/* Languages */}
+            <Typography fontWeight={600}>Languages</Typography>
+            <FormGroup row sx={{ mb: 3 }}>
+              {["English", "Spanish", "French", "German"].map((lang) => (
+                <FormControlLabel
+                  key={lang}
+                  control={
+                    <Checkbox
+                      checked={languages.includes(lang)}
+                      onChange={() =>
+                        toggleStringValue(lang, languages, setLanguages)
+                      }
+                    />
+                  }
+                  label={lang}
+                />
+              ))}
+            </FormGroup>
+
+            {/* Owned Devices */}
+            <Typography variant="h6" fontWeight={600} mt={3}>
+              Devices you own
+            </Typography>
+            <FormGroup sx={{ mb: 3 }}>
+              <Typography>Computer</Typography>
+              <FormGroup row>
+                {["Mac", "Windows"].map((d) => (
+                  <FormControlLabel
+                    key={d}
+                    control={
+                      <Checkbox
+                        checked={ownedDevices.includes(d)}
+                        onChange={() =>
+                          toggleStringValue(d, ownedDevices, setOwnedDevices)
+                        }
+                      />
+                    }
+                    label={d}
+                  />
+                ))}
+              </FormGroup>
+
+              <Typography>Smartphone</Typography>
+              <FormGroup row>
+                {["Android phone", "iPhone", "Windows phone"].map((d) => (
+                  <FormControlLabel
+                    key={d}
+                    control={
+                      <Checkbox
+                        checked={ownedDevices.includes(d)}
+                        onChange={() =>
+                          toggleStringValue(d, ownedDevices, setOwnedDevices)
+                        }
+                      />
+                    }
+                    label={d}
+                  />
+                ))}
+              </FormGroup>
+
+              <Typography>Tablet</Typography>
+              <FormGroup row>
+                {["Android tablet", "iPad", "Windows tablet"].map((d) => (
+                  <FormControlLabel
+                    key={d}
+                    control={
+                      <Checkbox
+                        checked={ownedDevices.includes(d)}
+                        onChange={() =>
+                          toggleStringValue(d, ownedDevices, setOwnedDevices)
+                        }
+                      />
+                    }
+                    label={d}
+                  />
+                ))}
+              </FormGroup>
+
+              <Typography>Other</Typography>
+              <FormGroup row>
+                {[
+                  "Handheld game console",
+                  "Home game console",
+                  "Smart TV",
+                  "Streaming TV box",
+                ].map((d) => (
+                  <FormControlLabel
+                    key={d}
+                    control={
+                      <Checkbox
+                        checked={ownedDevices.includes(d)}
+                        onChange={() =>
+                          toggleStringValue(d, ownedDevices, setOwnedDevices)
+                        }
+                      />
+                    }
+                    label={d}
+                  />
+                ))}
+              </FormGroup>
+            </FormGroup>
+
+            {/* Buttons
         <Box display="flex" justifyContent="flex-end" gap={2} mt={3}>
           <Button variant="outlined">Cancel</Button>
           <Button
@@ -513,9 +578,23 @@ export default function TesterRecruitForm() {
             onClick={handleSaveProfile}
           >
             Save and Continue
-          </Button>
-        </Box>
-      </Card>
+          </Button> 
+        </Box> */}
+          </Card>
+        </>
+      )}
+
+      {/* Buttons */}
+      <Box display="flex" justifyContent="flex-end" gap={2} mt={3}>
+        <Button variant="outlined">Cancel</Button>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: "#000" }}
+          onClick={handleSaveProfile}
+        >
+          Save and Continue
+        </Button>
+      </Box>
     </Box>
   );
 }

@@ -10,8 +10,9 @@ import ProjectForm, {
   type ProjectFormState,
 } from "./ProjectForm";
 import PageContainer from "./PageContainer";
-import { callCreateProject } from "../../../config/api";
+import { callCreateProject, callGetCompanyUsers } from "../../../config/api";
 import dayjs from "dayjs";
+import { useAppSelector } from "../../../redux/hooks";
 
 const INITIAL_FORM_VALUES: Partial<ProjectFormState["values"]> = {
   projectName: "",
@@ -23,6 +24,8 @@ const INITIAL_FORM_VALUES: Partial<ProjectFormState["values"]> = {
 
 export default function ProjectCreate() {
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.account.user);
+  const [company, setCompany] = React.useState<any>(null);
 
   const notifications = useNotifications();
 
@@ -53,6 +56,22 @@ export default function ProjectCreate() {
     []
   );
 
+  React.useEffect(() => {
+    const fetchCompany = async () => {
+      try {
+        if (!user?.id) return;
+        const res = await callGetCompanyUsers(user.id);
+        if (res?.data) {
+          setCompany(res.data); // dữ liệu companyProfile của user
+        }
+      } catch (error) {
+        console.error(" Lỗi khi lấy companyProfile:", error);
+      }
+    };
+    fetchCompany();
+  }, [user]);
+
+  console.log("companyProfile:", company);  
   const handleFormFieldChange = React.useCallback(
     (name: keyof ProjectFormState["values"], value: FormFieldValue) => {
       const validateField = async (
@@ -90,7 +109,13 @@ export default function ProjectCreate() {
     setFormErrors({});
 
     try {
-      await callCreateProject(formValues);
+      const payload = {
+        ...formValues,
+        // startDate: dayjs(formValues.startDate, "YYYY-MM-DD").toDate(),
+        // endDate: dayjs(formValues.endDate, "YYYY-MM-DD").toDate(),
+        companyProfile: { id: company.id }, // ✅ truyền vào backend
+      };
+      await callCreateProject(payload);
       formValues.startDate = dayjs(formValues.startDate, "YYYY-MM-DD").toDate();
       formValues.endDate = dayjs(formValues.endDate, "YYYY-MM-DD").toDate();
       console.log(formValues);

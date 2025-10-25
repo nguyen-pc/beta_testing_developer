@@ -35,7 +35,7 @@ export default function MenuContentHome() {
     {
       text: "Company Profile",
       icon: <InfoRoundedIcon />,
-      path: "/dashboard/about",
+      path: "/dashboard/company-profile",
     },
     {
       text: "Feedback",

@@ -67,9 +67,9 @@ export default function MenuContent() {
     },
     { text: "Bugs", icon: <PeopleRoundedIcon />, path:  `/dashboard/projects/${projectId}/campaigns/${campaignId}/issues`  },
     {
-      text: "Messages",
+      text: "Email",
       icon: <PeopleRoundedIcon />,
-      path: "/dashboard/messages",
+      path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/email`,
     },
     {
       text: "Secure Files",

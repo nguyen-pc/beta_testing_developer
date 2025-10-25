@@ -123,6 +123,21 @@ export const callDeleteProject = (id: string) => {
   return axios.delete<IBackendRes<null>>(`/api/v1/projects/${id}`);
 };
 
+export const callGetCompanyUsers = (userId: string) => {
+  console.log("callGetCompanyUsers", { userId });
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/company/user/${userId}`
+  );
+}
+
+export const callUpdateCompany =  (companyId: string, data: any) => {
+  console.log("callUpdateCompany", { companyId, data });
+  return axios.put<IBackendRes<any>>(
+    `/api/v1/company/update/${companyId}`,
+    data
+  );
+}
+
 //Module Campaign
 
 export const callFetchCampaignByProject = (id: string, query: string) => {
@@ -147,6 +162,13 @@ export const callUpdateCampaign = (id: number, data: ICampaign) => {
     data
   );
 };
+
+export const callPublishCampaign = (id: number) => {
+  console.log("callPublishCampaign", { id });
+  return axios.put<IBackendRes<ICampaign>>(
+    `/api/v1/campaign/${id}/publish`
+  );
+}
 
 // Module Campaign
 export const callGetUseCasesByCampaign = (
@@ -394,3 +416,36 @@ export async function callGetQuestionSurvey(campaignId: string, surveyId: string
     `/api/v1/campaign/${campaignId}/survey/${surveyId}/question/all`
   );
 }
+
+//email tester
+export async function callSendEmailToTester(campaignId: string, data: any) {
+  console.log("Sending email to tester for campaign:", campaignId, data);
+  return axios.post<IBackendRes<any>>(
+    `/api/v1/campaign/${campaignId}/send-invite-email`,
+    data
+  );
+}
+
+export async function callGetEmailTesterCampaign(campaignId: string) {
+  console.log("Getting email tester for campaign:", campaignId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/email-testers/campaign/${campaignId}`
+  );
+}
+
+export async function callUploadEmailTesters(campaignId: string, data: any) {
+  console.log("Uploading email testers for campaign:", campaignId, data);
+  return axios.post<IBackendRes<any>>(
+    `/api/v1/email-testers/campaign/${campaignId}`,
+    data
+  );
+}
+
+export async function callSendInvitationEmail(campaignId: string, data: any) {
+  console.log("Sending invitation email for campaign:", campaignId, data);
+  return axios.post<IBackendRes<any>>(
+    `/api/v1/email-testers/campaign/${campaignId}/send`,
+    data
+  );
+}
+

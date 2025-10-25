@@ -18,6 +18,11 @@ import {
   treeViewCustomizations,
 } from "../../../theme/customizations";
 import SideMenuHome from "../../../components/dashboard/home/SideMenuHome";
+import NotificationsProvider from "../../../hooks/useNotifications/NotificationsProvider";
+import DialogsProvider from "../../../hooks/useDialogs/DialogsProvider";
+import { Route, Routes } from "react-router-dom";
+import CompanyProfile from "./CompanyProfile";
+import ProjectShow from "../../../components/dashboard/project/ProjectShow";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -47,14 +52,24 @@ export default function DashboardHome(props: { disableCustomTheme?: boolean }) {
           <Stack
             spacing={2}
             sx={{
-              alignItems: "center",
+              // alignItems: "center",
               mx: 3,
               pb: 5,
               mt: { xs: 8, md: 0 },
             }}
           >
             <Header />
-            <MainGrid />
+            <NotificationsProvider>
+              <DialogsProvider>
+                <Routes>
+                  <Route index element={<MainGrid />} />
+                  <Route path="company-profile" element={<CompanyProfile />} />
+                  {/* <Route path="projects/*" element={<ProjectShow />} /> */}
+                  <Route path="*" element={<MainGrid />} />
+                </Routes>
+              </DialogsProvider>
+            </NotificationsProvider>
+            {/* <MainGrid /> */}
           </Stack>
         </Box>
       </Box>

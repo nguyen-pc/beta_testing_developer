@@ -33,3 +33,25 @@ export function formatChatTime(isoString: string) {
     );
   }
 }
+
+export function formatChatTimeEmail(isoString?: string | null): string {
+  if (!isoString) return "";
+
+  // Chuẩn hóa phần mili-giây về 3 chữ số để tránh "Invalid Date"
+  const fixed = isoString.replace(/\.(\d{3})\d*Z$/, (_m, ms) => `.${ms}Z`);
+
+  const date = new Date(fixed);
+  if (isNaN(date.getTime())) return "Invalid Date";
+
+  // ✅ Hiển thị đầy đủ ngày + giờ, đúng múi giờ Việt Nam
+  return new Intl.DateTimeFormat("vi-VN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+    timeZone: "Asia/Ho_Chi_Minh",
+  }).format(date);
+}

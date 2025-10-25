@@ -28,7 +28,7 @@ export default function AppRouter() {
         <Route path="/home_signup" element={<HomeSignUp />} />
 
         {/* Dashboard ở trang home */}
-        <Route path="/dashboard" element={<DashboardHome />} />
+        <Route path="/dashboard/*" element={<DashboardHome />} />
         <Route path="/dashboard/projects/*" element={<Project />} />
         <Route path="/dashboard/user/*" element={<User />} />
 

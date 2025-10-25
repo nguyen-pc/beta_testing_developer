@@ -26,6 +26,7 @@ import SurveyBuilderAdvanced from "../../../components/dashboard/campaign/survey
 import DetailSurveyCreate from "../../../components/dashboard/campaign/survey/SurveyCreate.tsx";
 import ViewQuestion from "../../../components/dashboard/campaign/survey/ViewQuestion.tsx";
 import { CampaignProvider } from "../../../context/CampaignContext"; // 👈 import context provider
+import CampaignLaunch from "../../../components/dashboard/campaign/launch/CampaignLaunch.tsx";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -99,6 +100,8 @@ export default function Campaign(props: { disableCustomTheme?: boolean }) {
                       path=":campaignId/testcase/:testScenarioId"
                       element={<TestcasePage />}
                     />
+
+                    <Route path=":campaignId/launch" element={<CampaignLaunch />} />
 
                     <Route path="*" element={<Dashboard />} />
                   </Routes>

@@ -29,6 +29,7 @@ import IssueGridView from "../../../components/dashboard/issue/IssueGridView";
 import SurveyListByCampaign from "../../../components/dashboard/Response/SurveyListByCampaign";
 import ResponsePage from "../../../components/dashboard/Response/ResponsePage";
 import ResponseDetail from "../../../components/dashboard/Response/ResponseDetail";
+import EmailTester from "../../../components/dashboard/emailTester/EmailTester";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -74,6 +75,7 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
                   <Route path="issues" element={<IssueGridView />} />
                   <Route path="issues/:bugId/" element={<IssueDetailView />} />
                   <Route path="survey" element={<SurveyListByCampaign />} />
+                  <Route path="email" element={<EmailTester />} />
                   <Route path="survey/:surveyId/results" element={<ResponsePage />} />
                   <Route path="survey/:surveyId/analysis" element={<ResponseDetail />} />
 

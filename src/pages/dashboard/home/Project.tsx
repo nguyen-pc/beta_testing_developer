@@ -56,7 +56,7 @@ export default function Project(props: { disableCustomTheme?: boolean }) {
           <Stack
             spacing={2}
             sx={{
-              alignItems: "center",
+              // alignItems: "center",
               mx: 3,
               pb: 5,
               mt: { xs: 8, md: 0 },

@@ -21,6 +21,7 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { fetchProjectByCompany } from "../../../redux/slice/ProjectSlide";
 import queryString from "query-string";
 import { sfLike } from "spring-filter-query-builder";
+import { callGetCompanyUsers } from "../../../config/api";
 
 const cardData = [
   {
@@ -185,6 +186,22 @@ export default function MainProject() {
   const dispatch = useAppDispatch();
   const user = useAppSelector((state) => state.account.user);
   const projects = useAppSelector((state) => state.project.result);
+  const [company, setCompany] = React.useState<any>(null);
+  React.useEffect(() => {
+    const fetchCompany = async () => {
+      try {
+        if (!user?.id) return;
+        const res = await callGetCompanyUsers(user.id);
+        if (res?.data) {
+          console.log("✅ Company fetched:", res.data);
+          setCompany(res.data);
+        }
+      } catch (error) {
+        console.error("❌ Lỗi khi lấy companyProfile:", error);
+      }
+    };
+    fetchCompany();
+  }, [user]);
 
   const buildQuery = (params, sort, filter) => {
     const q = {
@@ -233,11 +250,13 @@ export default function MainProject() {
     return temp;
   };
 
-  // Gọi fetchUser ban đầu
   React.useEffect(() => {
+    if (!company?.id) return; // ✅ tránh gọi khi company chưa có
+
     const initialQuery = buildQuery({ current: 1, pageSize: 15 }, {}, {});
-    dispatch(fetchProjectByCompany({ id: 1, query: initialQuery }));
-  }, []);
+    console.log("📦 Fetching projects for company:", company.id);
+    dispatch(fetchProjectByCompany({ id: company.id, query: initialQuery }));
+  }, [company, dispatch]);
 
   console.log("Projects in MainProject:", projects);
 
@@ -258,13 +277,10 @@ export default function MainProject() {
     navigate("/dashboard/projects/new");
   }, [navigate]);
 
-
   const handleDetailClick = (id) => {
     console.log("Project ID:", id);
     navigate(`/dashboard/projects/show/${id}`);
-    
   };
-
 
   const handleClick = () => {
     console.info("You clicked the filter chip.");
@@ -382,7 +398,7 @@ export default function MainProject() {
           projects.map((project, index) => (
             <Grid size={{ xs: 12, md: 4 }} key={project.id}>
               <StyledCard
-                onClick={() =>handleDetailClick(project.id)}
+                onClick={() => handleDetailClick(project.id)}
                 variant="outlined"
                 onFocus={() => handleFocus(index)}
                 onBlur={handleBlur}
