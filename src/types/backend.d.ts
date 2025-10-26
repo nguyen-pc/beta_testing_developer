@@ -172,8 +172,7 @@ export interface IQuestion {
   updatedBy?: string;
   createdAt?: string;
   updatedAt?: string;
-} 
-
+}
 
 export interface IUserRecruitProfile {
   id?: number;
@@ -207,15 +206,15 @@ export interface IUserProfile {
   children: boolean;
   employment: string;
   education: string;
-  gamingGenres: string;     
-  browsers: string;       
+  gamingGenres: string;
+  browsers: string;
   webExpertise: string;
-  language: string;        
+  language: string;
   computer: string;
   smartPhone: string;
   tablet: string;
   otherDevice: string;
-  gender: "MALE" | "FEMALE" | "OTHER"; 
+  gender: "MALE" | "FEMALE" | "OTHER";
 }
 
 export interface ITesterCampaign {
@@ -229,4 +228,20 @@ export interface ITesterCampaignStatus {
   status?: string;
   note?: string;
   // approved?: boolean;
+}
+
+export interface Answer {
+  answerId: number;
+  choiceText?: string | null;
+  answerText?: string | null;
+  responseId: number;
+  submittedAt: string;
+  userEmail: string;
+}
+
+export interface Question {
+  questionId: number;
+  questionName: string;
+  questionType: "MULTIPLE_CHOICE" | "LONG_TEXT" | "CHECKBOX" | "RATING";
+  answers?: Answer[];
 }

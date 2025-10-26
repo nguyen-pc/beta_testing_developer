@@ -417,6 +417,12 @@ export async function callGetQuestionSurvey(campaignId: string, surveyId: string
   );
 }
 
+export async function callGetResponseByQuestion(questionId: string) {
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/campaign/question/${questionId}/responses`
+  );
+}
+
 //email tester
 export async function callSendEmailToTester(campaignId: string, data: any) {
   console.log("Sending email to tester for campaign:", campaignId, data);
@@ -449,3 +455,75 @@ export async function callSendInvitationEmail(campaignId: string, data: any) {
   );
 }
 
+// Upload File Attachment
+export const uploadRecording = (
+  file: any,
+  folderType: string,
+  uploader: string
+) => {
+  const bodyFormData = new FormData();
+  bodyFormData.append("file", file);
+  bodyFormData.append("folder", folderType);
+  bodyFormData.append("uploader", uploader);
+
+  return axios<IBackendRes<{ fileName: string }>>({
+    method: "post",
+    url: "/api/v1/attachment",
+    data: bodyFormData,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
+
+
+export const uploadFileSurvey = (
+  file: any,
+  surveyId: number,
+  uploaderId: number
+) => {
+  const bodyFormData = new FormData();
+  bodyFormData.append("file", file);
+  bodyFormData.append("folder", surveyId.toString());
+  bodyFormData.append("uploader", uploaderId.toString());
+
+  return axios.post<IBackendRes<{ fileName: string }>>(
+    "/api/v1/files",
+    bodyFormData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+};
+
+export const callGetFileSurvey = (surveyId: number) => {
+  console.log("callGetFileSurvey", { surveyId });
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/files/${surveyId}/list`
+  );
+}
+
+export const callGetVideoFilesByCampaign = (campaignId: number) => {
+  console.log("callGetVideoFilesByCampaign", { campaignId });
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/attachment/campaign/${campaignId}/videos`
+  );
+}
+
+//dashboard stats
+
+export const callGetBugTrendBySeverity = (campaignId: number) =>{
+  console.log("callGetBugTrendBySeverity", { campaignId });
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/bugs/bug-trend/${campaignId}`
+  );
+}
+
+export const callGetCompletionStats = (campaignId: number) =>{
+  console.log("callGetCompletionStats", { campaignId });
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/campaign/${campaignId}/completion`
+  );
+}

@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
-import TesterRecruitingResults from "./TesterRecruitingResults";
-import TesterCompletionDashboard from "./TesterCompletionDashboard";
+import FileUploadVideo from "./FileUploadVideo";
+import FIleUploadSurvey from "./FIleUploadSurvey";
 
 export function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -35,7 +35,7 @@ function a11yProps(index) {
   };
 }
 
-export default function TabTesterHome() {
+export default function TabFileManagement() {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -50,15 +50,15 @@ export default function TabTesterHome() {
           onChange={handleChange}
           aria-label="basic tabs example"
         >
-          <Tab label="Tester Completion" {...a11yProps(0)} />
-          <Tab label="Recruiting Results" {...a11yProps(1)} />
+          <Tab label="File Upload Video" {...a11yProps(0)} />
+          <Tab label="File Upload Survey" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
-        <TesterCompletionDashboard />
+        <FileUploadVideo />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
-        <TesterRecruitingResults />
+        <FIleUploadSurvey />
       </CustomTabPanel>
     </Box>
   );

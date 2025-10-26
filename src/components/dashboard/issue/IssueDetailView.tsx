@@ -11,15 +11,19 @@ import {
   List,
   ListItem,
   ListItemAvatar,
-  ListItemText,
   Paper,
   CircularProgress,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useParams, useNavigate } from "react-router-dom";
 import queryString from "query-string";
-import { callGetBugReports, callGetDetailBugReport } from "../../../config/api";
+import {
+  callGetBugReports,
+  callGetDetailBugReport,
+  uploadRecording,
+} from "../../../config/api";
 import { useBugChat } from "../../../hooks/websocket/useBugChat";
 import { useAppSelector } from "../../../redux/hooks";
 import { formatChatTime } from "../../../util/timeFormatter";
@@ -44,19 +48,16 @@ interface Issue {
 export default function IssueDetailView() {
   const { bugId, campaignId, projectId } = useParams();
   const navigate = useNavigate();
+  const user = useAppSelector((state) => state.account.user);
 
-  // ---------------- State ----------------
   const [issue, setIssue] = useState<Issue | null>(null);
   const [loading, setLoading] = useState(true);
   const [relatedIssues, setRelatedIssues] = useState<Issue[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [newMsg, setNewMsg] = useState("");
-  const user = useAppSelector((state) => state.account.user);
-
-  // ✅ Hook chat realtime
   const { messages, sendMessage, connected } = useBugChat(bugId);
 
-  // ---------------- Fetch Issue Detail ----------------
+  // 🧩 Fetch Issue Detail
   const fetchIssueDetail = async () => {
     setLoading(true);
     try {
@@ -69,7 +70,7 @@ export default function IssueDetailView() {
     }
   };
 
-  // ---------------- Fetch Related Issues ----------------
+  // 🧩 Fetch Related Issues
   const buildQuery = (page = 0, size = 15, campaignId?: number) => {
     const queryObj: any = { page, size };
     if (campaignId) queryObj.campaignId = campaignId;
@@ -88,16 +89,36 @@ export default function IssueDetailView() {
     }
   };
 
-  // ---------------- Lifecycle ----------------
   useEffect(() => {
     fetchIssueDetail();
     fetchRelatedIssues();
   }, [bugId, campaignId]);
 
+  // 🧩 Gửi tin nhắn text
   const handleSend = () => {
     if (!newMsg.trim()) return;
-    sendMessage(newMsg, user.id, bugId); // có thể thay bằng currentUser.name
+    sendMessage(newMsg, user.id, bugId);
     setNewMsg("");
+  };
+
+  // 🧩 Upload file và gửi link
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    try {
+      const folderType = campaignId;
+      const uploader = user.id;
+      const res = await uploadRecording(file, folderType, uploader);
+
+      const fileName = res.data?.fileName;
+      if (fileName) {
+        const fileUrl = `http://localhost:8081/storage/${folderType}/${fileName}`;
+        sendMessage(`${fileUrl}`, user.id, bugId);
+      }
+    } catch (err) {
+      console.error("File upload failed:", err);
+      alert("Upload file failed!");
+    }
   };
 
   if (loading) {
@@ -147,7 +168,9 @@ export default function IssueDetailView() {
           <Stack spacing={1}>
             {relatedIssues
               .filter((bug) =>
-                bug.title.toLowerCase().includes(searchTerm.toLowerCase())
+                (bug.title ?? "")
+                  .toLowerCase()
+                  .includes(searchTerm.toLowerCase())
               )
               .map((bug) => (
                 <Paper
@@ -158,7 +181,6 @@ export default function IssueDetailView() {
                     bgcolor:
                       Number(bugId) === bug.id ? "grey.100" : "transparent",
                     cursor: "pointer",
-                    transition: "0.2s",
                     "&:hover": { bgcolor: "grey.50" },
                   }}
                   onClick={() =>
@@ -244,6 +266,11 @@ export default function IssueDetailView() {
         >
           {messages.map((msg, i) => {
             const isOwn = msg.senderId === user.id;
+            const content = msg.content;
+
+            const isFile = content.startsWith("http");
+            const isImage = /\.(jpg|jpeg|png|gif)$/i.test(content);
+            const isVideo = /\.(mp4|webm)$/i.test(content);
 
             return (
               <ListItem
@@ -270,12 +297,38 @@ export default function IssueDetailView() {
                     borderRadius: 2,
                   }}
                 >
-                  <Typography variant="body2">{msg.content}</Typography>
+                  {isFile ? (
+                    isImage ? (
+                      <img
+                        src={content}
+                        alt="attachment"
+                        style={{ maxWidth: "100%", borderRadius: 6 }}
+                      />
+                    ) : isVideo ? (
+                      <video
+                        src={content}
+                        controls
+                        style={{ maxWidth: "100%", borderRadius: 6 }}
+                      />
+                    ) : (
+                      <a
+                        href={content}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ color: "inherit" }}
+                      >
+                        {content}
+                      </a>
+                    )
+                  ) : (
+                    <Typography variant="body2">{content}</Typography>
+                  )}
+
                   <Typography
                     variant="caption"
                     sx={{ display: "block", opacity: 0.7 }}
                   >
-                     {msg.createdAt ? formatChatTime(msg.createdAt) : ""}
+                    {msg.createdAt ? formatChatTime(msg.createdAt) : ""}
                   </Typography>
                 </Paper>
 
@@ -289,6 +342,7 @@ export default function IssueDetailView() {
           })}
         </List>
 
+        {/* 💬 Chat input */}
         <Stack direction="row" spacing={1} alignItems="center" mt={1}>
           <TextField
             value={newMsg}
@@ -297,6 +351,19 @@ export default function IssueDetailView() {
             fullWidth
             size="small"
           />
+
+          <input
+            type="file"
+            id="chat-file-input"
+            hidden
+            onChange={handleFileUpload}
+          />
+          <IconButton
+            onClick={() => document.getElementById("chat-file-input")?.click()}
+          >
+            <AttachFileIcon />
+          </IconButton>
+
           <IconButton
             onClick={handleSend}
             color="primary"

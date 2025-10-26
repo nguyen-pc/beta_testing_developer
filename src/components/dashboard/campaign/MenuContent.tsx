@@ -74,7 +74,7 @@ export default function MenuContent() {
     {
       text: "Secure Files",
       icon: <PeopleRoundedIcon />,
-      path: "/dashboard/secure-files",
+       path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/file`,
     },
     {
       text: "Test Detail",
