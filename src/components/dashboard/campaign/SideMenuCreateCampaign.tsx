@@ -7,9 +7,9 @@ import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
 import SelectContent from "../SelectContent";
-import CardAlert from "../CardAlert";
 import OptionsMenu from "../OptionsMenu";
 import MenuContentCreateCampaign from "./MenuContentCreateCampaign";
+import { useAppSelector } from "../../../redux/hooks";
 
 const drawerWidth = 240;
 
@@ -25,6 +25,11 @@ const Drawer = styled(MuiDrawer)({
 });
 
 export default function SideMenuCreateCampaign() {
+  const isAuthenticated = useAppSelector(
+    (state) => state.account.isAuthenticated
+  );
+  const user = useAppSelector((state) => state.account.user);
+
   return (
     <Drawer
       variant="permanent"
@@ -54,7 +59,6 @@ export default function SideMenuCreateCampaign() {
         }}
       >
         <MenuContentCreateCampaign />
-        <CardAlert />
       </Box>
       <Stack
         direction="row"
@@ -77,10 +81,10 @@ export default function SideMenuCreateCampaign() {
             variant="body2"
             sx={{ fontWeight: 500, lineHeight: "16px" }}
           >
-            Riley Carter
+            {user.name}
           </Typography>
           <Typography variant="caption" sx={{ color: "text.secondary" }}>
-            riley@email.com
+            {user.email}
           </Typography>
         </Box>
         <OptionsMenu />

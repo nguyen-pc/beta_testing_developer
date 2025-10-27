@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import HomeSignUp from "../pages/home/HomeSignUp";
 import SignInSide from "../pages/auth/SignInSide";
 import SignUpSide from "../pages/auth/SignUpSign";
@@ -15,12 +15,12 @@ import ViewQuestion from "../components/dashboard/campaign/survey/ViewQuestion";
 import ScenarioPage from "../components/dashboard/campaign/testcase/ScenarioPage";
 import NotificationsProvider from "../hooks/useNotifications/NotificationsProvider";
 import DialogsProvider from "../hooks/useDialogs/DialogsProvider";
-
+import PrivateRoute from "./PrivateRoute";
 export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Navigate to="/dashboard" replace />} />
         <Route path="/signin" element={<SignInSide />} />
         <Route path="/signup" element={<SignUpSide />} />
         <Route path="/profile" element={<Profile />} />
@@ -28,7 +28,15 @@ export default function AppRouter() {
         <Route path="/home_signup" element={<HomeSignUp />} />
 
         {/* Dashboard ở trang home */}
-        <Route path="/dashboard/*" element={<DashboardHome />} />
+        {/* Private routes */}
+        <Route
+          path="/dashboard/*"
+          element={
+            <PrivateRoute>
+              <DashboardHome />
+            </PrivateRoute>
+          }
+        />
         <Route path="/dashboard/projects/*" element={<Project />} />
         <Route path="/dashboard/user/*" element={<User />} />
 

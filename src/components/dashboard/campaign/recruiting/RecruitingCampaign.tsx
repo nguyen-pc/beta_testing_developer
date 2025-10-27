@@ -111,7 +111,7 @@ export default function TesterRecruitForm() {
   };
 
   return (
-    <Box sx={{ p: 4, maxWidth: 1000, mx: "auto" }}>
+    <Box sx={{ p: 4, mx: "auto" }}>
       <Typography variant="h5" fontWeight={600} mb={3}>
         Tester Recruiting
       </Typography>
@@ -210,7 +210,7 @@ export default function TesterRecruitForm() {
         )}
       </Card>
 
-      {recruitMethod !== "email" && (
+
         <>
           {/* ---------- SECTION 2: Devices ---------- */}
           <Card variant="outlined" sx={{ p: 3, mb: 4 }}>
@@ -582,8 +582,7 @@ export default function TesterRecruitForm() {
         </Box> */}
           </Card>
         </>
-      )}
-
+ 
       {/* Buttons */}
       <Box display="flex" justifyContent="flex-end" gap={2} mt={3}>
         <Button variant="outlined">Cancel</Button>

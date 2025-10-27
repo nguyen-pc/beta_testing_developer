@@ -96,7 +96,7 @@ export default function SignInCard() {
       console.log("isAuthenticated", isAuthenticated);
       <Alert severity="success">Đăng nhập tài khoản thành công!</Alert>;
       // navigate(callback ? callback : "/");
-      window.location.href = callback ? callback : "/";
+      window.location.href = callback ? callback : "/dashboard";
     } else {
       <Alert variant="filled" severity="error">
         Có lỗi xảy ra, vui lòng thử lại!
@@ -238,16 +238,16 @@ export default function SignInCard() {
         >
           Sign in
         </Button>
-        <Typography sx={{ textAlign: "center" }}>
+        {/* <Typography sx={{ textAlign: "center" }}>
           Don&apos;t have an account?{" "}
           <span>
             <Link href="/signup/" variant="body2" sx={{ alignSelf: "center" }}>
               Sign up
             </Link>
           </span>
-        </Typography>
+        </Typography> */}
       </Box>
-      <Divider>or</Divider>
+      {/* <Divider>or</Divider> */}
       <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
         {/* <Button
           fullWidth
@@ -257,14 +257,14 @@ export default function SignInCard() {
         >
           Sign in with Google
         </Button> */}
-        <GoogleLogin
+        {/* <GoogleLogin
           onSuccess={handleGoogleLoginSuccess}
           onError={() => {
             <Alert variant="outlined" severity="error">
               This is an outlined error Alert.
             </Alert>;
           }}
-        />
+        /> */}
         {/* <Button
           fullWidth
           variant="outlined"
