@@ -18,7 +18,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import dayjs, { Dayjs } from "dayjs";
 import type { Campaign } from "../../../data/campaign";
 import ReactQuill from "react-quill";
@@ -67,6 +67,7 @@ export default function CampaignForm(props: CampaignFormProps) {
   const formValues = formState.values;
   const formErrors = formState.errors;
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const { campaignId, projectId } = useParams();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -119,24 +120,40 @@ export default function CampaignForm(props: CampaignFormProps) {
   const handleBack = () => navigate(backButtonPath ?? "/dashboard/projects");
   const handleReset = () => onReset && onReset(formValues);
 
+  const handleContinue = () => {
+    navigate(`/dashboard/projects/${projectId}/campaigns/new/${campaignId}/createRecruiting`);
+  };
+
   return (
     <Box component="form" onSubmit={handleSubmit} onReset={handleReset}>
       {/* HEADER */}
-      <Typography variant="h5" fontWeight={600} mb={3}>
-        {formValues.title || "New Beta Test Form"}{" "}
-        <Typography
-          component="span"
-          variant="body2"
-          sx={{
-            ml: 1,
-            // backgroundColor: "#e0e0e0",
-            borderRadius: 1,
-            px: 1,
-          }}
-        >
-          Draft
-        </Typography>
-      </Typography>
+      <Box
+        display="flex"
+        justifyContent="space-between"
+        alignItems="center"
+        mb={3}
+      >
+        <Box>
+          <Typography variant="h5" fontWeight={600} mb={3}>
+            {formValues.title || "New Beta Test Form"}{" "}
+            <Typography
+              component="span"
+              variant="body2"
+              sx={{
+                ml: 1,
+                // backgroundColor: "#e0e0e0",
+                borderRadius: 1,
+                px: 1,
+              }}
+            >
+              Draft
+            </Typography>
+          </Typography>
+        </Box>
+        <Button className="ml-3" onClick={handleContinue} variant="contained">
+          Continue to Recruiting
+        </Button>
+      </Box>
 
       {/* === Test Details === */}
       <Section title="Test Details">

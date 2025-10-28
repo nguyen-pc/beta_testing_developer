@@ -125,18 +125,16 @@ export const callDeleteProject = (id: string) => {
 
 export const callGetCompanyUsers = (userId: string) => {
   console.log("callGetCompanyUsers", { userId });
-  return axios.get<IBackendRes<any>>(
-    `/api/v1/company/user/${userId}`
-  );
-}
+  return axios.get<IBackendRes<any>>(`/api/v1/company/user/${userId}`);
+};
 
-export const callUpdateCompany =  (companyId: string, data: any) => {
+export const callUpdateCompany = (companyId: string, data: any) => {
   console.log("callUpdateCompany", { companyId, data });
   return axios.put<IBackendRes<any>>(
     `/api/v1/company/update/${companyId}`,
     data
   );
-}
+};
 
 //Module Campaign
 
@@ -165,10 +163,8 @@ export const callUpdateCampaign = (id: number, data: ICampaign) => {
 
 export const callPublishCampaign = (id: number) => {
   console.log("callPublishCampaign", { id });
-  return axios.put<IBackendRes<ICampaign>>(
-    `/api/v1/campaign/${id}/publish`
-  );
-}
+  return axios.put<IBackendRes<ICampaign>>(`/api/v1/campaign/${id}/publish`);
+};
 
 // Module Campaign
 export const callGetUseCasesByCampaign = (
@@ -340,9 +336,7 @@ export async function callGetSurvey(campaignId: string, surveyId: string) {
 
 export async function callGetSurveysByCampaign(campaignId: string) {
   console.log("Fetching all surveys for campaign:", campaignId);
-  return axios.get<IBackendRes<any>>(
-    `/api/v1/campaign/${campaignId}/survey`
-  );
+  return axios.get<IBackendRes<any>>(`/api/v1/campaign/${campaignId}/survey`);
 }
 export async function callGetForm(campaignId: string, surveyId: string) {
   console.log("Fetching survey form for survey:", surveyId);
@@ -410,8 +404,16 @@ export async function callGetQuestionResponses(questionId: string) {
   );
 }
 
-export async function callGetQuestionSurvey(campaignId: string, surveyId: string) {
-  console.log("Fetching question survey for campaign:", campaignId, "and survey:", surveyId);
+export async function callGetQuestionSurvey(
+  campaignId: string,
+  surveyId: string
+) {
+  console.log(
+    "Fetching question survey for campaign:",
+    campaignId,
+    "and survey:",
+    surveyId
+  );
   return axios.get<IBackendRes<any>>(
     `/api/v1/campaign/${campaignId}/survey/${surveyId}/question/all`
   );
@@ -476,7 +478,6 @@ export const uploadRecording = (
   });
 };
 
-
 export const uploadFileSurvey = (
   file: any,
   surveyId: number,
@@ -500,30 +501,71 @@ export const uploadFileSurvey = (
 
 export const callGetFileSurvey = (surveyId: number) => {
   console.log("callGetFileSurvey", { surveyId });
-  return axios.get<IBackendRes<any>>(
-    `/api/v1/files/${surveyId}/list`
-  );
-}
+  return axios.get<IBackendRes<any>>(`/api/v1/files/${surveyId}/list`);
+};
 
 export const callGetVideoFilesByCampaign = (campaignId: number) => {
   console.log("callGetVideoFilesByCampaign", { campaignId });
   return axios.get<IBackendRes<any>>(
     `/api/v1/attachment/campaign/${campaignId}/videos`
   );
-}
+};
 
 //dashboard stats
 
-export const callGetBugTrendBySeverity = (campaignId: number) =>{
+export const callGetBugTrendBySeverity = (campaignId: number) => {
   console.log("callGetBugTrendBySeverity", { campaignId });
-  return axios.get<IBackendRes<any>>(
-    `/api/v1/bugs/bug-trend/${campaignId}`
-  );
-}
+  return axios.get<IBackendRes<any>>(`/api/v1/bugs/bug-trend/${campaignId}`);
+};
 
-export const callGetCompletionStats = (campaignId: number) =>{
+export const callGetCompletionStats = (campaignId: number) => {
   console.log("callGetCompletionStats", { campaignId });
   return axios.get<IBackendRes<any>>(
     `/api/v1/campaign/${campaignId}/completion`
   );
-}
+};
+
+export const sendChatMessage = (data: {
+  sessionId: string;
+  message: string;
+  userId: number;
+}) => {
+  console.log("sendChatMessage", data);
+  return axios.post<IBackendRes<any>>(`/api/v1/chatbot/ask`, data);
+};
+
+export const startChatSession = (userId: number, topic = "New Chat") => {
+  return axios.post<IBackendRes<any>>("/api/v1/chatbot/session/start", {
+    userId,
+    topic,
+  });
+};
+
+export const getChatHistory = (sessionId: string, userId: number) => {
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/chatbot/session/${sessionId}/history`,
+    {
+      params: { userId: userId },
+    }
+  );
+};
+
+export const saveChatHistory = (data: {
+  sessionId: string;
+  mode: "user" | "assistant";
+  question: string;
+  answer: string;
+}) => {
+  return axios.post<IBackendRes<any>>("/api/v1/chatbot/session/save", {
+    sessionUuid: data.sessionId, // map đúng key BE
+    mode: data.mode,
+    question: data.question,
+    answer: data.answer,
+  });
+};
+
+export const getUserSessions = (userId: number) => {
+  return axios.get<IBackendRes<any>>(`/api/v1/chatbot/session/list`, {
+    params: { userId: userId },
+  });
+};
