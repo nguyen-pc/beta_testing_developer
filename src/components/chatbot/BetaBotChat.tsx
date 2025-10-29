@@ -114,7 +114,7 @@ export default function BetaBotChat() {
         removeSession(user?.id);
         await createNewSession();
       }
-      setMessages((p) => [
+      setMessages((p) => [  
         ...p,
         {
           from: "bot",

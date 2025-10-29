@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Stack,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import {
@@ -21,6 +22,7 @@ import { type UseCase } from "../../../../data/usecase";
 import queryString from "query-string";
 import { sfLike } from "spring-filter-query-builder";
 import { useNavigate, useParams } from "react-router-dom";
+import UploadUseCaseDialog from "./UploadUseCaseDialog";
 
 export default function UseCasePage() {
   const notifications = useNotifications();
@@ -32,6 +34,7 @@ export default function UseCasePage() {
     null
   );
   const [openDialog, setOpenDialog] = React.useState(false);
+  const [openUploadDialog, setOpenUploadDialog] = React.useState(false);
 
   // ================= BUILD QUERY =================
   const buildQuery = (params, sort, filter) => {
@@ -162,9 +165,33 @@ export default function UseCasePage() {
         <h2 className="text-lg font-semibold">
           UseCases in Campaign #{campaignId}
         </h2>
-        <Button variant="contained" color="primary" onClick={handleCreate}>
-          + Create UseCase
-        </Button>
+        <Stack direction="row" spacing={2}>
+          <Button variant="contained" color="primary" onClick={handleCreate}>
+            + Create UseCase
+          </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              window.dispatchEvent(
+                new CustomEvent("open-betabot", {
+                  detail: { from: "usecase", mode: "@usecase " },
+                })
+              );
+            }}
+          >
+            + Create UseCase with BetaBot
+          </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpenUploadDialog(true)}
+          >
+            + Upload Excel
+          </Button>
+        </Stack>
       </div>
 
       <table className="min-w-full border border-gray-300 text-sm">
@@ -283,6 +310,12 @@ export default function UseCasePage() {
           />
         </DialogContent>
       </Dialog>
+      <UploadUseCaseDialog
+        open={openUploadDialog}
+        onClose={() => setOpenUploadDialog(false)}
+        campaignId={campaignId!}
+        onUploaded={fetchUseCases}
+      />
     </PageContainer>
   );
 }
