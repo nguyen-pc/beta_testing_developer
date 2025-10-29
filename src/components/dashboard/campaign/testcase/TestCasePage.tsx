@@ -6,6 +6,7 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  Stack,
 } from "@mui/material";
 import PageContainer from "../../../dashboard/project/PageContainer";
 import useNotifications from "../../../../hooks/useNotifications/useNotifications";
@@ -20,6 +21,7 @@ import {
 } from "../../../../config/api";
 import { type Testcase } from "../../../../data/testcase";
 import TestcaseDialog from "./TestcaseDialog";
+import UploadTestcaseDialog from "./UploadTestcaseDialog";
 
 export default function TestcasePage() {
   const notifications = useNotifications();
@@ -31,6 +33,7 @@ export default function TestcasePage() {
   const [openDialog, setOpenDialog] = React.useState(false);
   const { projectId, campaignId } = useParams();
   const navigate = useNavigate();
+  const [openUploadDialog, setOpenUploadDialog] = React.useState(false);
 
   const handleBack = () => {
     navigate(
@@ -127,6 +130,15 @@ export default function TestcasePage() {
     setOpen(false);
   };
 
+    React.useEffect(() => {
+      const handleReload = () => {
+        console.log("🔁 Reloading testcase...");
+        fetchTestcases();
+      };
+      window.addEventListener("testcase-reload", handleReload);
+      return () => window.removeEventListener("testcase-reload", handleReload);
+    }, [fetchTestcases]);
+
   return (
     <PageContainer
       title="Test Cases"
@@ -139,9 +151,37 @@ export default function TestcasePage() {
         <h2 className="text-lg font-semibold">
           Test Cases for Scenario #{testScenarioId}
         </h2>
-        <Button variant="contained" color="primary" onClick={handleCreate}>
-          + Create Test Case
-        </Button>
+        <Stack direction="row" spacing={2}>
+          <Button variant="contained" color="primary" onClick={handleCreate}>
+            + Create Test Case
+          </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              window.dispatchEvent(
+                new CustomEvent("open-betabot", {
+                  detail: {
+                    from: "testcase",
+                    mode: "@testcase ",
+                    testScenarioId: testScenarioId,
+                  },
+                })
+              );
+            }}
+          >
+            + Create with BetaBot
+          </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpenUploadDialog(true)}
+          >
+            + Upload Excel
+          </Button>
+        </Stack>
       </div>
 
       <table className="min-w-full border border-gray-300 text-sm">
@@ -255,6 +295,12 @@ export default function TestcasePage() {
           Continue
         </Button> */}
       </div>
+      <UploadTestcaseDialog
+        open={openUploadDialog}
+        onClose={() => setOpenUploadDialog(false)}
+        testScenarioId={testScenarioId!}
+        onUploaded={fetchTestcases}
+      />
     </PageContainer>
   );
 }

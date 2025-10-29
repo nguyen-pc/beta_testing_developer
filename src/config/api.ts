@@ -325,6 +325,21 @@ export async function callRejectTester(testerCampaignId: string) {
   );
 }
 
+export async function callGetTesterStatus(campaignId: string) {
+  console.log("Fetching tester status for campaign:", campaignId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/campaign/${campaignId}/analytics`
+  );
+}
+
+export async function callUpdateProgressTester(testerCampaignId: string, data: any) {
+  console.log("Fetching tester recruiting results for campaign:", testerCampaignId);
+  return axios.put<IBackendRes<any>>(
+    `/api/v1/campaign/tester-campaign/${testerCampaignId}/progress`,
+    data
+  );
+}
+
 // form
 
 export async function callGetSurvey(campaignId: string, surveyId: string) {

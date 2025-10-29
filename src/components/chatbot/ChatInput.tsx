@@ -2,9 +2,9 @@ import React from "react";
 import { Box, TextField, IconButton, CircularProgress } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 
-interface Props {
+interface ChatInputProps {
   value: string;
-  onChange: (val: string) => void;
+  onChange: (v: string) => void;
   onSend: () => void;
   sending: boolean;
   sessionReady: boolean;
@@ -16,24 +16,41 @@ export default function ChatInput({
   onSend,
   sending,
   sessionReady,
-}: Props) {
+}: ChatInputProps) {
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      onSend();
+    }
+  };
+
   return (
-    <Box sx={{ display: "flex", p: 1.5, borderTop: "1px solid #ddd" }}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        p: 1,
+        borderTop: "1px solid #eee",
+        bgcolor: "#fafafa",
+      }}
+    >
       <TextField
-        variant="outlined"
         fullWidth
-        size="small"
-        placeholder={
-          !sessionReady ? "Initializing session..." : sending ? "Thinking..." : "Type your message..."
-        }
+        placeholder="Type your message..."
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && sessionReady && onSend()}
-        disabled={sending || !sessionReady}
-        sx={{ "& fieldset": { borderRadius: "20px" } }}
+        onKeyDown={handleKeyPress}
+        disabled={!sessionReady}
+        size="small"
+        autoFocus
       />
-      <IconButton onClick={onSend} disabled={sending || !sessionReady}>
-        {sending ? <CircularProgress size={22} /> : <SendIcon sx={{ color: "#9C27B0" }} />}
+      <IconButton
+        color="primary"
+        onClick={onSend}
+        disabled={!sessionReady || sending}
+        sx={{ ml: 1 }}
+      >
+        {sending ? <CircularProgress size={20} /> : <SendIcon />}
       </IconButton>
     </Box>
   );

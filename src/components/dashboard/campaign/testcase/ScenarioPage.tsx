@@ -1,5 +1,13 @@
 import * as React from "react";
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Stack,
+} from "@mui/material";
 import {
   callGetScenariosByUseCase,
   callCreateScenario,
@@ -12,6 +20,7 @@ import ScenarioDialog from "./ScenarioDialog";
 import { type Scenario } from "../../../../data/testscenario";
 import queryString from "query-string";
 import { useNavigate, useParams } from "react-router-dom";
+import UploadScenarioDialog from "./UploadScenarioDialog";
 // import { sfLike } from "spring-filter-query-builder";
 
 export default function ScenarioPage() {
@@ -23,6 +32,7 @@ export default function ScenarioPage() {
   const [selectedScenario, setSelectedScenario] =
     React.useState<Scenario | null>(null);
   const [openDialog, setOpenDialog] = React.useState(false);
+  const [openUploadDialog, setOpenUploadDialog] = React.useState(false);
 
   const buildQuery = (params) => {
     const q = {
@@ -125,6 +135,15 @@ export default function ScenarioPage() {
   const handleClose = () => {
     setOpen(false);
   };
+
+  React.useEffect(() => {
+    const handleReload = () => {
+      console.log("🔁 Reloading Scenarios...");
+      fetchScenarios();
+    };
+    window.addEventListener("scenario-reload", handleReload);
+    return () => window.removeEventListener("scenario-reload", handleReload);
+  }, [fetchScenarios]);
   return (
     <PageContainer
       title="Test Scenarios"
@@ -137,9 +156,36 @@ export default function ScenarioPage() {
         <h2 className="text-lg font-semibold">
           Scenarios for UseCase #{useCaseId}
         </h2>
-        <Button variant="contained" color="primary" onClick={handleCreate}>
-          + Create Scenario
-        </Button>
+        <Stack direction="row" spacing={2}>
+          <Button variant="contained" color="primary" onClick={handleCreate}>
+            + Create Scenario
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              window.dispatchEvent(
+                new CustomEvent("open-betabot", {
+                  detail: {
+                    from: "scenario",
+                    mode: "@testscenario ",
+                    useCaseId: useCaseId,
+                  },
+                })
+              );
+            }}
+          >
+            + Create Scenario with BetaBot
+          </Button>
+
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setOpenUploadDialog(true)}
+          >
+            + Upload Excel
+          </Button>
+        </Stack>
       </div>
 
       <table className="min-w-full border border-gray-300 text-sm">
@@ -243,6 +289,13 @@ export default function ScenarioPage() {
           />
         </DialogContent>
       </Dialog>
+
+      <UploadScenarioDialog
+        open={openUploadDialog}
+        onClose={() => setOpenUploadDialog(false)}
+        useCaseId={useCaseId!}
+        onUploaded={fetchScenarios}
+      />
     </PageContainer>
   );
 }

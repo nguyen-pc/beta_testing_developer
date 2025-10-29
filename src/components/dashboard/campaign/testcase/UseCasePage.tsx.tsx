@@ -153,6 +153,16 @@ export default function UseCasePage() {
     setOpen(false);
   };
 
+  React.useEffect(() => {
+    const handleReload = () => {
+      console.log("🔁 Received usecase-reload event → reloading...");
+      fetchUseCases();
+    };
+
+    window.addEventListener("usecase-reload", handleReload);
+    return () => window.removeEventListener("usecase-reload", handleReload);
+  }, [fetchUseCases]);
+
   return (
     <PageContainer
       title="Use Cases"
@@ -176,7 +186,11 @@ export default function UseCasePage() {
             onClick={() => {
               window.dispatchEvent(
                 new CustomEvent("open-betabot", {
-                  detail: { from: "usecase", mode: "@usecase " },
+                  detail: {
+                    from: "usecase",
+                    mode: "@usecase ",
+                    campaignId: campaignId,
+                  },
                 })
               );
             }}

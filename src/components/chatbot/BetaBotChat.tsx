@@ -6,7 +6,6 @@ import {
   sendChatMessage,
   startChatSession,
   getChatHistory,
-  getUserSessions,
 } from "../../config/api";
 
 import ChatHeader from "./ChatHeader";
@@ -21,21 +20,27 @@ import {
   removeSession,
 } from "./chatUtils";
 
-const FORCE_NEW_ON_LOAD = false; // ✅ có thể đổi sang true nếu muốn mỗi lần load tạo session mới
+const FORCE_NEW_ON_LOAD = false;
 
-export default function BetaBotChat() {
+interface BetaBotChatProps {
+  onBotGenerateEntity?: (mode: string, data: any[]) => void;
+}
+
+export default function BetaBotChat({ onBotGenerateEntity }: BetaBotChatProps) {
   const user = useAppSelector((s) => s.account.user);
-
   const [open, setOpen] = useState(false);
   const [sessionDialogOpen, setSessionDialogOpen] = useState(false);
-
   const [messages, setMessages] = useState(defaultWelcome);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [typing, setTyping] = useState(false);
   const [sessionId, setSessionId] = useState("");
+  const [defaultMode, setDefaultMode] = useState("general");
+  const [campaignId, setCampaignId] = useState<string | null>(null);
+  const [useCaseId, setUseCaseId] = useState<string | null>(null);
+  const [testScenarioId, setTestScenarioId] = useState<string | null>(null);
 
-  // ✅ Tạo session mới
+  // 🧠 Tạo session mới
   const createNewSession = async () => {
     if (!user?.id) return;
     setMessages(defaultWelcome);
@@ -55,15 +60,11 @@ export default function BetaBotChat() {
     }
   };
 
-  // ✅ Load session hiện có (nếu có) hoặc tạo mới
+  // 🧠 Load session cũ hoặc tạo mới
   useEffect(() => {
     const init = async () => {
       if (!user?.id) return;
-
-      if (FORCE_NEW_ON_LOAD) {
-        await createNewSession();
-        return;
-      }
+      if (FORCE_NEW_ON_LOAD) return await createNewSession();
 
       let sid = readSession(user.id);
       if (sid) {
@@ -71,12 +72,10 @@ export default function BetaBotChat() {
           const res = await getChatHistory(sid, user.id);
           const data = res?.data?.data ?? res?.data ?? [];
           if (Array.isArray(data) && data.length > 0) {
-            const msgs = normalizeHistoryToMessages(data);
-            setMessages(msgs);
+            setMessages(normalizeHistoryToMessages(data));
           }
           setSessionId(sid);
         } catch {
-          console.warn("⚠️ Invalid session, creating new...");
           await createNewSession();
         }
       } else {
@@ -86,11 +85,44 @@ export default function BetaBotChat() {
     void init();
   }, [user?.id]);
 
-  // ✅ Gửi tin nhắn
+  // 🧠 Nghe event mở chatbot từ các trang
+  useEffect(() => {
+    const handleOpen = (e: any) => {
+      setOpen(true);
+      const { mode, campaignId, useCaseId, testScenarioId } = e.detail || {};
+      console.log(
+        "🚀 Opening BetaBot with mode:",
+        mode,
+        "campaignId:",
+        campaignId,
+        "useCaseId:",
+        useCaseId,
+        "testScenarioId:",
+        testScenarioId
+      );
+      if (mode?.startsWith("@")) setInput(mode + " ");
+      if (campaignId) setCampaignId(campaignId);
+      if (useCaseId) setUseCaseId(useCaseId);
+      if (testScenarioId) setTestScenarioId(testScenarioId);
+    };
+    window.addEventListener("open-betabot", handleOpen);
+    return () => window.removeEventListener("open-betabot", handleOpen);
+  }, []);
+
+  // 🧠 Xác định mode từ cú pháp
+  const detectMode = (msg: string): string => {
+    if (msg.startsWith("@usecase")) return "usecase";
+    if (msg.startsWith("@testcase")) return "testcase";
+    if (msg.startsWith("@testscenario")) return "testscenario";
+    if (msg.startsWith("@survey")) return "survey";
+    return defaultMode;
+  };
+
+  // 🧠 Gửi tin nhắn đến chatbot
   const handleSend = async (text?: any) => {
-    const msg =
-      typeof text === "string" ? text.trim() : String(input ?? "").trim();
+    const msg = (typeof text === "string" ? text : input).trim();
     if (!msg || !sessionId) return;
+    const mode = detectMode(msg);
 
     setMessages((p) => [...p, { from: "user", text: msg }]);
     setInput("");
@@ -102,8 +134,18 @@ export default function BetaBotChat() {
         sessionId,
         message: msg,
         userId: user?.id,
+        mode,
       });
       const reply = data?.result?.reply ?? data?.reply ?? data?.response ?? "…";
+
+      // 🧩 Nếu bot trả JSON hợp lệ → callback
+      try {
+        const parsed = JSON.parse(reply);
+        if (Array.isArray(parsed) && parsed[0]) {
+          onBotGenerateEntity?.(mode, parsed);
+        }
+      } catch {}
+
       setTimeout(() => {
         setMessages((p) => [...p, { from: "bot", text: String(reply) }]);
         setTyping(false);
@@ -114,7 +156,7 @@ export default function BetaBotChat() {
         removeSession(user?.id);
         await createNewSession();
       }
-      setMessages((p) => [  
+      setMessages((p) => [
         ...p,
         {
           from: "bot",
@@ -127,7 +169,6 @@ export default function BetaBotChat() {
     }
   };
 
-  // ✅ Khi chọn session từ danh sách
   const handleSelectSession = async (sessionUuid: string, msgs: any[]) => {
     setSessionId(sessionUuid);
     setMessages(msgs);
@@ -135,7 +176,7 @@ export default function BetaBotChat() {
 
   return (
     <>
-      {/* Floating bubble */}
+      {/* 🔘 Floating bubble */}
       {!open && (
         <Zoom in>
           <IconButton
@@ -157,7 +198,7 @@ export default function BetaBotChat() {
         </Zoom>
       )}
 
-      {/* Main chat UI */}
+      {/* 💬 Main Chat UI */}
       <Fade in={open}>
         <Paper
           sx={{
@@ -183,6 +224,9 @@ export default function BetaBotChat() {
             messages={messages}
             typing={typing}
             onOptionClick={handleSend}
+            campaignId={campaignId}
+            useCaseId={useCaseId}
+            testScenarioId={testScenarioId}
           />
 
           <ChatInput
