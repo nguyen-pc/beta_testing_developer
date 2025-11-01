@@ -409,7 +409,11 @@ export default function MainProject() {
                 <CardMedia
                   component="img"
                   alt={project.projectName}
-                  image={project.image ? project.image : cardData[2].img}
+                  image={
+                    project?.bannerUrl
+                      ? `http://localhost:8081/storage/project-banners/${project.bannerUrl}`
+                      : "https://picsum.photos/800/450?random=5"
+                  }
                   sx={{
                     height: { sm: "auto", md: "50%" },
                     aspectRatio: { sm: "16 / 9", md: "" },

@@ -20,6 +20,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useNavigate } from "react-router";
 import dayjs, { Dayjs } from "dayjs";
 import type { Project } from "../../../data/project";
+import BannerUploadField from "../BannerUploadField";
+import { Typography } from "@mui/material";
 
 export interface ProjectFormState {
   values: Partial<Omit<Project, "id">>;
@@ -204,7 +206,7 @@ export default function ProjectForm(props: ProjectFormProps) {
               />
             </LocalizationProvider>
           </Grid>
-          <Grid size={{ xs: 12, sm: 6 }} sx={{ display: "flex" }}>
+          {/* <Grid size={{ xs: 12, sm: 6 }} sx={{ display: "flex" }}>
             <FormControl>
               <FormControlLabel
                 name="status"
@@ -221,6 +223,17 @@ export default function ProjectForm(props: ProjectFormProps) {
                 {formErrors.status ?? " "}
               </FormHelperText>
             </FormControl>
+          </Grid> */}
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="subtitle1" fontWeight={600} mb={1}>
+              Upload Project Banner
+            </Typography>
+            <BannerUploadField
+              value={formValues.bannerUrl ?? null}
+              onChange={(fileName) =>
+                onFieldChange("bannerUrl" as any, fileName)
+              }
+            />
           </Grid>
         </Grid>
       </FormGroup>

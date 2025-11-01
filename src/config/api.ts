@@ -526,6 +526,22 @@ export const callGetVideoFilesByCampaign = (campaignId: number) => {
   );
 };
 
+export const callUploadSingleFile = (file: File, folder: String) => {
+  const bodyFormData = new FormData();
+  bodyFormData.append("file", file);
+  bodyFormData.append("folder", folder);
+
+  return axios.post<IBackendRes<{ fileName: string }>>(
+    "/api/v1/attachment/single",
+    bodyFormData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  );
+};
+
 //dashboard stats
 
 export const callGetBugTrendBySeverity = (campaignId: number) => {
