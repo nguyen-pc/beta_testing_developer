@@ -23,6 +23,7 @@ import dayjs, { Dayjs } from "dayjs";
 import type { Campaign } from "../../../data/campaign";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import BannerUploadField from "../BannerUploadField";
 
 export interface CampaignFormState {
   values: Partial<Omit<Campaign, "id">>;
@@ -121,7 +122,9 @@ export default function CampaignForm(props: CampaignFormProps) {
   const handleReset = () => onReset && onReset(formValues);
 
   const handleContinue = () => {
-    navigate(`/dashboard/projects/${projectId}/campaigns/new/${campaignId}/createRecruiting`);
+    navigate(
+      `/dashboard/projects/${projectId}/campaigns/new/${campaignId}/createRecruiting`
+    );
   };
 
   return (
@@ -308,7 +311,7 @@ export default function CampaignForm(props: CampaignFormProps) {
             </LocalizationProvider>
           </Grid>
 
-          <Grid item xs={12}>
+          {/* <Grid item xs={12}>
             <FormControlLabel
               control={
                 <Checkbox
@@ -318,6 +321,17 @@ export default function CampaignForm(props: CampaignFormProps) {
                 />
               }
               label="Active test (visible to participants)"
+            />
+          </Grid> */}
+          <Grid size={{ xs: 12 }}>
+            <Typography variant="subtitle1" fontWeight={600} mb={1}>
+              Upload Campaign Banner
+            </Typography>
+            <BannerUploadField
+              value={formValues.bannerUrl ?? null}
+              onChange={(fileName) =>
+                onFieldChange("bannerUrl" as any, fileName)
+              }
             />
           </Grid>
         </Grid>

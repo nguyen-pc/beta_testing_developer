@@ -148,7 +148,7 @@ function BuilderArea({ questions, activeId, onChange, onDelete }: any) {
     min-h-[600px] h-[calc(100vh-120px)] overflow-y-auto 
     ${isOver ? "bg-green-50" : ""}`}
       >
-        <h2 className="font-semibold mb-3">
+        <h2 className="font-semibold text-gray-800 mb-4 text-lg border-b border-gray-200 pb-2">
           Drag and drop questions to build your survey:
         </h2>
 

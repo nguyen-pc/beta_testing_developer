@@ -127,7 +127,7 @@ export default function QuestionEditor({
         questionType === "multiple-checkbox") && (
         <div className="ml-2 mb-3">
           {options.map((opt, i) => (
-            <div key={i} className="flex items-center gap-2 mb-2">
+            <div key={i} className="flex items-center gap-2 mb-2 mt-2">
               <TextField
                 size="small"
                 value={opt}

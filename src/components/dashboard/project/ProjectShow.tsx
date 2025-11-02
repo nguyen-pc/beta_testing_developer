@@ -23,6 +23,7 @@ import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { fetchCampaignByProject } from "../../../redux/slice/CampaignSlide";
 import queryString from "query-string";
 import { sfLike } from "spring-filter-query-builder";
+import parse from "html-react-parser";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: "flex",
@@ -473,7 +474,7 @@ export default function ProjectShow() {
                   className={focusedCardIndex === index ? "Mui-focused" : ""}
                   sx={{
                     height: "400px",
-                    width:"500px",
+                    width: "500px",
                     borderRadius: 3,
                     transition: "all 0.3s ease",
                     "&:hover": {
@@ -483,20 +484,57 @@ export default function ProjectShow() {
                   }}
                 >
                   {/* Ảnh đại diện chiến dịch */}
-                  <CardMedia
-                    component="img"
-                    alt={campaign.title}
-                    image={
-                      campaign.image ||
-                      "https://picsum.photos/800/450?random=4"
-                    }
-                    sx={{
-                      height: 180,
-                      objectFit: "cover",
-                      borderTopLeftRadius: 12,
-                      borderTopRightRadius: 12,
-                    }}
-                  />
+                  {/* Ảnh đại diện chiến dịch + trạng thái */}
+                  <Box sx={{ position: "relative" }}>
+                    <CardMedia
+                      component="img"
+                      alt={campaign.title}
+                      image={
+                        campaign?.bannerUrl
+                          ? `http://localhost:8081/storage/project-banners/${campaign.bannerUrl}`
+                          : "https://picsum.photos/800/450?random=2"
+                      }
+                      sx={{
+                        height: 180,
+                        objectFit: "cover",
+                        borderTopLeftRadius: 12,
+                        borderTopRightRadius: 12,
+                      }}
+                    />
+
+                    {/* Thẻ trạng thái */}
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        top: 12,
+                        right: 12,
+                        backgroundColor:
+                          campaign.campaignStatus === "PENDING"
+                            ? "rgba(255, 193, 7, 0.9)" // vàng nhạt
+                            : campaign.campaignStatus === "APPROVED"
+                            ? "rgba(76, 175, 80, 0.9)" // xanh lá
+                            : campaign.campaignStatus === "IN_PROGRESS"
+                            ? "rgba(33, 150, 243, 0.9)" // xanh dương
+                            : campaign.campaignStatus === "COMPLETED"
+                            ? "rgba(156, 39, 176, 0.9)" // tím
+                            : campaign.campaignStatus === "REJECTED"
+                            ? "rgba(244, 67, 54, 0.9)" // đỏ
+                            : "rgba(158, 158, 158, 0.8)", // xám
+                        color: "white",
+                        px: 1.5,
+                        py: 0.5,
+                        borderRadius: "8px",
+                        fontSize: "0.75rem",
+                        fontWeight: 600,
+                        textTransform: "uppercase",
+                        letterSpacing: 0.5,
+                        backdropFilter: "blur(4px)",
+                        boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
+                      }}
+                    >
+                      {campaign.campaignStatus || "DRAFT"}
+                    </Box>
+                  </Box>
 
                   {/* Nội dung */}
                   <StyledCardContent>
@@ -509,7 +547,7 @@ export default function ProjectShow() {
                         letterSpacing: 0.5,
                       }}
                     >
-                      {campaign.tag || "No tag"}
+                      {campaign ? campaign?.campaignType?.name : "No tag"}
                     </Typography>
 
                     <Typography
@@ -540,7 +578,8 @@ export default function ProjectShow() {
                         fontSize: "0.9rem",
                       }}
                     >
-                      {campaign.description || "No description provided."}
+                      {parse(campaign.description) ||
+                        "No description provided."}
                     </Typography>
                   </StyledCardContent>
 

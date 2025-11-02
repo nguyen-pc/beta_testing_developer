@@ -17,10 +17,11 @@ import LaunchIcon from "@mui/icons-material/RocketLaunch";
 import EditIcon from "@mui/icons-material/Edit";
 import { useNavigate, useParams } from "react-router-dom";
 import { callPublishCampaign, callGetCampaign } from "../../../../config/api";
+import parse from "html-react-parser";
 
 export default function CampaignLaunch() {
   const navigate = useNavigate();
-  const {projectId, campaignId } = useParams(); // /dashboard/campaigns/:id/launch
+  const { projectId, campaignId } = useParams(); // /dashboard/campaigns/:id/launch
   const [campaign, setCampaign] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [publishing, setPublishing] = useState(false);
@@ -35,7 +36,7 @@ export default function CampaignLaunch() {
     const fetchCampaign = async () => {
       try {
         const res = await callGetCampaign(Number(campaignId));
-        console.log("Fetched campaign:", res);  
+        console.log("Fetched campaign:", res);
         if (res?.data) {
           setCampaign(res.data);
         } else {
@@ -66,14 +67,16 @@ export default function CampaignLaunch() {
           severity: "success",
         });
 
-        
-
         // Gọi lại API để cập nhật trạng thái mới nhất
         const updated = await callGetCampaign(Number(campaignId));
         setCampaign(updated?.data?.result || updated?.data);
 
         // Điều hướng sau 2s
-        setTimeout(() => navigate(`/dashboard/projects/${projectId}/campaigns${campaignId}`), 2000);
+        setTimeout(
+          () =>
+            navigate(`/dashboard/projects/${projectId}/campaigns/${campaignId}`),
+          2000
+        );
       } else {
         setSnackbar({
           open: true,
@@ -110,7 +113,7 @@ export default function CampaignLaunch() {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" fontWeight="bold" mb={1}>
-        🚀 Xuất bản chiến dịch
+        Xuất bản chiến dịch
       </Typography>
       <Typography variant="body1" color="text.secondary" mb={3}>
         Kiểm tra lại các thông tin trước khi xuất bản chiến dịch Beta Test.
@@ -125,7 +128,7 @@ export default function CampaignLaunch() {
       <Card sx={{ borderRadius: 3, boxShadow: 2, mb: 3 }}>
         <CardContent>
           <Typography variant="h6" fontWeight="bold" gutterBottom>
-            🧾 Thông tin chiến dịch
+            Thông tin chiến dịch
           </Typography>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
@@ -133,7 +136,7 @@ export default function CampaignLaunch() {
                 <strong>Tên chiến dịch:</strong> {campaign.title}
               </Typography>
               <Typography variant="body2">
-                <strong>Mô tả:</strong> {campaign.description || "—"}
+                <strong>Mô tả:</strong> {parse(campaign.description) || "—"}
               </Typography>
               <Typography variant="body2">
                 <strong>Ngày bắt đầu:</strong>{" "}
