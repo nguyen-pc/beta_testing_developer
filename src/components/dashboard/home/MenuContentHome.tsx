@@ -18,12 +18,17 @@ export default function MenuContentHome() {
   const location = useLocation();
   const mainListItems = [
     { text: "Home", icon: <HomeRoundedIcon />, path: "/dashboard" },
-    { text: "User", icon: <HomeRoundedIcon />, path: "/dashboard/user" },
+    { text: "Team Members", icon: <PeopleRoundedIcon />, path: "/dashboard/user" },
     {
-      text: "Project",
+      text: "Projects",
       icon: <AnalyticsRoundedIcon />,
       path: "/dashboard/projects",
     },
+    {
+      text: "Tasks",
+      icon: <AssignmentRoundedIcon />,
+      path: "/dashboard/tasks",
+    }
   ];
 
   const secondaryListItems = [

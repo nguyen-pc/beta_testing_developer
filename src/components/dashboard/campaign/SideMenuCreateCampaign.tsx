@@ -6,10 +6,10 @@ import Box from "@mui/material/Box";
 import Divider from "@mui/material/Divider";
 import Stack from "@mui/material/Stack";
 import Typography from "@mui/material/Typography";
-import SelectContent from "../SelectContent";
 import OptionsMenu from "../OptionsMenu";
 import MenuContentCreateCampaign from "./MenuContentCreateCampaign";
 import { useAppSelector } from "../../../redux/hooks";
+import SelectContentCampaignCreate from "../SelectContentCampaignCreate";
 
 const drawerWidth = 240;
 
@@ -47,7 +47,7 @@ export default function SideMenuCreateCampaign() {
           p: 1.5,
         }}
       >
-        <SelectContent />
+        <SelectContentCampaignCreate />
       </Box>
       <Divider />
       <Box

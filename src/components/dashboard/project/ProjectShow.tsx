@@ -24,6 +24,7 @@ import { fetchCampaignByProject } from "../../../redux/slice/CampaignSlide";
 import queryString from "query-string";
 import { sfLike } from "spring-filter-query-builder";
 import parse from "html-react-parser";
+import ProjectTeamManager from "./ProjectTeamManager";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: "flex",
@@ -281,7 +282,7 @@ export default function ProjectShow() {
       </Dialog>
       <Grid container spacing={6} alignItems="center">
         {/* === Bên trái: Nội dung dự án === */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ xs: 12, md: 6, lg: 6 }}>
           <Box>
             {/* Tiêu đề Project */}
             <Typography
@@ -371,17 +372,6 @@ export default function ProjectShow() {
               >
                 Create Campaign
               </Button>
-              <Button
-                variant="outlined"
-                size="large"
-                sx={{
-                  px: 3,
-                  borderRadius: "12px",
-                  textTransform: "none",
-                }}
-              >
-                Add Team Members
-              </Button>
             </Box>
 
             <Typography
@@ -394,7 +384,7 @@ export default function ProjectShow() {
         </Grid>
 
         {/* === Bên phải: Banner === */}
-        <Grid item xs={12} md={6}>
+        <Grid item size={{ xs: 12, md: 6, lg: 6 }}>
           <Box
             sx={{
               position: "relative",
@@ -449,6 +439,10 @@ export default function ProjectShow() {
           </Box>
         </Grid>
       </Grid>
+      {/* add team menber */}
+      <Grid size={{ xs: 12, md: 6, lg: 6 }}>
+        <ProjectTeamManager projectId={projectId} />
+      </Grid>
 
       <Box sx={{ mt: 4 }}>
         <Typography
@@ -464,7 +458,7 @@ export default function ProjectShow() {
         {campaigns && campaigns.length > 0 ? (
           <Grid container spacing={3} columns={12}>
             {campaigns.map((campaign, index) => (
-              <Grid item xs={12} md={4} key={campaign.id}>
+              <Grid item size={{ xs: 12, md: 6, lg: 4 }} key={campaign.id}>
                 <StyledCard
                   onClick={() => handleDetailClick(projectId, campaign.id)}
                   variant="outlined"
@@ -473,8 +467,8 @@ export default function ProjectShow() {
                   tabIndex={0}
                   className={focusedCardIndex === index ? "Mui-focused" : ""}
                   sx={{
-                    height: "400px",
-                    width: "500px",
+                    // height: "400px",
+                    // width: "500px",
                     borderRadius: 3,
                     transition: "all 0.3s ease",
                     "&:hover": {

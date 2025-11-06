@@ -10,6 +10,7 @@ import SelectContent from "../SelectContent";
 import MenuContent from "./MenuContent";
 import OptionsMenu from "../OptionsMenu";
 import { useAppSelector } from "../../../redux/hooks";
+import SelectContentCampaign from "../SelectContentCampaign";
 
 const drawerWidth = 240;
 
@@ -47,7 +48,7 @@ export default function SideMenu() {
           p: 1.5,
         }}
       >
-        <SelectContent />
+        <SelectContentCampaign />
       </Box>
       <Divider />
       <Box

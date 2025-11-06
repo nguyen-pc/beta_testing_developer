@@ -3,7 +3,7 @@ import { Button, Box } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import logo from "../../../src/assets/logo2.png";
 
-export default function SelectContent() {
+export default function SelectContentCampaignCreate() {
   const navigate = useNavigate();
   const {campaignId, projectId} = useParams();
 
@@ -35,6 +35,20 @@ export default function SelectContent() {
         }}
       />
 
+      {/* Back Button */}
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleBack}
+        sx={{
+          textTransform: "none",
+          fontWeight: 500,
+          borderRadius: 2,
+          px: 3,
+        }}
+      >
+        ← Back to Project
+      </Button>
     </Box>
   );
 }

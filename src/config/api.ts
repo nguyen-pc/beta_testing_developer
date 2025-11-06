@@ -332,8 +332,14 @@ export async function callGetTesterStatus(campaignId: string) {
   );
 }
 
-export async function callUpdateProgressTester(testerCampaignId: string, data: any) {
-  console.log("Fetching tester recruiting results for campaign:", testerCampaignId);
+export async function callUpdateProgressTester(
+  testerCampaignId: string,
+  data: any
+) {
+  console.log(
+    "Fetching tester recruiting results for campaign:",
+    testerCampaignId
+  );
   return axios.put<IBackendRes<any>>(
     `/api/v1/campaign/tester-campaign/${testerCampaignId}/progress`,
     data
@@ -404,6 +410,15 @@ export async function callPostBugChatMessage(bugId: string, data: any) {
   return axios.post<IBackendRes<any>>(`/api/v1/bugs/${bugId}/chat`, data);
 }
 
+export async function callGetBugReportDevice(bugId: string) {
+  console.log("callGetBugReportDevice", { bugId });
+  return axios.get<IBackendRes<any>>(`/api/v1/bugs/device/${bugId}`);
+}
+
+export async function callGetAttachmentsByBugId(bugId: string) {
+  console.log("callGetAttachmentsByBugId", { bugId });
+  return axios.get<IBackendRes<any>>(`/api/v1/attachment/bug/${bugId}`);
+}
 // survey result
 export async function callGetSurveyResults(surveyId: string) {
   console.log("Fetching survey results for survey:", surveyId);
@@ -538,7 +553,7 @@ export const callUploadSingleFile = (file: File, folder: String) => {
       headers: {
         "Content-Type": "multipart/form-data",
       },
-    },
+    }
   );
 };
 
@@ -599,4 +614,120 @@ export const getUserSessions = (userId: number) => {
   return axios.get<IBackendRes<any>>(`/api/v1/chatbot/session/list`, {
     params: { userId: userId },
   });
+};
+
+// Add team members to project
+export const callAddUserToProject = (
+  projectId: number,
+  userId: number,
+  role: string
+) => {
+  console.log("callAddUserToProject", { projectId, userId, role });
+  return axios.post(`/api/v1/project-users/add`, null, {
+    params: { projectId, userId, role },
+  });
+};
+
+export const callRemoveUserFromProject = (
+  projectId: number,
+  userId: number
+) => {
+  console.log("callRemoveUserFromProject", { projectId, userId });
+  return axios.delete<IBackendRes<null>>(`/api/v1/project-users/remove`, {
+    params: {
+      projectId,
+      userId,
+    },
+  });
+};
+
+export const callGetUsersByProject = (projectId: number) => {
+  console.log("callGetUsersByProject", { projectId });
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/project-users/${projectId}/users`
+  );
+};
+
+// User
+export const callCreateUser = (user: IUser) => {
+  return axios.post<IBackendRes<IUser>>("/api/v1/users", { ...user });
+};
+
+export const callUpdateUser = (user: IUser) => {
+  return axios.put<IBackendRes<IUser>>(`/api/v1/users`, { ...user });
+};
+
+export const callDeleteUser = (id: string) => {
+  return axios.delete<IBackendRes<IUser>>(`/api/v1/users/${id}`);
+};
+
+export const callFetchUser = (query: string) => {
+  return axios.get<IBackendRes<IModelPaginate<IUser>>>(
+    `/api/v1/users?${query}`
+  );
+};
+export const callFetchUserById = (id: string) => {
+  return axios.get<IBackendRes<IUser>>(`/api/v1/users/${id}`);
+};
+
+export const callFetchUserByCompanyId = (companyId: string) => {
+  return axios.get<IBackendRes<IUser[]>>(`/api/v1/users/company/${companyId}`);
+};
+
+// Module permission
+
+export const callCreatePermission = (permission: IPermission) => {
+  return axios.post<IBackendRes<IPermission>>("/api/v1/permissions", {
+    ...permission,
+  });
+};
+
+export const callUpdatePermission = (permission: IPermission, id: string) => {
+  return axios.put<IBackendRes<IPermission>>("/api/v1/permissions", {
+    id,
+    ...permission,
+  });
+};
+
+export const callDeletePermission = (id: string) => {
+  return axios.delete<IBackendRes<IPermission>>(`/api/v1/permissions/${id}`);
+};
+
+export const callFetchPermission = (query: string) => {
+  return axios.get<IBackendRes<IModelPaginate<IPermission>>>(
+    `/api/v1/permissions?${query}`
+  );
+};
+
+export const callFetchPermissionById = (id: string) => {
+  return axios.get<IBackendRes<IPermission>>(`/api/v1/permissions/${id}`);
+};
+
+// Module Role
+
+export const callCreateRole = (role: IRole) => {
+  return axios.post<IBackendRes<IRole>>("/api/v1/roles", {
+    ...role,
+  });
+};
+
+export const callUpdateRole = (role: IRole, id: string) => {
+  return axios.put<IBackendRes<IRole>>("/api/v1/roles", {
+    id,
+    ...role,
+  });
+};
+
+export const callDeleteRole = (id: string) => {
+  return axios.delete<IBackendRes<IRole>>(`/api/v1/roles/${id}`);
+};
+
+export const callFetchRoleById = (id: string) => {
+  return axios.get<IBackendRes<IRole>>(`/api/v1/roles/${id}`);
+};
+
+export const callFetchRole = (query: string) => {
+  return axios.get<IBackendRes<IModelPaginate<IRole>>>(
+    `/api/v1/roles?${query}`
+  );
 };

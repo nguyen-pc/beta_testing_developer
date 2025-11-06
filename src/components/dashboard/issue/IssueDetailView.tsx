@@ -13,20 +13,26 @@ import {
   ListItemAvatar,
   Paper,
   CircularProgress,
+  Alert,
+  Dialog,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import CloseIcon from "@mui/icons-material/Close";
 import { useParams, useNavigate } from "react-router-dom";
 import queryString from "query-string";
 import {
   callGetBugReports,
   callGetDetailBugReport,
   uploadRecording,
+  callGetAttachmentsByBugId,
+  callGetBugReportDevice,
 } from "../../../config/api";
 import { useBugChat } from "../../../hooks/websocket/useBugChat";
 import { useAppSelector } from "../../../redux/hooks";
 import { formatChatTime } from "../../../util/timeFormatter";
+import parse from "html-react-parser";
 
 interface Issue {
   id: number;
@@ -45,17 +51,39 @@ interface Issue {
   attachments: string[];
 }
 
+interface Attachment {
+  id: number;
+  fileName: string;
+  fileType: string;
+  fileUrl: string | null;
+  uploadedAt: string;
+}
+
+interface DeviceInfo {
+  id: number;
+  device: string;
+  os: string;
+  browser: string;
+  createdAt: string;
+  bugId: number;
+}
+
 export default function IssueDetailView() {
   const { bugId, campaignId, projectId } = useParams();
   const navigate = useNavigate();
   const user = useAppSelector((state) => state.account.user);
 
   const [issue, setIssue] = useState<Issue | null>(null);
+  const [attachments, setAttachments] = useState<Attachment[]>([]);
+  const [deviceInfo, setDeviceInfo] = useState<DeviceInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [relatedIssues, setRelatedIssues] = useState<Issue[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [newMsg, setNewMsg] = useState("");
   const { messages, sendMessage, connected } = useBugChat(bugId);
+  const [loadingFiles, setLoadingFiles] = useState(false);
+  const [loadingDevice, setLoadingDevice] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   // 🧩 Fetch Issue Detail
   const fetchIssueDetail = async () => {
@@ -67,6 +95,34 @@ export default function IssueDetailView() {
       console.error("Error fetching issue detail:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // ---------------- Fetch Attachments ----------------
+  const fetchAttachments = async (bugId: number) => {
+    setLoadingFiles(true);
+    try {
+      const res = await callGetAttachmentsByBugId(bugId);
+      const data = res.data.data || res.data;
+      setAttachments(data || []);
+    } catch (err) {
+      console.error("Error fetching attachments:", err);
+    } finally {
+      setLoadingFiles(false);
+    }
+  };
+
+  // ---------------- Fetch Device Info ----------------
+  const fetchDeviceInfo = async (bugId: number) => {
+    setLoadingDevice(true);
+    try {
+      const res = await callGetBugReportDevice(String(bugId));
+      const data = res.data.data || res.data;
+      setDeviceInfo(data || []);
+    } catch (err) {
+      console.error("Error fetching device info:", err);
+    } finally {
+      setLoadingDevice(false);
     }
   };
 
@@ -92,6 +148,8 @@ export default function IssueDetailView() {
   useEffect(() => {
     fetchIssueDetail();
     fetchRelatedIssues();
+    fetchAttachments(bugId);
+    fetchDeviceInfo(bugId);
   }, [bugId, campaignId]);
 
   // 🧩 Gửi tin nhắn text
@@ -216,7 +274,7 @@ export default function IssueDetailView() {
           Expected
         </Typography>
         <Typography variant="body2" mb={2}>
-          {issue.expectedResult || "—"}
+          {parse(issue?.expectedResult) || "—"}
         </Typography>
 
         <Typography variant="subtitle2" gutterBottom>
@@ -227,37 +285,13 @@ export default function IssueDetailView() {
         </Typography>
 
         <Typography variant="subtitle2" gutterBottom>
-          Attachments
-        </Typography>
-        <Box mb={2}>
-          {issue.attachments?.length ? (
-            issue.attachments.map((file, i) => (
-              <Chip
-                key={i}
-                label={file}
-                variant="outlined"
-                sx={{ mr: 1, mt: 1 }}
-              />
-            ))
-          ) : (
-            <Typography variant="body2" color="text.secondary">
-              No attachments
-            </Typography>
-          )}
-        </Box>
-
-        <Typography variant="subtitle2" gutterBottom>
           Description
         </Typography>
         <Typography variant="body2" color="text.secondary" mb={2}>
-          {issue.description || "No description"}
+          {parse(issue?.description) || "No description"}
         </Typography>
 
         <Divider sx={{ my: 2 }} />
-
-        <Typography variant="subtitle2" gutterBottom>
-          Internal Notes {connected ? "🟢" : "🔴"}
-        </Typography>
 
         <List
           dense
@@ -400,10 +434,158 @@ export default function IssueDetailView() {
         <Typography fontWeight={600} variant="subtitle1" mb={1}>
           Device Info
         </Typography>
-        <Typography variant="body2">Device: {issue.device}</Typography>
-        <Typography variant="body2">OS: {issue.os}</Typography>
-        <Typography variant="body2">Browser: {issue.browser}</Typography>
+        {loadingDevice ? (
+          <CircularProgress size={24} />
+        ) : deviceInfo.length === 0 ? (
+          <Alert severity="info" sx={{ mt: 1 }}>
+            No device info for this bug.
+          </Alert>
+        ) : (
+          deviceInfo.map((d) => (
+            <Box
+              key={d.id}
+              sx={{
+                border: "1px solid #ddd",
+                borderRadius: 2,
+                p: 1.5,
+                mb: 1,
+                backgroundColor: "#fafafa",
+              }}
+            >
+              <Typography variant="body2">
+                <strong>Device:</strong> {d.device}
+              </Typography>
+              <Typography variant="body2">
+                <strong>OS:</strong> {d.os}
+              </Typography>
+              <Typography variant="body2">
+                <strong>Browser:</strong> {d.browser}
+              </Typography>
+            </Box>
+          ))
+        )}
+        <Divider sx={{ my: 2 }} />
+
+        <Typography fontWeight={600} variant="subtitle1" mb={1}>
+          Attachments
+        </Typography>
+        {loadingFiles ? (
+          <CircularProgress size={24} />
+        ) : attachments.length === 0 ? (
+          <Typography variant="body2" color="text.secondary">
+            No attachments
+          </Typography>
+        ) : (
+          <Stack direction="row" spacing={2} flexWrap="wrap">
+            {attachments.map((file) => {
+              const fileUrl =
+                file.fileUrl ||
+                `${import.meta.env.VITE_BACKEND_URL}/storage/attachment/${
+                  file.fileName
+                }`;
+              const isImage = file.fileType?.startsWith("image/");
+              const isVideo = file.fileType?.startsWith("video/");
+
+              return (
+                <Box
+                  key={file.id}
+                  onClick={() => setPreviewUrl(fileUrl)}
+                  sx={{
+                    width: 100,
+                    height: 100,
+                    border: "1px solid #ccc",
+                    borderRadius: 2,
+                    overflow: "hidden",
+                    cursor: "pointer",
+                    "&:hover": { borderColor: "primary.main" },
+                  }}
+                >
+                  {isImage ? (
+                    <img
+                      src={fileUrl}
+                      alt={file.fileName}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : isVideo ? (
+                    <video
+                      src={fileUrl}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
+                    />
+                  ) : (
+                    <Stack
+                      alignItems="center"
+                      justifyContent="center"
+                      sx={{ height: "100%", p: 1 }}
+                    >
+                      <Typography
+                        variant="caption"
+                        textAlign="center"
+                        sx={{ px: 1, wordBreak: "break-word" }}
+                      >
+                        {file.fileName}
+                      </Typography>
+                    </Stack>
+                  )}
+                </Box>
+              );
+            })}
+          </Stack>
+        )}
       </Box>
+      {/* 🔍 Preview Dialog */}
+      {previewUrl && (
+        <Dialog
+          open={!!previewUrl}
+          onClose={() => setPreviewUrl(null)}
+          fullWidth
+          maxWidth="lg"
+        >
+          <Box sx={{ position: "relative", bgcolor: "#000", p: 2 }}>
+            <IconButton
+              onClick={() => setPreviewUrl(null)}
+              sx={{
+                position: "absolute",
+                top: 10,
+                right: 10,
+                color: "white",
+                zIndex: 2,
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
+
+            {previewUrl.match(/\.(mp4|webm)$/i) ? (
+              <video
+                controls
+                src={previewUrl}
+                style={{
+                  width: "100%",
+                  maxHeight: "80vh",
+                  objectFit: "contain",
+                }}
+              />
+            ) : (
+              <img
+                src={previewUrl}
+                alt="Preview"
+                style={{
+                  width: "100%",
+                  maxHeight: "80vh",
+                  objectFit: "contain",
+                }}
+              />
+            )}
+          </Box>
+        </Dialog>
+      )}
     </Box>
   );
 }

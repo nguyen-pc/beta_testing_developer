@@ -21,10 +21,9 @@ import {
 import NotificationsProvider from "../../hooks/useNotifications/NotificationsProvider";
 import DialogsProvider from "../../hooks/useDialogs/DialogsProvider";
 import { Routes, Route } from "react-router-dom";
-import EmployeeList from "../../components/user/EmployeeList";
-import EmployeeShow from "../../components/user/EmployeeShow";
-import EmployeeCreate from "../../components/user/EmployeeCreate";
-import EmployeeEdit from "../../components/user/EmployeeEdit";
+import UserManagement from "../../components/dashboard/userProject/UserManagement";
+import FormUserAdd from "../../components/dashboard/userProject/FormUserAdd";
+import EditUser from "../../components/dashboard/userProject/EditUser";
 import SideMenuHome from "../../components/dashboard/home/SideMenuHome";
 
 const xThemeComponents = {
@@ -57,7 +56,6 @@ export default function User(props: { disableCustomTheme?: boolean }) {
           <Stack
             spacing={2}
             sx={{
-              alignItems: "center",
               mx: 3,
               pb: 5,
               mt: { xs: 8, md: 0 },
@@ -69,19 +67,13 @@ export default function User(props: { disableCustomTheme?: boolean }) {
                 {/* Định nghĩa các route con theo dạng relative */}
                 <Routes>
                   {/* Khi vào /dashboard/user/, hiển thị EmployeeList */}
-                  <Route index element={<EmployeeList />} />
-                  <Route path="employees" element={<EmployeeList />} />
-                  <Route
-                    path="employees/:employeeId"
-                    element={<EmployeeShow />}
-                  />
-                  <Route path="employees/new" element={<EmployeeCreate />} />
-                  <Route
-                    path="employees/:employeeId/edit"
-                    element={<EmployeeEdit />}
-                  />
+                  <Route index element={<UserManagement />} />
+                  <Route path="" element={<UserManagement />} />
+                  {/* <Route path=":id" element={<EmployeeShow />} /> */}
+                  <Route path="new" element={<FormUserAdd />} />
+                  <Route path=":id/edit" element={<EditUser />} />
                   {/* Fallback route nếu không khớp */}
-                  <Route path="*" element={<EmployeeList />} />
+                  <Route path="*" element={<UserManagement />} />
                 </Routes>
               </DialogsProvider>
             </NotificationsProvider>
