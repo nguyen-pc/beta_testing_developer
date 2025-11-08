@@ -1,3 +1,4 @@
+
 import {
   type IBackendRes,
   type IAccount,
@@ -398,6 +399,10 @@ export async function callGetDetailBugReport(bugId: string) {
   return axios.get<IBackendRes<any>>(`/api/v1/bugs/${bugId}`);
 }
 
+export async function callUpdateBugReport(bugId: string, data: any) {
+  console.log("Updating bug report:", bugId, data);
+  return axios.put<IBackendRes<any>>(`/api/v1/bugs/${bugId}`, data);
+}
 //chat
 
 export async function callGetBugChatMessages(bugId: string) {
@@ -729,5 +734,49 @@ export const callFetchRoleById = (id: string) => {
 export const callFetchRole = (query: string) => {
   return axios.get<IBackendRes<IModelPaginate<IRole>>>(
     `/api/v1/roles?${query}`
+  );
+};
+
+// notification
+export const callFetchUserNotifications = (userId: string) => {
+  console.log("callFetchUserNotifications", { userId });
+  return axios.get<IBackendRes<Notification[]>>(
+    `/api/v1/notifications/${userId}`
+  );
+};
+
+export const callCreateNotification = (data: any) => {
+  console.log("callCreateNotification", { data });
+  return axios.post<IBackendRes<any>>(`/api/v1/notifications/create`, data);
+};
+
+export const callMarkNotificationAsRead = (notificationId: string) => {
+  console.log("callMarkNotificationAsRead", { notificationId });
+  return axios.put<IBackendRes<null>>(
+    `/api/v1/notifications/${notificationId}/read`
+  );
+};
+
+export const callDeleteNotification = (notificationId: string) => {
+  console.log("callDeleteNotification", { notificationId });
+  return axios.delete<IBackendRes<null>>(
+    `/api/v1/notifications/${notificationId}`
+  );
+};
+
+// analytics
+export const callGetCompanyDashboard = (companyId: number) => {
+  return axios.get<IBackendRes<any>>(`/api/v1/dashboard/overview`, {
+    params: {
+      companyId: companyId,
+      type: "company",
+    },
+  });
+};
+
+// test execution
+export const callGetTestExecutionsByCampaign = (campaignId: number) => {
+  return axios.get<IBackendRes<IModelPaginate<any>>>(
+    `/api/v1/test-execution/campaign/${campaignId}`
   );
 };

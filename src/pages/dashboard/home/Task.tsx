@@ -9,7 +9,7 @@ import Box from "@mui/material/Box";
 import Stack from "@mui/material/Stack";
 import AppNavbar from "../../../components/dashboard/AppNavbar";
 import Header from "../../../components/dashboard/Header";
-import SideMenu from "../../../components/dashboard/campaign/SideMenu";
+// import SideMenu from "../../components/dashboard/SideMenu";
 import AppTheme from "../../../theme/AppTheme";
 import {
   chartsCustomizations,
@@ -17,21 +17,11 @@ import {
   datePickersCustomizations,
   treeViewCustomizations,
 } from "../../../theme/customizations";
+import SideMenuHome from "../../../components/dashboard/home/SideMenuHome";
 import NotificationsProvider from "../../../hooks/useNotifications/NotificationsProvider";
 import DialogsProvider from "../../../hooks/useDialogs/DialogsProvider";
 import { Route, Routes } from "react-router-dom";
-import CampaignEdit from "../../../components/dashboard/campaign/CampaignEdit";
-import TabTesterHome from "../../../components/dashboard/home/tester/TabTesterHome";
-// import IssuesPage from "./IssuesPage";
-import IssueDetailView from "../../../components/dashboard/issue/IssueDetailView";
-import IssueGridView from "../../../components/dashboard/issue/IssueGridView";
-import SurveyListByCampaign from "../../../components/dashboard/Response/SurveyListByCampaign";
-import ResponsePage from "../../../components/dashboard/Response/ResponsePage";
-import EmailTester from "../../../components/dashboard/emailTester/EmailTester";
-import SurveyAnalyticsPage from "../../../components/dashboard/Response/SurveyAnalyticsPage";
-import TabFileManagement from "../../../components/dashboard/file/TabFileManagement";
-import MainGridCampaign from "../../../components/dashboard/MainGridCampaign";
-import TestcaseHome from "../../../components/dashboard/campaign/tescase_analysis/TestcaseHome";
+import TaskManagement from "../../../components/dashboard/task/TaskManagement";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -40,12 +30,12 @@ const xThemeComponents = {
   ...treeViewCustomizations,
 };
 
-export default function Dashboard(props: { disableCustomTheme?: boolean }) {
+export default function Task(props: { disableCustomTheme?: boolean }) {
   return (
     <AppTheme {...props} themeComponents={xThemeComponents}>
       <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
-        <SideMenu />
+        <SideMenuHome />
         <AppNavbar />
         {/* Main content */}
         <Box
@@ -71,22 +61,10 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
             <NotificationsProvider>
               <DialogsProvider>
                 <Routes>
-                  <Route index element={<MainGridCampaign />} />
-                  <Route path="tester" element={<TabTesterHome />} />
-                  <Route path="edit_detail" element={<CampaignEdit />} />
-                  <Route path="issues" element={<IssueGridView />} />
-                  <Route path="issues/:bugId/" element={<IssueDetailView />} />
-                  <Route path="survey" element={<SurveyListByCampaign />} />
-                  <Route path="email" element={<EmailTester />} />
-                  <Route path="file" element={<TabFileManagement />} />
-                  <Route path="testcase" element={<TestcaseHome />} />
-                  <Route path="survey/:surveyId/results" element={<ResponsePage />} />
-                  <Route path="survey/:surveyId/analysis" element={<SurveyAnalyticsPage />} />
-
-                  
+                  <Route index element={<TaskManagement />} />
+                  <Route path="" element={<TaskManagement />} />
                   {/* Fallback route nếu không khớp */}
-                  <Route path="*" element={<MainGridCampaign />} />
-
+                  <Route path="*" element={<TaskManagement />} />
                 </Routes>
               </DialogsProvider>
             </NotificationsProvider>

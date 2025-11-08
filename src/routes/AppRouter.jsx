@@ -15,6 +15,7 @@ import ViewQuestion from "../components/dashboard/campaign/survey/ViewQuestion";
 import ScenarioPage from "../components/dashboard/campaign/testcase/ScenarioPage";
 import NotificationsProvider from "../hooks/useNotifications/NotificationsProvider";
 import DialogsProvider from "../hooks/useDialogs/DialogsProvider";
+import Task from "../pages/dashboard/home/Task";
 import PrivateRoute from "./PrivateRoute";
 export default function AppRouter() {
   return (
@@ -39,6 +40,7 @@ export default function AppRouter() {
         />
         <Route path="/dashboard/projects/*" element={<Project />} />
         <Route path="/dashboard/user/*" element={<User />} />
+        <Route path="/dashboard/tasks/*" element={<Task />} />
 
         {/*Dashboard ở trang campaign */}
         <Route

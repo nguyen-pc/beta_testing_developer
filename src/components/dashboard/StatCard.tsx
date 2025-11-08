@@ -1,36 +1,21 @@
-import * as React from 'react';
-import { useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Chip from '@mui/material/Chip';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
-import { SparkLineChart } from '@mui/x-charts/SparkLineChart';
-import { areaElementClasses } from '@mui/x-charts/LineChart';
+import * as React from "react";
+import { useTheme } from "@mui/material/styles";
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Chip from "@mui/material/Chip";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import { SparkLineChart } from "@mui/x-charts/SparkLineChart";
+import { areaElementClasses } from "@mui/x-charts/LineChart";
 
 export type StatCardProps = {
   title: string;
   value: string;
   interval: string;
-  trend: 'up' | 'down' | 'neutral';
-  data: number[];
+  trend: "up" | "down" | "neutral";
+  data: { date: string; count: number }[] | number[];
 };
-
-function getDaysInMonth(month: number, year: number) {
-  const date = new Date(year, month, 0);
-  const monthName = date.toLocaleDateString('en-US', {
-    month: 'short',
-  });
-  const daysInMonth = date.getDate();
-  const days = [];
-  let i = 1;
-  while (days.length < daysInMonth) {
-    days.push(`${monthName} ${i}`);
-    i += 1;
-  }
-  return days;
-}
 
 function AreaGradient({ color, id }: { color: string; id: string }) {
   return (
@@ -43,6 +28,20 @@ function AreaGradient({ color, id }: { color: string; id: string }) {
   );
 }
 
+// ✅ Hàm định dạng ngày cho đẹp
+function formatDate(dateStr: string) {
+  try {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "2-digit",
+      year: "numeric", // 👈 hiển thị luôn năm
+    });
+  } catch {
+    return dateStr;
+  }
+}
+
 export default function StatCard({
   title,
   value,
@@ -51,75 +50,77 @@ export default function StatCard({
   data,
 }: StatCardProps) {
   const theme = useTheme();
-  const daysInWeek = getDaysInMonth(4, 2024);
 
   const trendColors = {
-    up:
-      theme.palette.mode === 'light'
-        ? theme.palette.success.main
-        : theme.palette.success.dark,
-    down:
-      theme.palette.mode === 'light'
-        ? theme.palette.error.main
-        : theme.palette.error.dark,
-    neutral:
-      theme.palette.mode === 'light'
-        ? theme.palette.grey[400]
-        : theme.palette.grey[700],
+    up: theme.palette.success.main,
+    down: theme.palette.error.main,
+    neutral: theme.palette.grey[400],
   };
 
   const labelColors = {
-    up: 'success' as const,
-    down: 'error' as const,
-    neutral: 'default' as const,
+    up: "success" as const,
+    down: "error" as const,
+    neutral: "default" as const,
   };
 
-  const color = labelColors[trend];
   const chartColor = trendColors[trend];
-  const trendValues = { up: '+25%', down: '-25%', neutral: '+5%' };
+  const color = labelColors[trend];
+  const trendValues = { up: "+25%", down: "-25%", neutral: "+5%" };
+
+  // ✅ Nếu data có dạng [{date, count}], tách ra làm hai mảng (x: ngày, y: giá trị)
+  const xAxisLabels =
+    typeof data[0] === "object"
+      ? (data as any[]).map((d) => formatDate(d.date))
+      : Array.from({ length: (data as number[]).length }, (_, i) => `${i + 1}`);
+
+  const yValues =
+    typeof data[0] === "object"
+      ? (data as any[]).map((d) => d.count)
+      : (data as number[]);
 
   return (
-    <Card variant="outlined" sx={{ height: '100%', flexGrow: 1 }}>
+    <Card variant="outlined" sx={{ height: "100%", flexGrow: 1 }}>
       <CardContent>
         <Typography component="h2" variant="subtitle2" gutterBottom>
           {title}
         </Typography>
+
         <Stack
           direction="column"
-          sx={{ justifyContent: 'space-between', flexGrow: '1', gap: 1 }}
+          sx={{ justifyContent: "space-between", flexGrow: 1, gap: 1 }}
         >
-          <Stack sx={{ justifyContent: 'space-between' }}>
+          <Stack sx={{ justifyContent: "space-between" }}>
             <Stack
               direction="row"
-              sx={{ justifyContent: 'space-between', alignItems: 'center' }}
+              sx={{ justifyContent: "space-between", alignItems: "center" }}
             >
-              <Typography variant="h4" component="p">
-                {value}
-              </Typography>
-              <Chip size="small" color={color} label={trendValues[trend]} />
+              <Typography variant="h4">{value}</Typography>
+              {/* <Chip size="small" color={color} label={trendValues[trend]} /> */}
             </Stack>
-            <Typography variant="caption" sx={{ color: 'text.secondary' }}>
+            <Typography variant="caption" color="text.secondary">
               {interval}
             </Typography>
           </Stack>
-          <Box sx={{ width: '100%', height: 50 }}>
+
+          {/* 📈 Biểu đồ sparkline */}
+          <Box sx={{ width: "100%", height: 60 }}>
             <SparkLineChart
               color={chartColor}
-              data={data}
+              data={yValues}
               area
               showHighlight
               showTooltip
               xAxis={{
-                scaleType: 'band',
-                data: daysInWeek, // Use the correct property 'data' for xAxis
+                scaleType: "band",
+                data: xAxisLabels, // ✅ có cả năm (ví dụ "Nov 07, 2025")
               }}
               sx={{
                 [`& .${areaElementClasses.root}`]: {
-                  fill: `url(#area-gradient-${value})`,
+                  fill: `url(#area-gradient-${title})`,
                 },
               }}
             >
-              <AreaGradient color={chartColor} id={`area-gradient-${value}`} />
+              <AreaGradient color={chartColor} id={`area-gradient-${title}`} />
             </SparkLineChart>
           </Box>
         </Stack>

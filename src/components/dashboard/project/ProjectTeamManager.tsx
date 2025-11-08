@@ -25,6 +25,7 @@ import {
   callGetUsersByProject,
   callGetCompanyUsers,
   callFetchUserByCompanyId,
+  callCreateNotification,
 } from "../../../config/api";
 import { useAppSelector } from "../../../redux/hooks";
 
@@ -116,6 +117,16 @@ const ProjectTeamManager: React.FC<ProjectTeamManagerProps> = ({
         selectedRole
       );
       console.log("Added member to project:", res?.data);
+      // Tạo notification cho user được thêm
+      const notiData = {
+        userId: Number(selectedUser),
+        title: "Project Invitation",
+        message: `You have been added to project ID ${projectId} as ${selectedRole}.`,
+        type: "PROJECT",
+        link: `/dashboard/projects/show/${projectId}`,
+      };
+      await callCreateNotification(notiData);
+
       await fetchMembers();
       setSelectedUser("");
       setOpen(false);
@@ -128,6 +139,16 @@ const ProjectTeamManager: React.FC<ProjectTeamManagerProps> = ({
   const handleRemoveMember = async (userId: number) => {
     try {
       await callRemoveUserFromProject(Number(projectId), userId);
+      // Tạo notification cho user bị xóa
+      const notiData = {
+        userId: userId,
+        title: "Removed from Project",
+        message: `You have been removed from project ID ${projectId}.`,
+        type: "PROJECT",
+        link: `/dashboard/projects`,
+      };
+      
+      await callCreateNotification(notiData);
       await fetchMembers();
     } catch (err) {
       console.error("Lỗi xóa thành viên:", err);

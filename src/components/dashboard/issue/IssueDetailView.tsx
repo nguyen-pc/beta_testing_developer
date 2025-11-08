@@ -15,6 +15,9 @@ import {
   CircularProgress,
   Alert,
   Dialog,
+  Select,
+  MenuItem,
+  Button,
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
@@ -28,11 +31,15 @@ import {
   uploadRecording,
   callGetAttachmentsByBugId,
   callGetBugReportDevice,
+  callGetUsersByProject,
+  callUpdateBugReport,
+  callCreateNotification,
 } from "../../../config/api";
 import { useBugChat } from "../../../hooks/websocket/useBugChat";
 import { useAppSelector } from "../../../redux/hooks";
 import { formatChatTime } from "../../../util/timeFormatter";
 import parse from "html-react-parser";
+import { a } from "@react-spring/web";
 
 interface Issue {
   id: number;
@@ -67,6 +74,15 @@ interface DeviceInfo {
   createdAt: string;
   bugId: number;
 }
+const bugStatuses = [
+  "TO_DO",
+  "IN_PROGRESS",
+  "IN_REVIEW",
+  "COMPLETE",
+  "DONE",
+  "NEEDS_INFORMATION",
+  "OUT_OF_SCOPE",
+];
 
 export default function IssueDetailView() {
   const { bugId, campaignId, projectId } = useParams();
@@ -84,6 +100,83 @@ export default function IssueDetailView() {
   const [loadingFiles, setLoadingFiles] = useState(false);
   const [loadingDevice, setLoadingDevice] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const [assignees, setAssignees] = useState<any[]>([]);
+  const [selectedAssignee, setSelectedAssignee] = useState<number | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>("");
+
+  const handleCreateNotification = async (
+    targetUserId: number,
+    title: string,
+    message: string,
+    type: string,
+    link?: string
+  ) => {
+    try {
+      const notificationData = {
+        userId: targetUserId,
+        title,
+        message,
+        type,
+        link,
+      };
+      await callCreateNotification(notificationData);
+      console.log("✅ Notification created:", notificationData);
+    } catch (err) {
+      console.error("❌ Error creating notification:", err);
+    }
+  };
+
+  const handleUpdateBugReport = async () => {
+    try {
+      const data = {
+        assigneeId: selectedAssignee,
+        status: selectedStatus,
+      };
+
+      await callUpdateBugReport(String(bugId), data);
+      alert(" Bug report updated successfully!");
+
+      // ✅ Cập nhật local state mà không mất dữ liệu cũ
+      setIssue((prev) => ({
+        ...prev!,
+        assigneeId: selectedAssignee,
+        status: selectedStatus,
+      }));
+
+      // 🧩 Gửi notification cho người được assign (nếu có)
+      if (selectedAssignee) {
+        const title = "Bug assignment updated";
+        const message = `You have been assigned to bug #${bugId} with status "${selectedStatus}"`;
+        const link = `/dashboard/projects/${projectId}/campaigns/${campaignId}/issues/${bugId}`;
+
+        await handleCreateNotification(
+          selectedAssignee,
+          title,
+          message,
+          "BUG_ASSIGNMENT",
+          link
+        );
+      }
+
+      alert("✅ Bug report updated successfully!");
+    } catch (err) {
+      console.error("Error updating bug report:", err);
+      alert(" Failed to update bug report!");
+    }
+  };
+
+  useEffect(() => {
+    const fetchAssignees = async () => {
+      try {
+        const res = await callGetUsersByProject(Number(projectId));
+        setAssignees(res.data || []);
+      } catch (err) {
+        console.error("Error fetching assignees:", err);
+      }
+    };
+    if (projectId) fetchAssignees();
+  }, [projectId]);
 
   // 🧩 Fetch Issue Detail
   const fetchIssueDetail = async () => {
@@ -414,13 +507,55 @@ export default function IssueDetailView() {
           Bug Details
         </Typography>
 
-        <Stack spacing={1}>
-          <Typography variant="body2">
-            <strong>Status:</strong> {issue.status}
-          </Typography>
-          <Typography variant="body2">
-            <strong>Assignee:</strong> {issue.assigneeName || "Unassigned"}
-          </Typography>
+        <Stack spacing={2}>
+          <Box>
+            <Typography variant="body2" fontWeight={600} mb={0.5}>
+              Status
+            </Typography>
+            <Select
+              fullWidth
+              size="small"
+              value={selectedStatus || issue.status || ""}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+            >
+              {bugStatuses.map((status) => (
+                <MenuItem key={status} value={status}>
+                  {status.replaceAll("_", " ")}
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
+          {/* Assignee select */}
+          <Box>
+            <Typography variant="body2" fontWeight={600} mb={0.5}>
+              Assignee
+            </Typography>
+            <Select
+              fullWidth
+              size="small"
+              value={selectedAssignee || issue.assigneeId || ""}
+              onChange={(e) => setSelectedAssignee(Number(e.target.value))}
+            >
+              <MenuItem value="">Unassigned</MenuItem>
+              {assignees.map((member) => (
+                <MenuItem key={member.userId} value={member.userId}>
+                  {member.userName} ({member.role})
+                </MenuItem>
+              ))}
+            </Select>
+          </Box>
+
+          {/* Save button */}
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            sx={{ mt: 1 }}
+            onClick={handleUpdateBugReport}
+          >
+            Update
+          </Button>
+
           <Typography variant="body2">
             <strong>Priority:</strong> {issue.priority}
           </Typography>
