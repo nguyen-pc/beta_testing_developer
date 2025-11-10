@@ -1,4 +1,3 @@
-
 import {
   type IBackendRes,
   type IAccount,
@@ -780,3 +779,49 @@ export const callGetTestExecutionsByCampaign = (campaignId: number) => {
     `/api/v1/test-execution/campaign/${campaignId}`
   );
 };
+
+//overview
+
+export async function callCreateRejectReason(
+  campaignId: string,
+  reason: string
+) {
+  console.log("callCreateRejectReason", campaignId);
+  return axios.post<IBackendRes<any>>(
+    `/api/v1/campaigns/reject/${campaignId}`,
+    { reason } // gửi object JSON
+  );
+}
+
+export async function callGetRejectReasons(campaignId: string) {
+  console.log("callGetRejectReasons", campaignId);
+  return axios.get<IBackendRes<string[]>>(
+    `/api/v1/campaigns/reject/${campaignId}`
+  );
+}
+
+export async function callCreateMessageRejectReason(
+  reasonId: string,
+  senderId: string,
+  data: any
+) {
+  console.log("callCreateMessageRejectReason", reasonId);
+  return axios.post<IBackendRes<any>>(
+    `/api/v1/campaigns/reject/message/${reasonId}`,
+    data,
+    {
+      params: { senderId: senderId },
+    }
+  );
+}
+export async function callGetMessageRejectReasons(reasonId: string) {
+  console.log("callGetMessageRejectReasons", reasonId);
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/campaigns/reject/message/${reasonId}`
+  );
+}
+
+export async function callGetUserByEmail(email: string) {
+  console.log("callGetUserByEmail", email);
+  return axios.get<IBackendRes<IUser>>(`/api/v1/users/email/${email}`);
+}
