@@ -8,6 +8,7 @@ import {
   Card,
   CardContent,
   Button,
+  Grid,
 } from "@mui/material";
 import axios from "axios";
 import {
@@ -18,16 +19,17 @@ import ChartSection from "./ChartSection";
 import TextResponseList from "./TextResponseList";
 import SentimentSection from "./SentimentSection";
 import WordCloudSection from "./WordCloudSection";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function SurveyAnalyticsPage() {
-  const { campaignId, surveyId } = useParams();
+  const { projectId, campaignId, surveyId } = useParams();
   const [questions, setQuestions] = useState<any[]>([]);
   const [analysisMap, setAnalysisMap] = useState<Record<number, any>>({});
   const [loading, setLoading] = useState(true);
   const [showAnalysisMap, setShowAnalysisMap] = useState<
     Record<number, boolean>
   >({});
+  const navigate = useNavigate();
 
   // 🧩 1️⃣ Lấy danh sách câu hỏi + phản hồi
   useEffect(() => {
@@ -123,9 +125,22 @@ export default function SurveyAnalyticsPage() {
 
   return (
     <Container sx={{ mt: 4 }}>
-      <Typography variant="h5" sx={{ mb: 3 }}>
-        📊 Phân tích kết quả khảo sát
-      </Typography>
+      <Grid display="flex" justifyContent="space-between" mt={3}>
+        <Typography variant="h5" sx={{ mb: 3 }}>
+          📊 Phân tích kết quả khảo sát
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() =>
+            navigate(
+              `/dashboard/projects/${projectId}/campaigns/${campaignId}/survey/${surveyId}/results`
+            )
+          }
+        >
+          Back to Results
+        </Button>
+      </Grid>
 
       {questions.map((q) => {
         const { questionId, questionName, questionType, answers = [] } = q;

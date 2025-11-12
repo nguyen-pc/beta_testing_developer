@@ -18,7 +18,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
 import dayjs, { Dayjs } from "dayjs";
 import type { Survey } from "../../../../data/survey";
 import ReactQuill from "react-quill";
@@ -67,6 +67,7 @@ export default function SurveyForm(props: SurveyFormProps) {
   const formValues = formState.values;
   const formErrors = formState.errors;
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const { projectId, campaignId } = useParams();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -116,7 +117,11 @@ export default function SurveyForm(props: SurveyFormProps) {
       onFieldChange(fieldName, value);
     };
 
-  const handleBack = () => navigate(backButtonPath ?? "/dashboard/projects");
+  const handleBack = () =>
+    navigate(
+      backButtonPath ??
+        `/dashboard/projects/${projectId}/campaigns/new/${campaignId}/test-case`
+    );
   const handleReset = () => onReset && onReset(formValues);
 
   return (

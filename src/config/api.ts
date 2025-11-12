@@ -292,6 +292,22 @@ export async function callCreateRecruitingCampaign(data: ICampaign) {
   );
 }
 
+export async function callGetRecruitingByCampaign(campaignId: string) {
+  return axios.get<IBackendRes<ICampaign>>(
+    `/api/v1/campaign/${campaignId}/recruit-profile`
+  );
+}
+
+export async function callUpdateRecruitingCampaign(
+  recruitingId: string,
+  data: any
+) {
+  return axios.put<IBackendRes<ICampaign>>(
+    `/api/v1/recruit-profile/update/${recruitingId}`,
+    data
+  );
+}
+
 //tester status
 
 export async function callGetAllTesterRegister(
@@ -363,6 +379,17 @@ export async function callGetForm(campaignId: string, surveyId: string) {
   console.log("Fetching survey form for survey:", surveyId);
   return axios.get<IBackendRes<any>>(
     `/api/v1/campaign/${campaignId}/survey/${surveyId}/question/all`
+  );
+}
+
+export async function callUpdateSurvey(
+  campaignId: string,
+  surveyId: string,
+  data: any
+) {
+  return axios.put<IBackendRes<any>>(
+    `/api/v1/campaign/${campaignId}/survey/${surveyId}`,
+    data
   );
 }
 

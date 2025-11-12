@@ -89,7 +89,7 @@ const EditUser = () => {
       console.log("Submitting payload:", payload);
 
       const res = await callUpdateUser(payload);
-      if (res?.data?.statusCode === 200) {
+      if (res?.statusCode === 200) {
         console.log("✅ Cập nhật thành công:", res.data);
         navigate("/dashboard/user");
       } else {

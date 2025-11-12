@@ -127,7 +127,7 @@ export default function UseCasePage() {
     );
   };
   const handleBack = () => {
-    navigate(`/dashboard/projects/${projectId}/campaigns/new/create`);
+    navigate(`/dashboard/projects/${projectId}/campaigns/new/${campaignId}/createRecruiting`);
   };
   const handleContinue = () => {
     navigate(

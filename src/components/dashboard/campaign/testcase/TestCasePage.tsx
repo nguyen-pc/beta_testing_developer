@@ -192,7 +192,7 @@ export default function TestcasePage() {
             <th className="px-4 py-2 text-left">Precondition</th>
             <th className="px-4 py-2 text-left">Steps</th>
             <th className="px-4 py-2 text-left">Expected Result</th>
-            <th className="px-4 py-2 text-center">Status</th>
+            {/* <th className="px-4 py-2 text-center">Status</th> */}
             <th className="px-4 py-2 text-center">Actions</th>
           </tr>
         </thead>
@@ -205,13 +205,13 @@ export default function TestcasePage() {
                 <td className="px-4 py-2">{t.preCondition || "—"}</td>
                 <td className="px-4 py-2">{t.steps || "—"}</td>
                 <td className="px-4 py-2">{t.expectedResult || "—"}</td>
-                <td className="px-4 py-2 text-center">
+                {/* <td className="px-4 py-2 text-center">
                   {t.status ? (
                     <span className="text-green-600 font-medium">Passed</span>
                   ) : (
                     <span className="text-red-600 font-medium">Failed</span>
                   )}
-                </td>
+                </td> */}
                 <td className="px-4 py-2 text-center">
                   <Button
                     variant="outlined"

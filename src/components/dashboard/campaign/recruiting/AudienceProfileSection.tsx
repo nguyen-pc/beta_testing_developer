@@ -13,14 +13,18 @@ import {
   MenuItem,
   FormGroup,
   Checkbox,
-  Box,
 } from "@mui/material";
 
 interface Props {
+  audienceProfile?: any; // 👈 thêm prop nhận dữ liệu edit
   setAudienceProfile: (v: any) => void;
 }
 
-const AudienceProfileSection: React.FC<Props> = ({ setAudienceProfile }) => {
+const AudienceProfileSection: React.FC<Props> = ({
+  audienceProfile,
+  setAudienceProfile,
+}) => {
+  // --- local state cho form ---
   const [gender, setGender] = useState("");
   const [country, setCountry] = useState("");
   const [zip, setZip] = useState("");
@@ -34,6 +38,65 @@ const AudienceProfileSection: React.FC<Props> = ({ setAudienceProfile }) => {
   const [languages, setLanguages] = useState("");
   const [ownedDevices, setOwnedDevices] = useState("");
 
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Prefill data once
+  useEffect(() => {
+    if (
+      audienceProfile &&
+      Object.keys(audienceProfile).length > 0 &&
+      !isInitialized
+    ) {
+      setGender(audienceProfile.gender || "");
+      setCountry(audienceProfile.country || "");
+      setZip(audienceProfile.zipcode || "");
+      setIncome(audienceProfile.householdIncome || "");
+      setIsParent(audienceProfile.isChildren ? "true" : "false");
+      setEmployment(audienceProfile.employment || "");
+      setGamingGenres(audienceProfile.gamingGenres || "");
+      setBrowsers(audienceProfile.browsers || "");
+      setSocialNetworks(audienceProfile.socialNetworks || "");
+      setWebExpertise(audienceProfile.webExpertise || "");
+      setLanguages(audienceProfile.languages || "");
+      setOwnedDevices(audienceProfile.ownedDevices || "");
+      setIsInitialized(true); // ✅ chỉ chạy 1 lần
+    }
+  }, [audienceProfile, isInitialized]);
+
+  // Sync ngược về cha chỉ khi user thay đổi sau khi prefill
+  useEffect(() => {
+    if (!isInitialized) return; // ✅ chặn vòng lặp
+    setAudienceProfile({
+      gender,
+      country,
+      zipcode: zip,
+      householdIncome: income,
+      isChildren: isParent === "true",
+      employment,
+      gamingGenres,
+      browsers,
+      socialNetworks,
+      webExpertise,
+      languages,
+      ownedDevices,
+    });
+  }, [
+    gender,
+    country,
+    zip,
+    income,
+    isParent,
+    employment,
+    gamingGenres,
+    browsers,
+    socialNetworks,
+    webExpertise,
+    languages,
+    ownedDevices,
+    isInitialized,
+  ]);
+
+  // --- toggle giá trị string có dạng "a, b, c" ---
   const toggleStringValue = (
     value: string,
     current: string,
@@ -44,6 +107,7 @@ const AudienceProfileSection: React.FC<Props> = ({ setAudienceProfile }) => {
     else setter([...arr, value].join(", "));
   };
 
+  // --- đồng bộ dữ liệu ngược về cha ---
   useEffect(() => {
     setAudienceProfile({
       gender,
@@ -90,7 +154,11 @@ const AudienceProfileSection: React.FC<Props> = ({ setAudienceProfile }) => {
       >
         <FormControlLabel value="MALE" control={<Radio />} label="Male" />
         <FormControlLabel value="FEMALE" control={<Radio />} label="Female" />
-        <FormControlLabel value="OTHER" control={<Radio />} label="Non-binary" />
+        <FormControlLabel
+          value="OTHER"
+          control={<Radio />}
+          label="Non-binary"
+        />
       </RadioGroup>
 
       {/* Country & Zip */}

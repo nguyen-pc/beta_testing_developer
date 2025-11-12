@@ -79,17 +79,33 @@ export default function ResponsePage() {
 
   if (!data || data.length === 0)
     return (
-      <Box textAlign="center" mt={10}>
-        <Typography>No survey responses found.</Typography>
-      </Box>
+      <>
+        <Box textAlign="center">
+          <Typography sx={{ mt: 10, mb: 2 }}>
+            No survey responses found.
+          </Typography>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() =>
+              navigate(
+                `/dashboard/projects/${projectId}/campaigns/${campaignId}/survey`
+              )
+            }
+          >
+            Back to Surveys
+          </Button>
+        </Box>
+      </>
     );
 
   return (
     <Box>
-      <Box display="flex" justifyContent="space-between" mb={2} mt="2">
+      <Box display="flex" justifyContent="space-between" mb={2} mt={2}>
         <Typography variant="h5" mb={2}>
           Survey Results
         </Typography>
+
         <Button
           variant="contained"
           color="primary"
@@ -211,6 +227,18 @@ export default function ResponsePage() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Button
+        variant="contained"
+        sx={{mt:3}}
+        color="primary"
+        onClick={() =>
+          navigate(
+            `/dashboard/projects/${projectId}/campaigns/${campaignId}/survey`
+          )
+        }
+      >
+        Back to Surveys
+      </Button>
     </Box>
   );
 }

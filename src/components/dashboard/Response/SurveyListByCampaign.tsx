@@ -30,7 +30,7 @@ export default function SurveyListByCampaign() {
         const res = await callGetSurveysByCampaign(campaignId);
         if (res.statusCode === 200) {
           setSurveys(res.data);
-        } else {    
+        } else {
           setError("Failed to load surveys");
         }
       } catch (err) {
@@ -68,23 +68,34 @@ export default function SurveyListByCampaign() {
   return (
     <Box p={3}>
       <Typography variant="h5" mb={3}>
-         Surveys in Campaign #{campaignId}
+        Surveys in Campaign #{campaignId}
       </Typography>
 
       <Grid container spacing={3}>
         {surveys.map((survey) => (
-          <Grid item xs={12} sm={6} md={4} key={survey.surveyId}>
+          <Grid  item size={{ xs: 12, md: 6, lg: 6 }} key={survey.surveyId}>
             <Card
               sx={{
+                height: "100%",
                 borderRadius: 3,
                 boxShadow: "0 3px 8px rgba(0,0,0,0.1)",
                 transition: "all 0.3s ease",
                 "&:hover": { boxShadow: "0 5px 12px rgba(0,0,0,0.2)" },
-                p: 4
+                p: 4,
               }}
             >
               <CardContent>
-                <Typography variant="h6" fontWeight="bold" gutterBottom>
+                <Typography
+                  sx={{
+                    display: "-webkit-box",
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: "vertical",
+                    overflow: "hidden",
+                  }}
+                  variant="h6"
+                  fontWeight="bold"
+                  gutterBottom
+                >
                   {survey.surveyName}
                 </Typography>
 
@@ -100,6 +111,14 @@ export default function SurveyListByCampaign() {
                   <Typography
                     variant="body2"
                     color="text.secondary"
+                    sx={{
+                      display: "-webkit-box",
+                      WebkitLineClamp: 3, // ✅ giới hạn 2 dòng
+                      WebkitBoxOrient: "vertical",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      minHeight: "40px", // ✅ để chiều cao đồng đều hơn
+                    }}
                     dangerouslySetInnerHTML={{
                       __html: survey.description || "",
                     }}
@@ -116,9 +135,9 @@ export default function SurveyListByCampaign() {
                     size="small"
                   />
                   <Chip
-                    label={`End: ${new Date(
-                      survey.endDate
-                    ).toLocaleDateString("vi-VN")}`}
+                    label={`End: ${new Date(survey.endDate).toLocaleDateString(
+                      "vi-VN"
+                    )}`}
                     color="error"
                     variant="outlined"
                     size="small"
