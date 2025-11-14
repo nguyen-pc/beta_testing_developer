@@ -21,6 +21,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import queryString from "query-string";
 import { useParams, useNavigate } from "react-router-dom";
 import { callGetBugReports } from "../../../config/api";
+import ExportBugExcel from "./ExportBugExcel";
 
 export default function IssueGridView() {
   // ---------------- State ----------------
@@ -116,6 +117,11 @@ export default function IssueGridView() {
   // ---------------- UI ----------------
   return (
     <Box p={3}>
+
+      <Box display="flex" justifyContent="space-between" mb={2}>
+        <Typography variant="h5">Issues</Typography>
+        <ExportBugExcel bugs={data} campaignId={campaignId} />
+      </Box>
       {/* Filter Bar */}
       <Stack direction="row" spacing={2} mb={3} alignItems="center">
         <FormControl size="small" sx={{ minWidth: 130 }}>

@@ -852,3 +852,50 @@ export async function callGetUserByEmail(email: string) {
   console.log("callGetUserByEmail", email);
   return axios.get<IBackendRes<IUser>>(`/api/v1/users/email/${email}`);
 }
+
+export async function callGetProjectByCampaign(campaignId: string) {
+  console.log("callGetProjectByCampaign", campaignId);
+  return axios.get<IBackendRes<IProject>>(
+    `/api/v1/campaigns/${campaignId}/project`
+  );
+}
+
+// module
+export async function callGetModulesByProject(projectId: string | number) {
+  console.log("callGetModulesByProject", projectId);
+  return axios.get<IBackendRes<any>>(`/api/v1/modules/project/${projectId}`);
+}
+
+export async function callCreateModule(payload: any) {
+  console.log("callCreateModule", payload);
+  return axios.post<IBackendRes<any>>(`/api/v1/modules`, payload);
+}
+
+export async function callUpdateModule(
+  moduleId: string | number,
+  payload: any
+) {
+  console.log("callUpdateModule", moduleId, payload);
+  return axios.put<IBackendRes<any>>(`/api/v1/modules/${moduleId}`, payload);
+}
+
+export async function callDeleteModule(moduleId: string | number) {
+  console.log("callDeleteModule", moduleId);
+  return axios.delete<IBackendRes<any>>(`/api/v1/modules/${moduleId}`);
+}
+
+// setting user
+export async function callGetUserSettings(userId: string) {
+  console.log("callGetUserSettings", { userId });
+  return axios.get<IBackendRes<any>>(`/api/v1/users/${userId}`);
+}
+
+export async function callUpdateUserSettings(data: any) {
+  console.log("callUpdateUserSettings", { data });
+  return axios.put<IBackendRes<any>>(`/api/v1/users`, data);
+}
+
+export async function callChangeUserPassword(data: any) {
+  console.log("callChangeUserPassword", { data });
+  return axios.put<IBackendRes<any>>(`/api/v1/users/change-password`, data);
+}

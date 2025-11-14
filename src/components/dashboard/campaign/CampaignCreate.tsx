@@ -24,6 +24,7 @@ const INITIAL_FORM_VALUES: Partial<DetailCampaignFormState["values"]> = {
   estimatedTime: "",
   rewardValue: 0,
   isPublic: false,
+  moduleId: "",
 };
 
 export default function DetailCampaignCreate() {
@@ -105,6 +106,9 @@ export default function DetailCampaignCreate() {
         project: {
           id: Number(projectId),
         },
+        module: formValues.moduleId 
+          ? { id: Number(formValues.moduleId) }
+          : null,
         startDate: formValues.startDate
           ? dayjs(formValues.startDate, "YYYY-MM-DD").toDate()
           : null,

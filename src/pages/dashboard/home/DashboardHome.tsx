@@ -23,6 +23,7 @@ import DialogsProvider from "../../../hooks/useDialogs/DialogsProvider";
 import { Route, Routes } from "react-router-dom";
 import CompanyProfile from "./CompanyProfile";
 import ProjectShow from "../../../components/dashboard/project/ProjectShow";
+import UserSettingsPage from "../../../components/settingUser/UserSettingsPage";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -64,6 +65,7 @@ export default function DashboardHome(props: { disableCustomTheme?: boolean }) {
                 <Routes>
                   <Route index element={<MainGrid />} />
                   <Route path="company-profile" element={<CompanyProfile />} />
+                  <Route path="settings" element={<UserSettingsPage />} />
                   {/* <Route path="projects/*" element={<ProjectShow />} /> */}
                   <Route path="*" element={<MainGrid />} />
                 </Routes>

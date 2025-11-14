@@ -47,12 +47,12 @@ const SendEmailDialog: React.FC<SendEmailDialogProps> = ({
     try {
       setSending(true);
       await callSendInvitationEmail(campaignId, data);
-      alert("✅ Emails sent successfully!");
+      alert("Emails sent successfully!");
       setEmailContent("");
       onClose();
       if (onSent) onSent();
     } catch (error) {
-      console.error("❌ Error sending email:", error);
+      console.error(" Error sending email:", error);
       alert("Failed to send emails!");
     } finally {
       setSending(false);
@@ -61,7 +61,7 @@ const SendEmailDialog: React.FC<SendEmailDialogProps> = ({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>📧 Send Email Invitation</DialogTitle>
+      <DialogTitle>Send Email Invitation</DialogTitle>
       <DialogContent>
         <div className="flex justify-between mb-2">
           <Typography variant="body2" mb={1}>

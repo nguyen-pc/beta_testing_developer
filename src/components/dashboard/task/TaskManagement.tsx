@@ -53,6 +53,7 @@ const TaskManagement: React.FC = () => {
 
       const res = await callFetchUserNotifications(user.id);
       const data = res?.data || [];
+      console.log("Fetched notifications:", data);
 
       // Lọc type = BUG_ASSIGNMENT
       const filtered = data.filter(
@@ -120,7 +121,7 @@ const TaskManagement: React.FC = () => {
         mb={2}
       >
         <Typography variant="h5" fontWeight={600}>
-          🧩 Assigned Bug Notifications
+          Assigned Bug Notifications
         </Typography>
 
         <ToggleButtonGroup

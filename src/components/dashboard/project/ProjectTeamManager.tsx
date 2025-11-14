@@ -178,7 +178,7 @@ const ProjectTeamManager: React.FC<ProjectTeamManagerProps> = ({
           Project Team Members
         </Typography>
         <Button
-          variant="outlined"
+          variant="contained"
           startIcon={<PersonAddAlt1Icon />}
           onClick={handleOpen}
         >

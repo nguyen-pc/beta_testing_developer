@@ -25,6 +25,8 @@ import queryString from "query-string";
 import { sfLike } from "spring-filter-query-builder";
 import parse from "html-react-parser";
 import ProjectTeamManager from "./ProjectTeamManager";
+import ProjectModuleManager from "./ProjectModuleManager";
+import CampaignCard from "./CampaignCard";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   display: "flex",
@@ -444,6 +446,9 @@ export default function ProjectShow() {
         <ProjectTeamManager projectId={projectId} />
       </Grid>
 
+      {/*Add module manager */}
+      <ProjectModuleManager projectId={projectId} />
+
       <Box sx={{ mt: 4 }}>
         <Typography
           variant="h5"
@@ -458,135 +463,17 @@ export default function ProjectShow() {
         {campaigns && campaigns.length > 0 ? (
           <Grid container spacing={3} columns={12}>
             {campaigns.map((campaign, index) => (
-              <Grid item size={{ xs: 12, md: 6, lg: 4 }} key={campaign.id}>
-                <StyledCard
-                  onClick={() => handleDetailClick(projectId, campaign.id)}
-                  variant="outlined"
-                  onFocus={() => handleFocus(index)}
-                  onBlur={handleBlur}
-                  tabIndex={0}
-                  className={focusedCardIndex === index ? "Mui-focused" : ""}
-                  sx={{
-                    // height: "400px",
-                    // width: "500px",
-                    borderRadius: 3,
-                    transition: "all 0.3s ease",
-                    "&:hover": {
-                      boxShadow: "0 6px 16px rgba(0,0,0,0.1)",
-                      transform: "translateY(-3px)",
-                    },
-                  }}
-                >
-                  {/* Ảnh đại diện chiến dịch */}
-                  {/* Ảnh đại diện chiến dịch + trạng thái */}
-                  <Box sx={{ position: "relative" }}>
-                    <CardMedia
-                      component="img"
-                      alt={campaign.title}
-                      image={
-                        campaign?.bannerUrl
-                          ? `http://localhost:8081/storage/project-banners/${campaign.bannerUrl}`
-                          : "https://picsum.photos/800/450?random=2"
-                      }
-                      sx={{
-                        height: 180,
-                        objectFit: "cover",
-                        borderTopLeftRadius: 12,
-                        borderTopRightRadius: 12,
-                      }}
-                    />
-
-                    {/* Thẻ trạng thái */}
-                    <Box
-                      sx={{
-                        position: "absolute",
-                        top: 12,
-                        right: 12,
-                        backgroundColor:
-                          campaign.campaignStatus === "PENDING"
-                            ? "rgba(255, 193, 7, 0.9)" // vàng nhạt
-                            : campaign.campaignStatus === "APPROVED"
-                            ? "rgba(76, 175, 80, 0.9)" // xanh lá
-                            : campaign.campaignStatus === "IN_PROGRESS"
-                            ? "rgba(33, 150, 243, 0.9)" // xanh dương
-                            : campaign.campaignStatus === "COMPLETED"
-                            ? "rgba(156, 39, 176, 0.9)" // tím
-                            : campaign.campaignStatus === "REJECTED"
-                            ? "rgba(244, 67, 54, 0.9)" // đỏ
-                            : "rgba(158, 158, 158, 0.8)", // xám
-                        color: "white",
-                        px: 1.5,
-                        py: 0.5,
-                        borderRadius: "8px",
-                        fontSize: "0.75rem",
-                        fontWeight: 600,
-                        textTransform: "uppercase",
-                        letterSpacing: 0.5,
-                        backdropFilter: "blur(4px)",
-                        boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
-                      }}
-                    >
-                      {campaign.campaignStatus || "DRAFT"}
-                    </Box>
-                  </Box>
-
-                  {/* Nội dung */}
-                  <StyledCardContent>
-                    <Typography
-                      variant="overline"
-                      sx={{
-                        fontSize: 12,
-                        color: "primary.main",
-                        textTransform: "uppercase",
-                        letterSpacing: 0.5,
-                      }}
-                    >
-                      {campaign ? campaign?.campaignType?.name : "No tag"}
-                    </Typography>
-
-                    <Typography
-                      gutterBottom
-                      variant="h6"
-                      component="div"
-                      sx={{
-                        display: "-webkit-box",
-                        WebkitBoxOrient: "vertical",
-                        WebkitLineClamp: 2,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        fontWeight: 600,
-                      }}
-                    >
-                      {campaign.title}
-                    </Typography>
-
-                    <Typography
-                      variant="body2"
-                      color="text.secondary"
-                      sx={{
-                        display: "-webkit-box",
-                        WebkitBoxOrient: "vertical",
-                        WebkitLineClamp: 3,
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        fontSize: "0.9rem",
-                      }}
-                    >
-                      {parse(campaign.description) ||
-                        "No description provided."}
-                    </Typography>
-                  </StyledCardContent>
-
-                  <Author
-                    authors={campaign.authors ? campaign.authors : []}
-                    date={
-                      campaign.startDate
-                        ? new Date(campaign.startDate).toLocaleDateString()
-                        : "No date"
-                    }
-                  />
-                </StyledCard>
-              </Grid>
+              <CampaignCard
+                campaign={campaign}
+                projectId={projectId}
+                onClick={() => handleDetailClick(projectId, campaign.id)}
+                onEdit={() =>
+                  navigate(
+                    `/dashboard/projects/${projectId}/campaigns/${campaign.id}/edit_detail`
+                  )
+                }
+                onDelete={() => {}}
+              />
             ))}
           </Grid>
         ) : (

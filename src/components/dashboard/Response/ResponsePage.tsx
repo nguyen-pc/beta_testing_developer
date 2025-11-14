@@ -14,9 +14,11 @@ import {
   TableContainer,
   Paper,
   Button,
+  Grid,
 } from "@mui/material";
 import { callGetSurveyResults } from "../../../config/api";
 import { useNavigate, useParams } from "react-router-dom";
+import ExportSurveyResultExcel from "./ExportSurveyResultExcel";
 
 export default function ResponsePage() {
   // const { surveyId } = useParams();
@@ -32,6 +34,7 @@ export default function ResponsePage() {
       try {
         if (!surveyId) return;
         const res = await callGetSurveyResults(surveyId);
+        console.log("Survey Results:", res);
         if (res.statusCode === 200) {
           setData(res.data);
         } else {
@@ -106,17 +109,23 @@ export default function ResponsePage() {
           Survey Results
         </Typography>
 
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() =>
-            navigate(
-              `/dashboard/projects/${projectId}/campaigns/${campaignId}/survey/${surveyId}/analysis`
-            )
-          }
-        >
-          Analysis Response
-        </Button>
+        <Grid>
+          <ExportSurveyResultExcel responses={data} surveyId={surveyId} />
+
+          <Button
+            sx={{ ml: 2 }}
+            variant="contained"
+            color="primary"
+            onClick={() =>
+              navigate(
+                `/dashboard/projects/${projectId}/campaigns/${campaignId}/survey/${surveyId}/analysis`
+              )
+            }
+          >
+            Analysis Response
+          </Button>
+
+        </Grid>
       </Box>
 
       {/* ✅ Thêm TableContainer với scroll ngang và dọc */}

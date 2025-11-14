@@ -24,6 +24,7 @@ import type { Campaign } from "../../../data/campaign";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import BannerUploadField from "../BannerUploadField";
+import { callGetModulesByProject } from "../../../config/api";
 
 export interface CampaignFormState {
   values: Partial<Omit<Campaign, "id">>;
@@ -68,7 +69,20 @@ export default function CampaignForm(props: CampaignFormProps) {
   const formValues = formState.values;
   const formErrors = formState.errors;
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [modules, setModules] = React.useState<any[]>([]);
   const { campaignId, projectId } = useParams();
+
+  React.useEffect(() => {
+    if (!projectId) return;
+    (async () => {
+      try {
+        const res = await callGetModulesByProject(projectId);
+        setModules(res.data || []);
+      } catch (err) {
+        console.error("Failed to load modules", err);
+      }
+    })();
+  }, [projectId]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -195,6 +209,32 @@ export default function CampaignForm(props: CampaignFormProps) {
               </Select>
               <FormHelperText>
                 {formErrors.campaignType ?? "Choose campaign type"}
+              </FormHelperText>
+            </FormControl>
+          </Grid>
+
+          <Grid item size={{ xs: 12, sm: 6 }}>
+            <FormControl fullWidth>
+              <Typography variant="body2" mb={1}>
+                Select Module
+              </Typography>
+              <Select
+                name="moduleId"
+                value={formValues.moduleId ?? ""}
+                onChange={handleSelectChange}
+                displayEmpty
+              >
+                <MenuItem value="">
+                  <em>Choose module</em>
+                </MenuItem>
+                {modules.map((m) => (
+                  <MenuItem key={m.id} value={m.id}>
+                    {m.moduleName}
+                  </MenuItem>
+                ))}
+              </Select>
+              <FormHelperText>
+                {formErrors.moduleId ?? "Select a module for this campaign"}
               </FormHelperText>
             </FormControl>
           </Grid>

@@ -151,7 +151,7 @@ export default function CampaignEdit() {
 
     try {
       const showData = await callGetCampaign(campaignId);
-
+      console.log("showData", showData);
       setCampaign(showData.data);
     } catch (showDataError) {
       setError(showDataError as Error);
@@ -174,6 +174,9 @@ export default function CampaignEdit() {
         project: {
           id: Number(projectId),
         },
+        module: formValues.moduleId
+          ? { id: Number(formValues.moduleId) }
+          : null,
         startDate: formValues.startDate
           ? dayjs(formValues.startDate, "YYYY-MM-DD").toDate()
           : null,
@@ -182,7 +185,7 @@ export default function CampaignEdit() {
           : null,
       };
       console.log("payload", payload);
-      const updatedData = await callUpdateCampaign(campaignId, formValues);
+      const updatedData = await callUpdateCampaign(campaignId, payload);
       setCampaign(updatedData);
     },
     [campaignId]
@@ -216,7 +219,11 @@ export default function CampaignEdit() {
 
     return campaign ? (
       <DetailCampaignEditForm
-        initialValues={campaign}
+        initialValues={{
+          ...campaign,
+          moduleId: campaign.module?.id || "",
+          campaignType: campaign.campaignType?.id || "",
+        }}
         onSubmit={handleSubmit}
       />
     ) : null;
