@@ -59,6 +59,7 @@ const TesterCompletionDashboard: React.FC = () => {
     try {
       setLoading(true);
       const res = await callGetTesterStatus(campaignId!);
+      console.log("✅ Tester data fetched:", res);
       if (res?.data) {
         const mapped: Tester[] = res.data.map((t: ApiResponse) => ({
           id: t.testerCampaignId,
@@ -69,7 +70,7 @@ const TesterCompletionDashboard: React.FC = () => {
           surveys: t.surveysCompleted,
           bugs: t.bugsSubmitted,
           messages: t.messages ?? 0,
-          progress: t.progress ?? 0, 
+          progress: t.progress ?? 0,
         }));
         setTesters(mapped);
       }
@@ -202,6 +203,15 @@ const TesterCompletionDashboard: React.FC = () => {
             sx={{ width: { xs: "100%", sm: "200px" } }}
             onChange={(e) => setSearch(e.target.value)}
           />
+          <Button variant="outlined" onClick={fetchData}>
+            Create Batch
+          </Button>
+          <Button variant="outlined" onClick={fetchData}>
+            Get Latest Data
+          </Button>
+          <Button variant="outlined" onClick={fetchData}>
+            Export Excel
+          </Button>
           <Box flexGrow={1} />
           <Chip color="primary" label={`Total: ${testers.length}`} />
         </Stack>

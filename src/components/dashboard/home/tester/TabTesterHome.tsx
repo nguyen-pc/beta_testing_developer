@@ -5,6 +5,7 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import TesterRecruitingResults from "./TesterRecruitingResults";
 import TesterCompletionDashboard from "./TesterCompletionDashboard";
+import TesterRewardBatchBuilder from "./TesterRewardBatchBuilder";
 
 export function CustomTabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -52,6 +53,7 @@ export default function TabTesterHome() {
         >
           <Tab label="Tester Completion" {...a11yProps(0)} />
           <Tab label="Recruiting Results" {...a11yProps(1)} />
+          <Tab label="Reward Batch Builder" {...a11yProps(2)} />
         </Tabs>
       </Box>
       <CustomTabPanel value={value} index={0}>
@@ -59,6 +61,9 @@ export default function TabTesterHome() {
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1}>
         <TesterRecruitingResults />
+      </CustomTabPanel>
+      <CustomTabPanel value={value} index={2}>
+        <TesterRewardBatchBuilder />
       </CustomTabPanel>
     </Box>
   );

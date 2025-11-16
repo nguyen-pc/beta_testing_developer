@@ -899,3 +899,83 @@ export async function callChangeUserPassword(data: any) {
   console.log("callChangeUserPassword", { data });
   return axios.put<IBackendRes<any>>(`/api/v1/users/change-password`, data);
 }
+
+// Create Reward Batch
+
+export async function callCreateRewardBatch(data: any) {
+  return axios.post<IBackendRes<any>>(`/api/v1/reward-batches`, data);
+}
+
+export async function callGetBatchByCampaign(campaignId: string | number) {
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/reward-batches/campaign/${campaignId}`
+  );
+}
+
+export async function callGetBatchDetails(batchId: string | number) {
+  return axios.get<IBackendRes<any>>(`/api/v1/reward-batches/${batchId}`);
+}
+
+export async function callAddTesterReward(data: any) {
+  return axios.post<IBackendRes<any>>(`/api/v1/tester-rewards`, data);
+}
+
+export async function callGetRewardsInBatch(batchId: string | number) {
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/reward-batches/${batchId}/tester-rewards`
+  );
+}
+
+export const callGetListRewardTesterInBatch = (batchId: string | number) => {
+  return axios.get<IBackendRes<any>>(`/api/v1/tester-rewards/batch/${batchId}`);
+};
+
+export async function callApproveRewardBatch(batchId: string | number) {
+  return axios.post<IBackendRes<any>>(
+    `/api/v1/reward-batches/${batchId}/approve`
+  );
+}
+
+export async function callUpdateTesterRewardStatus(
+  testerRewardId: string | number,
+  data: any
+) {
+  return axios.post<IBackendRes<any>>(
+    `/api/v1/tester-rewards/${testerRewardId}/status`,
+    data
+  );
+}
+
+export async function callCreateRewardBatchEvidence(
+  batchId: string | number,
+  data: any
+) {
+  return axios.post<IBackendRes<any>>(
+    `/api/v1/reward-evidence/${batchId}`,
+    data
+  );
+}
+
+export async function callUploadFileToCloud(file: File) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  return axios.post<IBackendRes<any>>(`/api/v1/upload`, formData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+}
+
+export async function callGetAllRewardBatches() {
+  return axios.get<IBackendRes<any>>(`/api/v1/reward-batches`);
+}
+
+export async function callGetRewardEvidence(batchId: string | number) {
+  return axios.get<IBackendRes<any>>(
+    `/api/v1/reward-evidence/${batchId}`
+  );
+}
+
+//  payment info
+export const callGetMyPaymentInfo = (userId: string) => {
+  return axios.get<IBackendRes<any>>(`/api/v1/user/payment-info/${userId}`);
+};
