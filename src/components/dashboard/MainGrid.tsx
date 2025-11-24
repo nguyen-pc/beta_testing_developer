@@ -59,7 +59,7 @@ export default function MainGrid() {
       </Typography>
     );
 
-  // 🧩 Chuẩn hóa dữ liệu PieChart vì backend trả về mảng 2 chiều
+  // Chuẩn hóa dữ liệu PieChart vì backend trả về mảng 2 chiều
   const bugStatusData =
     dashboard.bugStatusDistribution?.map((b: any) => ({
       id: b[0],
@@ -74,7 +74,7 @@ export default function MainGrid() {
       value: c[1],
     })) || [];
 
-  // 🧩 Chuẩn hóa dữ liệu line chart
+  // Chuẩn hóa dữ liệu line chart
   const formatTrendData = (trendArr: any[]) =>
     trendArr?.map((item) => item.count) || [];
 
@@ -166,15 +166,16 @@ export default function MainGrid() {
         </Grid>
 
         {/* --- Biểu đồ --- */}
-        <Grid size={{ xs: 12, md: 6 }}>
+        {/* <Grid size={{ xs: 12, md: 6 }}>
           <SessionsChart trendData={dashboard.userTrend} />
         </Grid>
+        
         <Grid size={{ xs: 12, md: 6 }}>
           <PageViewsBarChart
             projectTrend={dashboard.projectTrend}
             campaignTrend={dashboard.campaignTrend}
           />
-        </Grid>
+        </Grid> */}
       </Grid>
 
       <Copyright sx={{ my: 4 }} />

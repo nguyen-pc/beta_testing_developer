@@ -16,7 +16,11 @@ import BugSeverityChart from "./campaign/dashboard_campaign/BugSeverityChart";
 import { useParams } from "react-router-dom";
 import TesterCompletionCard from "./campaign/dashboard_campaign/CompletionChart";
 import { Button, Chip, CircularProgress, Paper } from "@mui/material";
-import { callGetCampaign, callGetRejectReasons } from "../../config/api";
+import {
+  callGetCampaign,
+  callGetModuleByCampaign,
+  callGetRejectReasons,
+} from "../../config/api";
 import parse from "html-react-parser";
 import RejectChatDialog from "./RejectChatDialog";
 const data: StatCardProps[] = [
@@ -56,6 +60,7 @@ const data: StatCardProps[] = [
 export default function MainGridCampaign() {
   const { campaignId } = useParams();
   const [campaign, setCampaign] = React.useState<any>(null);
+  const [module, setModule] = React.useState<any>(null);
   const [rejectReasons, setRejectReasons] = React.useState<any[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [openChat, setOpenChat] = React.useState(false);
@@ -66,6 +71,9 @@ export default function MainGridCampaign() {
       try {
         const res = await callGetCampaign(Number(campaignId));
         setCampaign(res.data);
+        const moduleRes = await callGetModuleByCampaign(Number(campaignId));
+        setModule(moduleRes.data);
+        console.log("✅ Chiến dịch đã được tải:", moduleRes.data);
         if (res.data.campaignStatus === "REJECTED") {
           const rejectRes = await callGetRejectReasons(campaignId!);
           setRejectReasons(rejectRes.data || []);
@@ -136,7 +144,7 @@ export default function MainGridCampaign() {
         {campaign.campaignStatus === "REJECTED" && (
           <Box mt={3}>
             <Typography variant="subtitle1" color="error.main" gutterBottom>
-              ⚠️ Chiến dịch đã bị từ chối
+              Chiến dịch đã bị từ chối
             </Typography>
 
             {rejectReasons.length > 0 ? (
@@ -220,6 +228,61 @@ export default function MainGridCampaign() {
           </Box>
         )}
       </Paper>
+
+      {module && (
+        <Paper
+          sx={{
+            p: 3,
+            mb: 3,
+            borderRadius: 3,
+            borderLeft: "6px solid #1976d2",
+          }}
+        >
+          <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+             Module thuộc chiến dịch
+          </Typography>
+
+          <Typography variant="subtitle1" fontWeight={600}>
+            {module.moduleName}
+          </Typography>
+
+          <Chip
+            label={module.riskLevel}
+            color={
+              module.riskLevel === "CRITICAL"
+                ? "error"
+                : module.riskLevel === "HIGH"
+                ? "warning"
+                : module.riskLevel === "MEDIUM"
+                ? "info"
+                : "success"
+            }
+            size="small"
+            sx={{ mt: 1, mb: 2 }}
+          />
+
+          <Typography variant="body2" color="text.secondary">
+            {module.description}
+          </Typography>
+
+          <Box sx={{ mt: 2 }}>
+            <Typography variant="body2">
+               <b>Dự án:</b> {module.projectName}
+            </Typography>
+
+            <Typography variant="body2">
+              <b>Tạo bởi:</b> {module.createdBy}
+            </Typography>
+
+            {module.updatedBy && (
+              <Typography variant="body2">
+               <b>Cập nhật bởi:</b> {module.updatedBy}
+              </Typography>
+            )}
+          </Box>
+        </Paper>
+      )}
+
       <Grid
         container
         spacing={2}
@@ -229,7 +292,7 @@ export default function MainGridCampaign() {
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <TesterCompletionCard campaignId={Number(campaignId)} />
         </Grid>
-        {data.map((card, index) => (
+        {/* {data.map((card, index) => (
           <Grid key={index} size={{ xs: 12, sm: 6, lg: 3 }}>
             <StatCard {...card} />
           </Grid>
@@ -237,14 +300,14 @@ export default function MainGridCampaign() {
 
         <Grid size={{ xs: 12, sm: 6, lg: 3 }}>
           <HighlightedCard />
-        </Grid>
+        </Grid> */}
         <Grid size={{ xs: 12, md: 6 }}>
           {/* <SessionsChart /> */}
           <BugSeverityChart campaignId={campaignId} />
         </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
+        {/* <Grid size={{ xs: 12, md: 6 }}>
           <PageViewsBarChart />
-        </Grid>
+        </Grid> */}
       </Grid>
       {/* ====== MODAL PHẢN HỒI ====== */}
       {selectedReason && (

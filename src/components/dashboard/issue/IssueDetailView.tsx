@@ -353,7 +353,15 @@ export default function IssueDetailView() {
       </Box>
 
       {/* 🧩 MIDDLE CONTENT */}
-      <Box flex={1.5} borderRight="1px solid #ddd" p={3} overflow="auto">
+      <Box
+        flex={1.5}
+        borderRight="1px solid #ddd"
+        p={3}
+        display="flex"
+        flexDirection="column"
+        height="100%"
+      >
+        {/* HEADER */}
         <Stack direction="row" alignItems="center" spacing={1}>
           <IconButton onClick={() => navigate(-1)}>
             <ArrowBackIcon />
@@ -363,142 +371,199 @@ export default function IssueDetailView() {
 
         <Divider sx={{ my: 2 }} />
 
-        <Typography variant="subtitle2" gutterBottom>
-          Expected
-        </Typography>
-        <Typography variant="body2" mb={2}>
-          {parse(issue?.expectedResult) || "—"}
-        </Typography>
+        {/* SCROLLABLE CONTENT */}
+        <Box flex={1} overflow="auto" pr={1} id="chat-scroll-area">
+          {/* Expected */}
+          <Typography variant="subtitle2" gutterBottom>
+            Expected
+          </Typography>
+          <Typography variant="body2" mb={2}>
+            {parse(issue?.expectedResult) || "—"}
+          </Typography>
 
-        <Typography variant="subtitle2" gutterBottom>
-          Actual
-        </Typography>
-        <Typography variant="body2" mb={2}>
-          {issue.actualResult || "—"}
-        </Typography>
+          {/* Actual */}
+          <Typography variant="subtitle2" gutterBottom>
+            Actual
+          </Typography>
+          <Typography variant="body2" mb={2}>
+            {issue.actualResult || "—"}
+          </Typography>
 
-        <Typography variant="subtitle2" gutterBottom>
-          Description
-        </Typography>
-        <Typography variant="body2" color="text.secondary" mb={2}>
-          {parse(issue?.description) || "No description"}
-        </Typography>
+          {/* Description */}
+          <Typography variant="subtitle2" gutterBottom>
+            Description
+          </Typography>
+          <Typography variant="body2" color="text.secondary" mb={2}>
+            {parse(issue?.description) || "No description"}
+          </Typography>
 
-        <Divider sx={{ my: 2 }} />
+          <Divider sx={{ my: 2 }} />
 
-        <List
-          dense
-          id="chat-container"
-          sx={{ maxHeight: 400, overflowY: "auto", mb: 1 }}
-        >
-          {messages.map((msg, i) => {
-            const isOwn = msg.senderId === user.id;
-            const content = msg.content;
+          {/* CHAT MESSAGES */}
+          <List dense>
+            {messages.map((msg, i) => {
+              const isOwn = msg.senderId === user.id;
+              const content = msg.content;
 
-            const isFile = content.startsWith("http");
-            const isImage = /\.(jpg|jpeg|png|gif)$/i.test(content);
-            const isVideo = /\.(mp4|webm)$/i.test(content);
+              const isFile = content.startsWith("http");
+              const isImage = /\.(jpg|jpeg|png|gif)$/i.test(content);
+              const isVideo = /\.(mp4|webm)$/i.test(content);
 
-            return (
-              <ListItem
-                key={i}
-                alignItems="flex-start"
-                sx={{
-                  justifyContent: isOwn ? "flex-end" : "flex-start",
-                  textAlign: isOwn ? "right" : "left",
-                }}
-              >
-                {!isOwn && (
-                  <ListItemAvatar>
-                    <Avatar>{msg.senderName ? msg.senderName[0] : "?"}</Avatar>
-                  </ListItemAvatar>
-                )}
-
-                <Paper
+              return (
+                <ListItem
+                  key={i}
+                  alignItems="flex-start"
                   sx={{
-                    p: 1,
-                    px: 1.5,
-                    maxWidth: "70%",
-                    bgcolor: isOwn ? "primary.main" : "grey.100",
-                    color: isOwn ? "white" : "text.primary",
-                    borderRadius: 2,
+                    justifyContent: isOwn ? "flex-end" : "flex-start",
+                    textAlign: isOwn ? "right" : "left",
                   }}
                 >
-                  {isFile ? (
-                    isImage ? (
-                      <img
-                        src={content}
-                        alt="attachment"
-                        style={{ maxWidth: "100%", borderRadius: 6 }}
-                      />
-                    ) : isVideo ? (
-                      <video
-                        src={content}
-                        controls
-                        style={{ maxWidth: "100%", borderRadius: 6 }}
-                      />
-                    ) : (
-                      <a
-                        href={content}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ color: "inherit" }}
-                      >
-                        {content}
-                      </a>
-                    )
-                  ) : (
-                    <Typography variant="body2">{content}</Typography>
+                  {!isOwn && (
+                    <ListItemAvatar>
+                      <Avatar>
+                        {msg.senderName ? msg.senderName[0] : "?"}
+                      </Avatar>
+                    </ListItemAvatar>
                   )}
 
-                  <Typography
-                    variant="caption"
-                    sx={{ display: "block", opacity: 0.7 }}
+                  <Paper
+                    sx={{
+                      p: 1,
+                      px: 1.5,
+                      maxWidth: "70%",
+                      bgcolor: isOwn ? "primary.main" : "grey.100",
+                      color: isOwn ? "white" : "text.primary",
+                      borderRadius: 2,
+                    }}
                   >
-                    {msg.createdAt ? formatChatTime(msg.createdAt) : ""}
-                  </Typography>
-                </Paper>
+                    {isFile ? (
+                      isImage ? (
+                        <img
+                          src={content}
+                          style={{ maxWidth: "100%", borderRadius: 6 }}
+                        />
+                      ) : isVideo ? (
+                        <video
+                          src={content}
+                          controls
+                          style={{ maxWidth: "100%", borderRadius: 6 }}
+                        />
+                      ) : (
+                        <a
+                          href={content}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ color: "inherit" }}
+                        >
+                          {content}
+                        </a>
+                      )
+                    ) : (
+                      <Typography variant="body2">{content}</Typography>
+                    )}
 
-                {isOwn && (
-                  <ListItemAvatar sx={{ ml: 1 }}>
-                    <Avatar>{user.name ? user.name[0] : "U"}</Avatar>
-                  </ListItemAvatar>
-                )}
-              </ListItem>
-            );
-          })}
-        </List>
+                    <Typography
+                      variant="caption"
+                      sx={{ display: "block", opacity: 0.7 }}
+                    >
+                      {msg.createdAt ? formatChatTime(msg.createdAt) : ""}
+                    </Typography>
+                  </Paper>
 
-        {/* 💬 Chat input */}
-        <Stack direction="row" spacing={1} alignItems="center" mt={1}>
-          <TextField
-            value={newMsg}
-            onChange={(e) => setNewMsg(e.target.value)}
-            placeholder="Send a message"
-            fullWidth
-            size="small"
-          />
+                  {isOwn && (
+                    <ListItemAvatar sx={{ ml: 1 }}>
+                      <Avatar>{user.name ? user.name[0] : "U"}</Avatar>
+                    </ListItemAvatar>
+                  )}
+                </ListItem>
+              );
+            })}
+          </List>
+        </Box>
 
-          <input
-            type="file"
-            id="chat-file-input"
-            hidden
-            onChange={handleFileUpload}
-          />
-          <IconButton
-            onClick={() => document.getElementById("chat-file-input")?.click()}
+        {/*  CHAT INPUT FIXED */}
+        <Box
+          sx={{
+            position: "sticky",
+            bottom: 0,
+            bgcolor: "white",
+            pt: 1.5,
+            pb: 1.5,
+            borderTop: "1px solid #ddd",
+            zIndex: 10,
+          }}
+        >
+          <Stack
+            direction="row"
+            spacing={1}
+            alignItems="center"
+            sx={{
+              p: 1.2,
+              borderRadius: 4,
+              border: "2px solid #c1c9d0", // ⭐ border nổi
+              backgroundColor: "#fff",
+              boxShadow: "0 2px 6px rgba(0,0,0,0.08)", // ⭐ shadow đẹp
+            }}
           >
-            <AttachFileIcon />
-          </IconButton>
+            <TextField
+              value={newMsg}
+              onChange={(e) => setNewMsg(e.target.value)}
+              placeholder="Nhập tin nhắn…"
+              fullWidth
+              size="small"
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor: "#f9fafb",
+                  borderRadius: 3,
+                  "& fieldset": {
+                    border: "1px solid #d0d7de",
+                  },
+                  "&:hover fieldset": {
+                    borderColor: "#9098a0",
+                  },
+                  "&.Mui-focused fieldset": {
+                    borderColor: "#1976d2",
+                    borderWidth: 2,
+                  },
+                },
+              }}
+            />
 
-          <IconButton
-            onClick={handleSend}
-            color="primary"
-            disabled={!connected}
-          >
-            <SendIcon />
-          </IconButton>
-        </Stack>
+            <input
+              type="file"
+              hidden
+              id="chat-file-input"
+              onChange={handleFileUpload}
+            />
+
+            <IconButton
+              onClick={() =>
+                document.getElementById("chat-file-input")?.click()
+              }
+              sx={{
+                borderRadius: 3,
+                border: "1px solid #d0d7de",
+                bgcolor: "#f8f9fa",
+                "&:hover": { bgcolor: "#edf0f2" },
+              }}
+            >
+              <AttachFileIcon />
+            </IconButton>
+
+            <IconButton
+              onClick={handleSend}
+              disabled={!connected}
+              sx={{
+                borderRadius: 3,
+                bgcolor: "primary.main",
+                color: "white",
+                "&:hover": { bgcolor: "primary.dark" },
+              }}
+            >
+              <SendIcon />
+            </IconButton>
+          </Stack>
+        </Box>
       </Box>
 
       {/* 🧱 RIGHT SIDEBAR */}
@@ -675,7 +740,7 @@ export default function IssueDetailView() {
           </Stack>
         )}
       </Box>
-      {/* 🔍 Preview Dialog */}
+      {/* Preview Dialog */}
       {previewUrl && (
         <Dialog
           open={!!previewUrl}

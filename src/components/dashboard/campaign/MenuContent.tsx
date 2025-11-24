@@ -10,6 +10,16 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import AnalyticsRoundedIcon from "@mui/icons-material/AnalyticsRounded";
 import PeopleRoundedIcon from "@mui/icons-material/PeopleRounded";
 import AssignmentRoundedIcon from "@mui/icons-material/AssignmentRounded";
+
+import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
+import GroupsRoundedIcon from "@mui/icons-material/GroupsRounded";
+import PollRoundedIcon from "@mui/icons-material/PollRounded";
+import BugReportRoundedIcon from "@mui/icons-material/BugReportRounded";
+import FactCheckRoundedIcon from "@mui/icons-material/FactCheckRounded";
+import EmailRoundedIcon from "@mui/icons-material/EmailRounded";
+import FolderSpecialRoundedIcon from "@mui/icons-material/FolderSpecialRounded";
+import ChecklistRoundedIcon from "@mui/icons-material/ChecklistRounded";
+
 // import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 // import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
 // import HelpRoundedIcon from "@mui/icons-material/HelpRounded";
@@ -56,34 +66,42 @@ export default function MenuContent() {
   const mainListItems = [
     {
       text: "Home",
-      icon: <HomeRoundedIcon />,
+      icon: <DashboardRoundedIcon />,
       path: `/dashboard/projects/${projectId}/campaigns/${campaignId}`,
     },
-    { text: "Tester", icon: <HomeRoundedIcon />, path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/tester` },
+    {
+      text: "Tester",
+      icon: <GroupsRoundedIcon />,
+      path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/tester`,
+    },
     {
       text: "Surveys",
-      icon: <AnalyticsRoundedIcon />,
-      path:  `/dashboard/projects/${projectId}/campaigns/${campaignId}/survey`
+      icon: <PollRoundedIcon />,
+      path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/survey`,
     },
-    { text: "Bugs", icon: <PeopleRoundedIcon />, path:  `/dashboard/projects/${projectId}/campaigns/${campaignId}/issues`  },
+    {
+      text: "Bugs",
+      icon: <BugReportRoundedIcon />,
+      path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/issues`,
+    },
     {
       text: "Test Cases",
-      icon: <PeopleRoundedIcon />,
+      icon: <FactCheckRoundedIcon />,
       path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/testcase`,
     },
     {
       text: "Email",
-      icon: <PeopleRoundedIcon />,
+      icon: <EmailRoundedIcon />,
       path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/email`,
     },
     {
       text: "Secure Files",
-      icon: <PeopleRoundedIcon />,
-       path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/file`,
+      icon: <FolderSpecialRoundedIcon />,
+      path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/file`,
     },
     {
       text: "Test Detail",
-      icon: <AssignmentRoundedIcon />,
+      icon: <ChecklistRoundedIcon />,
       path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/edit_detail`,
     },
   ];

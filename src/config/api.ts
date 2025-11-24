@@ -148,6 +148,11 @@ export const callFetchCampaignByProject = (id: string, query: string) => {
 export const callGetCampaign = (id: number) => {
   return axios.get<IBackendRes<ICampaign>>(`/api/v1/campaign/${id}`);
 };
+
+export const callGetModuleByCampaign = (campaignId: number) => {
+  return axios.get<IBackendRes<any>>(`/api/v1/modules/campaign/${campaignId}`);
+};
+
 export const callCreateCampaign = (data: ICampaign) => {
   console.log("callCreateCampaign", data);
   return axios.post<IBackendRes<ICampaign>>("/api/v1/campaign/create", data);

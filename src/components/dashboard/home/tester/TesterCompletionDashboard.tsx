@@ -203,12 +203,12 @@ const TesterCompletionDashboard: React.FC = () => {
             sx={{ width: { xs: "100%", sm: "200px" } }}
             onChange={(e) => setSearch(e.target.value)}
           />
-          <Button variant="outlined" onClick={fetchData}>
+          {/* <Button variant="outlined" onClick={fetchData}>
             Create Batch
           </Button>
           <Button variant="outlined" onClick={fetchData}>
             Get Latest Data
-          </Button>
+          </Button> */}
           <Button variant="outlined" onClick={fetchData}>
             Export Excel
           </Button>
