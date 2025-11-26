@@ -31,6 +31,15 @@ export default function SideMenu() {
   );
   const user = useAppSelector((state) => state.account.user);
 
+  // Lấy chữ cái đầu (tự động uppercase)
+  const avatarLetter = (
+    user?.fullName?.charAt(0) ||
+    user?.email?.charAt(0) ||
+    "U"
+  ).toUpperCase();
+
+  const displayName = user?.fullName || user?.email || "User";
+
   return (
     <Drawer
       variant="permanent"
@@ -73,10 +82,18 @@ export default function SideMenu() {
       >
         <Avatar
           sizes="small"
-          alt="Riley Carter"
-          src="/static/images/avatar/7.jpg"
-          sx={{ width: 36, height: 36 }}
-        />
+          alt={displayName}
+          sx={{
+            width: 26,
+            height: 26,
+            bgcolor: "primary.main",
+            fontSize: "0.9rem",
+            fontWeight: 600,
+            color: "white",
+          }}
+        >
+          {avatarLetter}
+        </Avatar>
         <Box sx={{ mr: "auto" }}>
           <Typography
             variant="body2"

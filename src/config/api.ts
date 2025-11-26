@@ -1,3 +1,4 @@
+
 import {
   type IBackendRes,
   type IAccount,
@@ -169,6 +170,11 @@ export const callUpdateCampaign = (id: number, data: ICampaign) => {
 export const callPublishCampaign = (id: number) => {
   console.log("callPublishCampaign", { id });
   return axios.put<IBackendRes<ICampaign>>(`/api/v1/campaign/${id}/publish`);
+};
+
+export const callDeleteCampaign = (id: number) => {
+  console.log("callDeleteCampaign", { id });
+  return axios.delete<IBackendRes<null>>(`/api/v1/campaign/delete/${id}`);
 };
 
 // Module Campaign
@@ -975,9 +981,7 @@ export async function callGetAllRewardBatches() {
 }
 
 export async function callGetRewardEvidence(batchId: string | number) {
-  return axios.get<IBackendRes<any>>(
-    `/api/v1/reward-evidence/${batchId}`
-  );
+  return axios.get<IBackendRes<any>>(`/api/v1/reward-evidence/${batchId}`);
 }
 
 //  payment info

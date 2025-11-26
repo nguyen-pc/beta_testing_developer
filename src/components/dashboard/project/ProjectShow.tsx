@@ -18,7 +18,11 @@ import {
   Typography,
 } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
-import { callDeleteProject, callGetProject } from "../../../config/api";
+import {
+  callDeleteCampaign,
+  callDeleteProject,
+  callGetProject,
+} from "../../../config/api";
 import { useAppDispatch, useAppSelector } from "../../../redux/hooks";
 import { fetchCampaignByProject } from "../../../redux/slice/CampaignSlide";
 import queryString from "query-string";
@@ -239,6 +243,23 @@ export default function ProjectShow() {
       console.error("Error deleting project:", error);
     }
   };
+
+  const handleDelete = async (campaignId: number) => {
+
+    try {
+      await callDeleteCampaign(campaignId);
+
+      // Fetch lại danh sách sau khi xoá
+      const initialQuery = buildQuery({ current: 1, pageSize: 15 }, {}, {});
+
+      dispatch(fetchCampaignByProject({ id: projectId, query: initialQuery }));
+
+      console.log("Xóa chiến dịch thành công");
+    } catch (error) {
+      console.error("Lỗi khi xóa chiến dịch:", error);
+    }
+  };
+
   return (
     <Container maxWidth="lg" sx={{ py: 5 }}>
       <Box
@@ -462,19 +483,22 @@ export default function ProjectShow() {
 
         {campaigns && campaigns.length > 0 ? (
           <Grid container spacing={3} columns={12}>
-            {campaigns.map((campaign, index) => (
-              <CampaignCard
-                campaign={campaign}
-                projectId={projectId}
-                onClick={() => handleDetailClick(projectId, campaign.id)}
-                onEdit={() =>
-                  navigate(
-                    `/dashboard/projects/${projectId}/campaigns/${campaign.id}/edit_detail`
-                  )
-                }
-                onDelete={() => {}}
-              />
-            ))}
+            {campaigns
+              .filter((c) => c.deleted === false)
+              .map((campaign, index) => (
+                <CampaignCard
+                  key={campaign.id}
+                  campaign={campaign}
+                  projectId={projectId}
+                  onClick={() => handleDetailClick(projectId, campaign.id)}
+                  onEdit={() =>
+                    navigate(
+                      `/dashboard/projects/${projectId}/campaigns/${campaign.id}/edit_detail`
+                    )
+                  }
+                  onDelete={() => handleDelete(campaign.id)}
+                />
+              ))}
           </Grid>
         ) : (
           <Box

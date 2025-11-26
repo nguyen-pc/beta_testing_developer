@@ -11,6 +11,7 @@ import MenuButton from "./MenuButton";
 import MenuContent from "./campaign/MenuContent";
 import CardAlert from "./CardAlert";
 import { useAppSelector } from "../../redux/hooks";
+import MenuContentHome from "./home/MenuContentHome";
 import NotificationBell from "../NotificationBell";
 
 interface SideMenuMobileProps {
@@ -18,7 +19,7 @@ interface SideMenuMobileProps {
   toggleDrawer: (newOpen: boolean) => () => void;
 }
 
-export default function SideMenuMobile({
+export default function SideMenuMobileProject({
   open,
   toggleDrawer,
 }: SideMenuMobileProps) {
@@ -77,12 +78,13 @@ export default function SideMenuMobile({
             </Typography>
           </Stack>
           <MenuButton>
+            {/* <NotificationsRoundedIcon /> */}
             <NotificationBell />
           </MenuButton>
         </Stack>
         <Divider />
         <Stack sx={{ flexGrow: 1 }}>
-          <MenuContent />
+          <MenuContentHome />
           <Divider />
         </Stack>
         {/* <CardAlert /> */}

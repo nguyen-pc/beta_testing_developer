@@ -32,6 +32,7 @@ import SurveyAnalyticsPage from "../../../components/dashboard/Response/SurveyAn
 import TabFileManagement from "../../../components/dashboard/file/TabFileManagement";
 import MainGridCampaign from "../../../components/dashboard/MainGridCampaign";
 import TestcaseHome from "../../../components/dashboard/campaign/tescase_analysis/TestcaseHome";
+import AppNavbarCampaign from "../../../components/dashboard/campaign/AppNavbarCampaign";
 
 const xThemeComponents = {
   ...chartsCustomizations,
@@ -46,7 +47,7 @@ export default function Dashboard(props: { disableCustomTheme?: boolean }) {
       <CssBaseline enableColorScheme />
       <Box sx={{ display: "flex" }}>
         <SideMenu />
-        <AppNavbar />
+        <AppNavbarCampaign />
         {/* Main content */}
         <Box
           component="main"
