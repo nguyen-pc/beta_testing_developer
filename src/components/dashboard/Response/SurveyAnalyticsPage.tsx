@@ -127,7 +127,7 @@ export default function SurveyAnalyticsPage() {
     <Container sx={{ mt: 4 }}>
       <Grid display="flex" justifyContent="space-between" mt={3}>
         <Typography variant="h5" sx={{ mb: 3 }}>
-          📊 Phân tích kết quả khảo sát
+           Phân tích kết quả khảo sát
         </Typography>
         <Button
           variant="contained"

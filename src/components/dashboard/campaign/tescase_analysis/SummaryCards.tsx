@@ -37,7 +37,7 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
 
   const cards = [
     {
-      title: "👥 Người tham gia",
+      title: "Người tham gia",
       value: summary.uniqueUsers,
       color: "#0288d1",
       icon: <PeopleAltRoundedIcon sx={{ color: "#0288d1", fontSize: 32 }} />,
@@ -49,13 +49,13 @@ const SummaryCards: React.FC<Props> = ({ data }) => {
       icon: <QueryStatsRoundedIcon sx={{ color: "#1976d2", fontSize: 32 }} />,
     },
     {
-      title: "✅ Passed",
+      title: " Passed",
       value: summary.passed,
       color: "#2e7d32",
       icon: <CheckCircleRoundedIcon sx={{ color: "#2e7d32", fontSize: 32 }} />,
     },
     {
-      title: "❌ Failed",
+      title: " Failed",
       value: summary.failed,
       color: "#d32f2f",
       icon: <CancelRoundedIcon sx={{ color: "#d32f2f", fontSize: 32 }} />,

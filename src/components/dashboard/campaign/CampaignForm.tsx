@@ -203,9 +203,10 @@ export default function CampaignForm(props: CampaignFormProps) {
               >
                 <MenuItem value="1">IOS</MenuItem>
                 <MenuItem value="2">Android</MenuItem>
-                <MenuItem value="3">Web</MenuItem>
+                <MenuItem value="3">Website</MenuItem>
                 <MenuItem value="4">Game</MenuItem>
-                <MenuItem value="5">Other</MenuItem>
+                <MenuItem value="5">Desktop</MenuItem>
+                <MenuItem value="6">Other</MenuItem>
               </Select>
               <FormHelperText>
                 {formErrors.campaignType ?? "Choose campaign type"}

@@ -617,6 +617,7 @@ export const sendChatMessage = (data: {
   sessionId: string;
   message: string;
   userId: number;
+  campaignId?: string;
 }) => {
   console.log("sendChatMessage", data);
   return axios.post<IBackendRes<any>>(`/api/v1/chatbot/ask`, data);

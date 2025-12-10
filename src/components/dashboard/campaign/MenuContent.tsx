@@ -100,7 +100,7 @@ export default function MenuContent() {
       path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/file`,
     },
     {
-      text: "Test Detail",
+      text: "Edit Campaign",
       icon: <ChecklistRoundedIcon />,
       path: `/dashboard/projects/${projectId}/campaigns/${campaignId}/edit_detail`,
     },

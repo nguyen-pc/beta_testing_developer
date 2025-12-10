@@ -6,7 +6,7 @@ export default function WordCloudSection({ keyPhrases, words }) {
   return (
     <Box sx={{ mb: 4 }}>
       <Typography variant="subtitle1" sx={{ mb: 1 }}>
-        🔑 Key Phrases
+         Key Phrases
       </Typography>
       <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1, mb: 2 }}>
         {keyPhrases.map((k, i) => (
@@ -15,7 +15,7 @@ export default function WordCloudSection({ keyPhrases, words }) {
       </Box>
 
       <Typography variant="subtitle1" sx={{ mb: 1 }}>
-        ☁️ Word Cloud
+         Word Cloud
       </Typography>
       <Box sx={{ height: 250 }}>
         <ReactWordcloud

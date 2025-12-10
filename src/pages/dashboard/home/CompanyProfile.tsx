@@ -162,7 +162,7 @@ export default function CompanyProfileView() {
 
               <Divider sx={{ my: 2 }} />
               <Typography variant="subtitle1" fontWeight="bold">
-                🧾 Thông tin đăng ký thuế
+                 Thông tin đăng ký thuế
               </Typography>
               <Typography>
                 <strong>MST:</strong> {company.companyMST || "—"}
@@ -179,7 +179,7 @@ export default function CompanyProfileView() {
 
               <Divider sx={{ my: 2 }} />
               <Typography variant="subtitle1" fontWeight="bold">
-                📝 Giới thiệu
+                 Giới thiệu
               </Typography>
               <Typography sx={{ whiteSpace: "pre-wrap", mt: 1 }}>
                 {company.description || "Chưa có mô tả."}

@@ -168,7 +168,8 @@ export default function MainProject() {
             Project
           </Typography>
           <Typography>
-            Stay in the loop with the latest about our products
+            Stay updated with the latest improvements and features of our
+            BetaTesting platform.
           </Typography>
         </div>
         <div>

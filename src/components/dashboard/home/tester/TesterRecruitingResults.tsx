@@ -124,7 +124,7 @@ const TesterRecruitingResults: React.FC = () => {
   // ---------------- Approve / Reject handlers ----------------
   const handleApproveSelected = async () => {
     if (!Array.isArray(selected) || selected.length === 0) {
-      alert("⚠️ Please select at least one tester to approve.");
+      alert(" Please select at least one tester to approve.");
       return;
     }
     try {
@@ -132,7 +132,7 @@ const TesterRecruitingResults: React.FC = () => {
         console.log("✅ Approving ID:", id);
         await callApproveTester(id.toString());
       }
-      alert("✅ Tester(s) approved successfully!");
+      alert(" Tester(s) approved successfully!");
       await fetchTesterProfile(filter);
     } catch (error) {
       console.error("❌ Error approving tester:", error);
@@ -141,7 +141,7 @@ const TesterRecruitingResults: React.FC = () => {
 
   const handleRejectSelected = async () => {
     if (!Array.isArray(selected) || selected.length === 0) {
-      alert("⚠️ Please select at least one tester to reject.");
+      alert(" Please select at least one tester to reject.");
       return;
     }
     try {

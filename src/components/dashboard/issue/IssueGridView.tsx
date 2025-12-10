@@ -22,6 +22,7 @@ import queryString from "query-string";
 import { useParams, useNavigate } from "react-router-dom";
 import { callGetBugReports } from "../../../config/api";
 import ExportBugExcel from "./ExportBugExcel";
+import AnalysisBugAI from "./AnalysisBugAI";
 
 export default function IssueGridView() {
   // ---------------- State ----------------
@@ -111,16 +112,20 @@ export default function IssueGridView() {
 
   // ---------------- Navigation ----------------
   const handleView = (bugId: number) => {
-    navigate(`/dashboard/projects/${projectId}/campaigns/${campaignId}/issues/${bugId}`);
+    navigate(
+      `/dashboard/projects/${projectId}/campaigns/${campaignId}/issues/${bugId}`
+    );
   };
 
   // ---------------- UI ----------------
   return (
     <Box p={3}>
-
       <Box display="flex" justifyContent="space-between" mb={2}>
         <Typography variant="h5">Issues</Typography>
-        <ExportBugExcel bugs={data} campaignId={campaignId} />
+        <Box>
+          <ExportBugExcel bugs={data} campaignId={campaignId} />
+          <AnalysisBugAI bugs={data} campaignId={campaignId}/>
+        </Box>
       </Box>
       {/* Filter Bar */}
       <Stack direction="row" spacing={2} mb={3} alignItems="center">

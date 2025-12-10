@@ -159,7 +159,7 @@ export default function IssueDetailView() {
         );
       }
 
-      alert("✅ Bug report updated successfully!");
+      alert("Bug report updated successfully!");
     } catch (err) {
       console.error("Error updating bug report:", err);
       alert(" Failed to update bug report!");
@@ -183,6 +183,7 @@ export default function IssueDetailView() {
     setLoading(true);
     try {
       const res = await callGetDetailBugReport(bugId);
+      console.log("Issue detail:", res.data);
       setIssue(res.data);
     } catch (err) {
       console.error("Error fetching issue detail:", err);
@@ -246,10 +247,27 @@ export default function IssueDetailView() {
   }, [bugId, campaignId]);
 
   // 🧩 Gửi tin nhắn text
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!newMsg.trim()) return;
     sendMessage(newMsg, user.id, bugId);
     setNewMsg("");
+    console.log("Sending message:", issue?.testerId);
+
+    if (user.id) {
+      const title = `New message in bug #${bugId}`;
+      const message = `${user.name || "Someone"} sent a new message in bug: ${
+        issue?.title || ""
+      }`;
+      const link = `/dashboard/projects/${projectId}/campaigns/${campaignId}/issues/${bugId}`;
+
+      await handleCreateNotification(
+        issue?.testerId,
+        title,
+        message,
+        "BUG_CHAT",
+        link
+      );
+    }
   };
 
   // 🧩 Upload file và gửi link

@@ -52,11 +52,11 @@ export default function MenuContentHome() {
       icon: <InfoRoundedIcon />,
       path: "/dashboard/company-profile",
     },
-    {
-      text: "Feedback",
-      icon: <HelpRoundedIcon />,
-      path: "/dashboard/feedback",
-    },
+    // {
+    //   text: "Feedback",
+    //   icon: <HelpRoundedIcon />,
+    //   path: "/dashboard/feedback",
+    // },
   ];
 
   // ✅ Lọc menu chính theo vai trò

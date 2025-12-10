@@ -19,6 +19,7 @@ import {
   writeSession,
   removeSession,
 } from "./chatUtils";
+import { useNavigate, useParams } from "react-router-dom";
 
 const FORCE_NEW_ON_LOAD = false;
 
@@ -36,11 +37,12 @@ export default function BetaBotChat({ onBotGenerateEntity }: BetaBotChatProps) {
   const [typing, setTyping] = useState(false);
   const [sessionId, setSessionId] = useState("");
   const [defaultMode, setDefaultMode] = useState("general");
+  const [projectId, setProjectId] = useState<string | null>(null);
   const [campaignId, setCampaignId] = useState<string | null>(null);
   const [useCaseId, setUseCaseId] = useState<string | null>(null);
   const [testScenarioId, setTestScenarioId] = useState<string | null>(null);
 
-  // 🧠 Tạo session mới
+  //  Tạo session mới
   const createNewSession = async () => {
     if (!user?.id) return;
     setMessages(defaultWelcome);
@@ -60,7 +62,27 @@ export default function BetaBotChat({ onBotGenerateEntity }: BetaBotChatProps) {
     }
   };
 
-  // 🧠 Load session cũ hoặc tạo mới
+  useEffect(() => {
+    const path = window.location.pathname;
+     // Bắt projectId trong URL
+    const projectMatch = path.match(/projects\/(\d+)/);
+    if (projectMatch) setProjectId(projectMatch[1]);
+    console.log("Detected projectId from URL:", projectMatch?.[1]);
+
+    // Bắt campaignId trong URL
+    const campaignMatch = path.match(/campaigns\/(\d+)/);
+    if (campaignMatch) setCampaignId(campaignMatch[1]);
+    console.log("Detected campaignId from URL:", campaignMatch?.[1]);
+
+    // // Bắt useCaseId trong URL
+    // const useCaseMatch = path.match(/usecase\/(\d+)/);
+    // if (useCaseMatch) setUseCaseId(useCaseMatch[1]);
+
+    // // Bắt testScenarioId trong URL
+    // const testScenarioMatch = path.match(/test-scenario\/(\d+)/);
+    // if (testScenarioMatch) setTestScenarioId(testScenarioMatch[1]);
+  }, [window.location.pathname]);
+  //  Load session cũ hoặc tạo mới
   useEffect(() => {
     const init = async () => {
       if (!user?.id) return;
@@ -85,13 +107,13 @@ export default function BetaBotChat({ onBotGenerateEntity }: BetaBotChatProps) {
     void init();
   }, [user?.id]);
 
-  // 🧠 Nghe event mở chatbot từ các trang
+  // Nghe event mở chatbot từ các trang
   useEffect(() => {
     const handleOpen = (e: any) => {
       setOpen(true);
       const { mode, campaignId, useCaseId, testScenarioId } = e.detail || {};
       console.log(
-        "🚀 Opening BetaBot with mode:",
+        " Opening BetaBot with mode:",
         mode,
         "campaignId:",
         campaignId,
@@ -109,7 +131,7 @@ export default function BetaBotChat({ onBotGenerateEntity }: BetaBotChatProps) {
     return () => window.removeEventListener("open-betabot", handleOpen);
   }, []);
 
-  // 🧠 Xác định mode từ cú pháp
+  //  Xác định mode từ cú pháp
   const detectMode = (msg: string): string => {
     if (msg.startsWith("@usecase")) return "usecase";
     if (msg.startsWith("@testcase")) return "testcase";
@@ -118,7 +140,7 @@ export default function BetaBotChat({ onBotGenerateEntity }: BetaBotChatProps) {
     return defaultMode;
   };
 
-  // 🧠 Gửi tin nhắn đến chatbot
+  //  Gửi tin nhắn đến chatbot
   const handleSend = async (text?: any) => {
     const msg = (typeof text === "string" ? text : input).trim();
     if (!msg || !sessionId) return;
@@ -135,10 +157,11 @@ export default function BetaBotChat({ onBotGenerateEntity }: BetaBotChatProps) {
         message: msg,
         userId: user?.id,
         mode,
+        campaignId: campaignId || undefined,
       });
       const reply = data?.result?.reply ?? data?.reply ?? data?.response ?? "…";
 
-      // 🧩 Nếu bot trả JSON hợp lệ → callback
+      //  Nếu bot trả JSON hợp lệ → callback
       try {
         const parsed = JSON.parse(reply);
         if (Array.isArray(parsed) && parsed[0]) {
@@ -160,7 +183,7 @@ export default function BetaBotChat({ onBotGenerateEntity }: BetaBotChatProps) {
         ...p,
         {
           from: "bot",
-          text: "⚠️ Sorry, I’m having trouble connecting to AI service.",
+          text: " Sorry, I’m having trouble connecting to AI service.",
         },
       ]);
       setTyping(false);
@@ -176,7 +199,7 @@ export default function BetaBotChat({ onBotGenerateEntity }: BetaBotChatProps) {
 
   return (
     <>
-      {/* 🔘 Floating bubble */}
+      {/*  Floating bubble */}
       {!open && (
         <Zoom in>
           <IconButton
@@ -198,7 +221,7 @@ export default function BetaBotChat({ onBotGenerateEntity }: BetaBotChatProps) {
         </Zoom>
       )}
 
-      {/* 💬 Main Chat UI */}
+      {/*  Main Chat UI */}
       <Fade in={open}>
         <Paper
           sx={{
@@ -239,7 +262,7 @@ export default function BetaBotChat({ onBotGenerateEntity }: BetaBotChatProps) {
         </Paper>
       </Fade>
 
-      {/* 📂 Session List Dialog */}
+      {/*  Session List Dialog */}
       <ChatSessionDialog
         userId={user?.id}
         open={sessionDialogOpen}

@@ -6,7 +6,7 @@ export default function SentimentSection({ summary }) {
   return (
     <Box sx={{ mb: 3 }}>
       <Typography variant="subtitle1" sx={{ mb: 1 }}>
-        💬 Sentiment Analysis
+        Sentiment Analysis
       </Typography>
       <Typography color="success.main">Positive: {summary.positive}%</Typography>
       <LinearProgress
