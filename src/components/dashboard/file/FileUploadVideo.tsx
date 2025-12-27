@@ -97,7 +97,7 @@ const FileUploadVideo: React.FC = () => {
         fontWeight="bold"
         gutterBottom
       >
-        🎬 Uploaded Videos
+         Uploaded Videos
       </Typography>
       <Typography
         variant="subtitle1"

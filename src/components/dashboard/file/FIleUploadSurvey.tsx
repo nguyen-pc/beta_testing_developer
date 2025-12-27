@@ -16,11 +16,21 @@ import {
   Alert,
   IconButton,
   Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import DownloadIcon from "@mui/icons-material/Download";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import CloseIcon from "@mui/icons-material/Close";
 import { useParams } from "react-router-dom";
-import { callGetSurveysByCampaign, callGetFileSurvey } from "../../../config/api";
+import {
+  callGetSurveysByCampaign,
+  callGetFileSurvey,
+} from "../../../config/api";
 
 interface FileItem {
   fileId: number;
@@ -38,29 +48,38 @@ interface SurveyItem {
   description: string;
 }
 
+type PreviewKind = "image" | "pdf" | "video" | "audio" | "unknown";
+
 const FileUploadSurvey = () => {
   const { campaignId } = useParams();
+
   const [surveys, setSurveys] = useState<SurveyItem[]>([]);
   const [fileMap, setFileMap] = useState<Record<number, FileItem[]>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // ✅ Preview state
+  const [openPreview, setOpenPreview] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<FileItem | null>(null);
+
   useEffect(() => {
     const fetchSurveysAndFiles = async () => {
       try {
         if (!campaignId) return;
-        setLoading(true);
 
-        // 🧩 1. Lấy danh sách survey
+        setLoading(true);
+        setError(null);
+
+        // 1) Lấy danh sách survey
         const surveyRes = await callGetSurveysByCampaign(campaignId);
-        const surveyList = surveyRes?.data || [];
+        const surveyList: SurveyItem[] = surveyRes?.data || [];
         setSurveys(surveyList);
 
-        // 🧩 2. Lấy file cho từng survey song song
+        // 2) Lấy file cho từng survey song song
         const filePromises = surveyList.map(async (survey: SurveyItem) => {
           try {
             const fileRes = await callGetFileSurvey(survey.surveyId);
-            const files = fileRes?.data || [];
+            const files: FileItem[] = fileRes?.data || [];
             return { surveyId: survey.surveyId, files };
           } catch (err) {
             console.error(
@@ -68,16 +87,17 @@ const FileUploadSurvey = () => {
               survey.surveyId,
               err
             );
-            return { surveyId: survey.surveyId, files: [] };
+            return { surveyId: survey.surveyId, files: [] as FileItem[] };
           }
         });
 
         const allResults = await Promise.all(filePromises);
+
         const map: Record<number, FileItem[]> = {};
         allResults.forEach((r) => (map[r.surveyId] = r.files));
         setFileMap(map);
       } catch (err: any) {
-        setError(err.message || "Failed to load surveys or files");
+        setError(err?.message || "Failed to load surveys or files");
       } finally {
         setLoading(false);
       }
@@ -86,10 +106,36 @@ const FileUploadSurvey = () => {
     fetchSurveysAndFiles();
   }, [campaignId]);
 
+  // ✅ Bạn đang dùng url static /uploads/{fileName} => dùng luôn cho download/preview
+  const getFileUrl = (fileName: string) =>
+    `http://localhost:8081/storage/11/${fileName}`;
+
+  const getPreviewKind = (f: FileItem): PreviewKind => {
+    const name = (f.fileName || "").toLowerCase();
+    const type = (f.fileType || "").toLowerCase();
+    const ext = name.includes(".") ? name.split(".").pop() : "";
+    const key = `${type} ${ext}`;
+
+    if (/(image\/|png|jpg|jpeg|webp|gif)/.test(key)) return "image";
+    if (/(application\/pdf|pdf)/.test(key)) return "pdf";
+    if (/(video\/|mp4|webm|mov)/.test(key)) return "video";
+    if (/(audio\/|mp3|wav|ogg)/.test(key)) return "audio";
+    return "unknown";
+  };
+
   const handleDownload = (fileName: string) => {
-    // ✅ Tùy backend: có thể là /api/v1/files/download/{fileName}
-    const downloadUrl = `/uploads/${fileName}`;
+    const downloadUrl = getFileUrl(fileName);
     window.open(downloadUrl, "_blank");
+  };
+
+  const handlePreview = (file: FileItem) => {
+    setSelectedFile(file);
+    setOpenPreview(true);
+  };
+
+  const closePreview = () => {
+    setOpenPreview(false);
+    setSelectedFile(null);
   };
 
   if (loading)
@@ -107,14 +153,9 @@ const FileUploadSurvey = () => {
     );
 
   return (
-    <Box >
-      <Typography
-        variant="h4"
-        fontWeight="bold"
-        gutterBottom
-        // textAlign="center"
-      >
-        📁 Uploaded Files by Survey
+    <Box>
+      <Typography variant="h4" fontWeight="bold" gutterBottom>
+        Uploaded Files by Survey
       </Typography>
 
       {surveys.length === 0 && (
@@ -126,10 +167,11 @@ const FileUploadSurvey = () => {
       {surveys.map((survey) => (
         <Accordion key={survey.surveyId} sx={{ mb: 2 }}>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="h6" fontWeight="600">
-            {survey.surveyName}
+            <Typography variant="h6" fontWeight={600}>
+              {survey.surveyName}
             </Typography>
           </AccordionSummary>
+
           <AccordionDetails>
             {fileMap[survey.surveyId]?.length > 0 ? (
               <TableContainer component={Paper}>
@@ -153,6 +195,7 @@ const FileUploadSurvey = () => {
                       </TableCell>
                     </TableRow>
                   </TableHead>
+
                   <TableBody>
                     {fileMap[survey.surveyId].map((file) => (
                       <TableRow key={file.fileId}>
@@ -168,7 +211,17 @@ const FileUploadSurvey = () => {
                               })`
                             : "Unknown"}
                         </TableCell>
+
                         <TableCell align="center">
+                          <Tooltip title="Xem file">
+                            <IconButton
+                              color="info"
+                              onClick={() => handlePreview(file)}
+                            >
+                              <VisibilityIcon />
+                            </IconButton>
+                          </Tooltip>
+
                           <Tooltip title="Download file">
                             <IconButton
                               color="primary"
@@ -191,6 +244,101 @@ const FileUploadSurvey = () => {
           </AccordionDetails>
         </Accordion>
       ))}
+
+      {/* ✅ Dialog Preview */}
+      <Dialog open={openPreview} onClose={closePreview} fullWidth maxWidth="md">
+        <DialogTitle
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 2,
+          }}
+        >
+          <Typography fontWeight={700} noWrap>
+            Xem trước: {selectedFile?.fileName}
+          </Typography>
+          <IconButton onClick={closePreview}>
+            <CloseIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent dividers sx={{ minHeight: 520 }}>
+          {!selectedFile
+            ? null
+            : (() => {
+                const url = getFileUrl(selectedFile.fileName);
+                const kind = getPreviewKind(selectedFile);
+
+                if (kind === "image") {
+                  return (
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <Box
+                        component="img"
+                        src={url}
+                        alt={selectedFile.fileName}
+                        sx={{
+                          maxWidth: "100%",
+                          maxHeight: 520,
+                          borderRadius: 2,
+                        }}
+                      />
+                    </Box>
+                  );
+                }
+
+                if (kind === "pdf") {
+                  return (
+                    <Box sx={{ width: "100%", height: 520 }}>
+                      <iframe
+                        src={url}
+                        title="PDF Preview"
+                        style={{ width: "100%", height: "100%", border: 0 }}
+                      />
+                    </Box>
+                  );
+                }
+
+                if (kind === "video") {
+                  return (
+                    <video controls style={{ width: "100%", maxHeight: 520 }}>
+                      <source src={url} />
+                      Trình duyệt không hỗ trợ xem video.
+                    </video>
+                  );
+                }
+
+                if (kind === "audio") {
+                  return (
+                    <audio controls style={{ width: "100%" }}>
+                      <source src={url} />
+                      Trình duyệt không hỗ trợ nghe audio.
+                    </audio>
+                  );
+                }
+
+                return (
+                  <Alert severity="warning">
+                    File này chưa hỗ trợ xem trước. Vui lòng tải xuống để xem.
+                  </Alert>
+                );
+              })()}
+        </DialogContent>
+
+        <DialogActions>
+          {selectedFile && (
+            <Button
+              variant="contained"
+              onClick={() => handleDownload(selectedFile.fileName)}
+            >
+              Download
+            </Button>
+          )}
+          <Button variant="outlined" onClick={closePreview}>
+            Đóng
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

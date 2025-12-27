@@ -124,7 +124,7 @@ export default function IssueGridView() {
         <Typography variant="h5">Issues</Typography>
         <Box>
           <ExportBugExcel bugs={data} campaignId={campaignId} />
-          <AnalysisBugAI bugs={data} campaignId={campaignId}/>
+          <AnalysisBugAI bugs={data} campaignId={campaignId} />
         </Box>
       </Box>
       {/* Filter Bar */}
@@ -184,7 +184,7 @@ export default function IssueGridView() {
           <Table size="small" sx={{ tableLayout: "fixed", width: "100%" }}>
             <TableHead>
               <TableRow>
-                <TableCell sx={{ width: 60 }}>ID</TableCell>
+                <TableCell sx={{ width: 60 }}>STT</TableCell>
                 <TableCell sx={{ width: 250 }}>Title</TableCell>
                 <TableCell sx={{ width: 100 }}>Priority</TableCell>
                 <TableCell sx={{ width: 100 }}>Severity</TableCell>
@@ -205,9 +205,9 @@ export default function IssueGridView() {
                   </TableCell>
                 </TableRow>
               ) : (
-                data.map((b) => (
+                data.map((b, index) => (
                   <TableRow key={b.id} hover>
-                    <TableCell>{b.id}</TableCell>
+                    <TableCell>{index + 1}</TableCell>
                     <TableCell
                       sx={{
                         overflow: "hidden",

@@ -439,7 +439,7 @@ export default function IssueDetailView() {
                   {!isOwn && (
                     <ListItemAvatar>
                       <Avatar>
-                        {msg.senderName ? msg.senderName[0] : "?"}
+                        {msg.senderName ? msg.senderName[0] : "u"}
                       </Avatar>
                     </ListItemAvatar>
                   )}

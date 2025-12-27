@@ -9,7 +9,12 @@ import {
   Button,
   CircularProgress,
   Stack,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
+
 import useNotifications from "../../../../hooks/useNotifications/useNotifications";
 import {
   validate as ValidateSurvey,
@@ -23,6 +28,7 @@ import {
   callUpdateSurvey,
   callGetSurveysByCampaign,
   callGetSurvey,
+  callDeleteSurvey,
 } from "../../../../config/api";
 import dayjs from "dayjs";
 import parse from "html-react-parser";
@@ -45,6 +51,47 @@ export default function DetailSurveyManager() {
   const [editingSurvey, setEditingSurvey] = React.useState<Survey | null>(null);
   const [isCreating, setIsCreating] = React.useState(false); // ✅ thêm state phân biệt chế độ tạo mới
 
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = React.useState(false);
+  const [surveyToDelete, setSurveyToDelete] = React.useState<Survey | null>(
+    null
+  );
+  const [deleteLoading, setDeleteLoading] = React.useState(false);
+
+  // Mở dialog xác nhận xóa
+  const handleOpenDeleteDialog = (event: React.MouseEvent, survey: Survey) => {
+    event.stopPropagation(); // ✅ tránh click lan xuống Card (tránh mở form edit)
+    setSurveyToDelete(survey);
+    setConfirmDeleteOpen(true);
+  };
+
+  // Gọi API xóa (soft delete) sau khi người dùng xác nhận
+  const handleConfirmDelete = async () => {
+    if (!campaignId || !surveyToDelete) return;
+
+    try {
+      setDeleteLoading(true);
+      await callDeleteSurvey(campaignId, String(surveyToDelete.surveyId));
+
+      // Cập nhật lại danh sách survey trên UI
+      setSurveys((prev) =>
+        prev.filter((s) => s.surveyId !== surveyToDelete.surveyId)
+      );
+
+      notifications.show("Xóa khảo sát (survey) thành công.", {
+        severity: "success",
+      });
+    } catch (error) {
+      notifications.show(
+        `Xóa khảo sát thất bại. Lý do: ${(error as Error).message}`,
+        { severity: "error" }
+      );
+    } finally {
+      setDeleteLoading(false);
+      setConfirmDeleteOpen(false);
+      setSurveyToDelete(null);
+    }
+  };
+
   const [formState, setFormState] = React.useState<DetailSurveyFormState>({
     values: INITIAL_FORM_VALUES,
     errors: {},
@@ -57,6 +104,7 @@ export default function DetailSurveyManager() {
       try {
         setLoading(true);
         const res = await callGetSurveysByCampaign(campaignId);
+        console.log("Fetched surveys:", res.data);
         setSurveys(res.data || []);
       } catch (err) {
         console.error("Error fetching surveys:", err);
@@ -83,6 +131,7 @@ export default function DetailSurveyManager() {
           campaignId,
           String(editingSurvey.surveyId)
         );
+        console.log("Fetched survey detail:", res.data);
         const s = res.data;
         setFormState({
           values: {
@@ -313,6 +362,14 @@ export default function DetailSurveyManager() {
                     End: {dayjs(survey.endDate).format("DD/MM/YYYY")}
                   </Typography>
                 </Stack>
+                <Button
+                  variant="text"
+                  color="error"
+                  size="small"
+                  onClick={(e) => handleOpenDeleteDialog(e, survey)}
+                >
+                  Delete
+                </Button>
               </CardContent>
             </Card>
           </Grid>
@@ -358,6 +415,47 @@ export default function DetailSurveyManager() {
           Continue to Launch
         </Button>
       </Box>
+
+      <Dialog
+        open={confirmDeleteOpen}
+        onClose={() => {
+          if (!deleteLoading) {
+            setConfirmDeleteOpen(false);
+            setSurveyToDelete(null);
+          }
+        }}
+      >
+        <DialogTitle>Xóa khảo sát?</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Bạn có chắc chắn muốn xóa khảo sát{" "}
+            <strong>{surveyToDelete?.surveyName}</strong> không?
+            <br />
+            Hành động này sẽ xóa các dữ liệu liên quan đến khảo sát.
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              if (!deleteLoading) {
+                setConfirmDeleteOpen(false);
+                setSurveyToDelete(null);
+              }
+            }}
+            disabled={deleteLoading}
+          >
+            Hủy
+          </Button>
+          <Button
+            onClick={handleConfirmDelete}
+            color="error"
+            variant="contained"
+            disabled={deleteLoading}
+          >
+            {deleteLoading ? "Đang xóa..." : "Xóa"}
+          </Button>
+        </DialogActions>
+      </Dialog>
     </PageContainer>
   );
 }

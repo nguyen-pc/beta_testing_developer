@@ -149,7 +149,16 @@ const EmailTesterPage: React.FC = () => {
 
   // ---------------- Columns ----------------
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", flex: 0.5 },
+    {
+      field: "stt",
+      headerName: "STT",
+      width: 80,
+      sortable: false,
+      filterable: false,
+      renderCell: (params) => {
+        return params.api.getRowIndexRelativeToVisibleRows(params.id) + 1;
+      },
+    },
     { field: "email", headerName: "Email", flex: 2 },
     {
       field: "status",

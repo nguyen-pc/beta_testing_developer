@@ -160,22 +160,22 @@ const TesterCompletionDashboard: React.FC = () => {
         );
       },
     },
-    {
-      field: "score",
-      headerName: "Engagement Score",
-      flex: 1.2,
-      renderCell: (params) =>
-        params.value ? (
-          <Rating
-            value={params.value}
-            precision={0.5}
-            readOnly
-            sx={{ color: "#FBBF24" }}
-          />
-        ) : (
-          "-"
-        ),
-    },
+    // {
+    //   field: "score",
+    //   headerName: "Engagement Score",
+    //   flex: 1.2,
+    //   renderCell: (params) =>
+    //     params.value ? (
+    //       <Rating
+    //         value={params.value}
+    //         precision={0.5}
+    //         readOnly
+    //         sx={{ color: "#FBBF24" }}
+    //       />
+    //     ) : (
+    //       "-"
+    //     ),
+    // },
     { field: "surveys", headerName: "Surveys Completed", flex: 1 },
     { field: "bugs", headerName: "Bugs Submitted", flex: 1 },
     { field: "messages", headerName: "Messages", flex: 1 },

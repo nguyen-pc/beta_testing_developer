@@ -393,6 +393,15 @@ export async function callGetForm(campaignId: string, surveyId: string) {
   );
 }
 
+export async function callDeleteSurvey(
+  campaignId: string,
+  surveyId: string
+) {
+  return axios.delete<IBackendRes<any>>(
+    `/api/v1/campaign/${campaignId}/survey/${surveyId}`
+  );
+}
+
 export async function callUpdateSurvey(
   campaignId: string,
   surveyId: string,
